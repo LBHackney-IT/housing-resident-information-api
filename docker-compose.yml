@@ -1,10 +1,10 @@
 version: "3.2"
 
 services:
-  base-api:
-    image: base-api
+  uh-resident-information-api:
+    image: uh-resident-information-api
     build:
-      context: BaseApi/
+      context: UHResidentInformationAPI/
       dockerfile: ./Dockerfile
     ports:
       - 3000:3000
@@ -19,11 +19,11 @@ services:
     volumes:
       - ./database:/docker-entrypoint-initdb.d
 
-  base-api-test:
-    image: base-api-test
+  uh-resident-information-api-test:
+    image: uh-resident-information-api-test
     build:
       context: .
-      dockerfile: BaseApi.Tests/Dockerfile
+      dockerfile: UHResidentInformationAPI.Tests/Dockerfile
     environment:
       - DB_HOST=test-database
       - DB_PORT=5432
