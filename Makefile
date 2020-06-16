@@ -4,19 +4,19 @@ setup:
 
 .PHONY: build
 build:
-	docker-compose build base-api
+	docker-compose build uh-resident-information-api
 
 .PHONY: serve
 serve:
-	docker-compose build base-api && docker-compose up base-api
+	docker-compose build uh-resident-information-api && docker-compose up uh-resident-information-api
 
 .PHONY: shell
 shell:
-	docker-compose run base-api bash
+	docker-compose run uh-resident-information-api bash
 
 .PHONY: test
 test:
-	docker-compose up test-database & docker-compose build base-api-test && docker-compose up base-api-test
+	docker-compose up test-database & docker-compose build uh-resident-information-api-test && docker-compose up uh-resident-information-api-test
 
 .PHONY: lint
 lint:
