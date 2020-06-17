@@ -36,37 +36,96 @@ terraform {
 }
 
 /*    POSTGRES SET UP    */
-data "aws_vpc" "development_vpc" {
+data "aws_vpc" "production_vpc" {
   tags = {
-    Name = "vpc-development-apis-development"
+    Name = "vpc-production-apis-production"
   }
 }
-data "aws_subnet_ids" "development_private_subnets" {
-  vpc_id = data.aws_vpc.development_vpc.id
+data "aws_subnet_ids" "production" {
+  vpc_id = data.aws_vpc.production_vpc.id
   filter {
     name   = "tag:Type"
     values = ["private"]
   }
 }
+data "aws_ssm_parameter" "uh_postgres_db_password" {
+   name = "/uh-api/production/postgres-password"
+}
+data "aws_ssm_parameter" "uh_postgres_username" {
+   name = "/uh-api/production/postgres-username"
+}
 
-//database to be used for development purposes, not for DMS
-module "postgres_db_development" {
+module "postgres_db_production" {
   source = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
-  environment_name = "development"
-  vpc_id = data.aws_vpc.development_vpc.id
+  environment_name = "production"
+  vpc_id = data.aws_vpc.production_vpc.id
+  db_identifier = "uh-mirror"
+  db_name = "uh_mirror"
+  db_port  = 5303
+  subnet_ids = data.aws_subnet_ids.production.ids
   db_engine = "postgres"
-  db_engine_version = "11.1"
-  db_identifier = "uh-dev-db"
+  db_engine_version = "11.1" //DMS does not work well with v12
   db_instance_class = "db.t2.micro"
-  db_name = "uh_dev"
-  db_port  = 5002
-  db_username = "${local.parameter_store}/uh-api/development/postgres-username"
-  db_password = "${local.parameter_store}/uh-api/development/postgres-password"
-  subnet_ids = data.aws_subnet_ids.development_private_subnets.ids
   db_allocated_storage = 20
   maintenance_window ="sun:10:00-sun:10:30"
+  db_username = data.aws_ssm_parameter.uh_postgres_username.value
+  db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
   storage_encrypted = false
-  multi_az = false //only true if production deployment
+  multi_az = true //only true if production deployment
   publicly_accessible = false
   project_name = "platform apis"
 }
+
+/*    DMS SET UP    */
+
+data "aws_ssm_parameter" "uh_username" {
+   name = "/uh-api/live-server/username"
+}
+data "aws_ssm_parameter" "uh_password" {
+   name = "/uh-api/live-server/password"
+}
+data "aws_ssm_parameter" "uh_hostname" {
+   name = "/uh-api/live-server/hostname"
+}
+data "aws_ssm_parameter" "uh_postgres_hostname" {
+   name = "/uh-api/production/postgres-hostname"
+}
+data "aws_ssm_parameter" "uh_db_name" {
+    name = "/uh-api/live-server/db_name"
+}
+
+ module "dms_setup_production" {
+   source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_full_setup"
+   environment_name = "production" //used for resource tags
+   project_name = "resident-information-api" //used for resource tags
+   //target db for dms endpoint
+   target_db_name = "uh_mirror"
+   target_endpoint_identifier = "target-uh-endpoint"
+   target_db_engine_name = "postgres"
+   target_db_port = 5303
+   target_db_username = data.aws_ssm_parameter.uh_postgres_username.value
+   target_db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
+   target_db_server = data.aws_ssm_parameter.uh_postgres_hostname.value
+   target_endpoint_ssl_mode = "none"
+   //source db for dms endpoint
+   source_db_name = data.aws_ssm_parameter.uh_db_name.value
+   source_endpoint_identifier = "source-uh-endpoint"
+   source_db_engine_name = "sqlserver"
+   source_db_port = 1433
+   source_db_username = data.aws_ssm_parameter.uh_username.value
+   source_db_password = data.aws_ssm_parameter.uh_password.value
+   source_db_server = data.aws_ssm_parameter.uh_hostname.value
+   source_endpoint_ssl_mode = "none"
+   //replication instance set up -> IF SOURCE IS 'dms_full_setup'
+   allocated_storage = 20 //in GB
+   maintenance_window = "sun:07:00-sun:07:30"
+   replication_instance_class = "dms.t2.small"
+   replication_instance_identifier = "production-dms-instance"
+   vpc_name = "vpc-production-apis"
+   dms_instance_publicly_accessible = false
+   //dms task set up
+   migration_type = "full-load-and-cdc"
+   replication_task_indentifier = "uh-api-dms-task"
+   task_settings = file("${path.module}/task_settings.json")
+   //task_table_mappings = file("${path.module}/selection_rules.json")
+ }
