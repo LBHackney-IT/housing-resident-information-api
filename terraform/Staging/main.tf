@@ -28,7 +28,7 @@ data "aws_iam_role" "ecs_task_execution_role" {
 
 terraform {
   backend "s3" {
-    bucket  = "terraform-state-development-apis" 
+    bucket  = "terraform-state-staging-apis" 
     encrypt = true
     region  = "eu-west-2"
     key     = "services/uh-resident-information-api/state"
@@ -36,13 +36,13 @@ terraform {
 }
 
 /*    POSTGRES SET UP    */
-data "aws_vpc" "development_vpc" {
+data "aws_vpc" "staging_vpc" {
   tags = {
-    Name = "vpc-development-apis-development"
+    Name = "vpc-staging-apis-staging"
   }
 }
-data "aws_subnet_ids" "development_private_subnets" {
-  vpc_id = data.aws_vpc.development_vpc.id
+data "aws_subnet_ids" "staging_private_subnets" {
+  vpc_id = data.aws_vpc.staging_vpc.id
   filter {
     name   = "tag:Type"
     values = ["private"]
@@ -107,7 +107,7 @@ data "aws_ssm_parameter" "uh_test_hostname" {
 module "dms_setup_staging" {
   source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_full_setup" 
   environment_name = "staging" //used for resource tags
-  project_name = "resident-information-apis" //used for resource tags
+  project_name = "resident-information-api" //used for resource tags
   //target db for dms endpoint
   target_db_name = "uh_mirror" 
   target_endpoint_identifier = "target-uh-test-endpoint" 
