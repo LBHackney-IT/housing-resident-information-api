@@ -59,7 +59,7 @@ module "postgres_db_development" {
   db_identifier = "uh-dev-db"
   db_instance_class = "db.t2.micro"
   db_name = "uh_dev"
-  db_port  = 5002
+  db_port  = 5301
   db_username = "${local.parameter_store}/uh-api/development/postgres-username"
   db_password = "${local.parameter_store}/uh-api/development/postgres-password"
   subnet_ids = data.aws_subnet_ids.development_private_subnets.ids
