@@ -17,10 +17,6 @@ locals {
    parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
 }
 
-data "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecsTaskExecutionRole"
-}
-
 terraform {
   backend "s3" {
     bucket  = "terraform-state-production-apis" 
