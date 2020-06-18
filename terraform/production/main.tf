@@ -84,8 +84,8 @@ data "aws_ssm_parameter" "uh_db_name" {
     name = "/uh-api/live-server/db_name"
 }
 
- module "dms_setup_existing_instance" {
-   source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_full_setup"
+ module "production_dms_setup" {
+   source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
    environment_name = "production" //used for resource tags
    project_name = "resident-information-api" //used for resource tags
    //target db for dms endpoint
