@@ -78,7 +78,7 @@ data "aws_ssm_parameter" "uh_test_hostname" {
 
 /* DMS SET UP INCLUDING DMS INSTANCE AS NONE EXISTS */
 
-module "dms_setup_staging" {
+module "dms_setup_existing_instance" {
   source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_full_setup" 
   environment_name = "staging" //used for resource tags
   project_name = "resident-information-api" //used for resource tags
@@ -100,16 +100,11 @@ module "dms_setup_staging" {
   source_db_password = data.aws_ssm_parameter.uh_test_password.value //ensure you save your on-prem credentials to the Parameter store and reference it here
   source_db_server = data.aws_ssm_parameter.uh_test_hostname.value
   source_endpoint_ssl_mode = "none"
-  //replication instance set up -> IF SOURCE IS 'dms_full_setup'
-  allocated_storage = 20 //in GB
-  maintenance_window = "sun:07:00-sun:07:30" 
-  replication_instance_class = "dms.t2.small" 
-  replication_instance_identifier = "staging-dms-instance" 
-  vpc_name = "vpc-staging-apis" 
-  dms_instance_publicly_accessible = false
   //dms task set up
+  replication_instance_arn = "arn:aws:dms:eu-west-2:715003523189:rep:DNTOW6TGQEGCAOWQMZYHQRTWAA"
   migration_type = "full-load-and-cdc" 
   replication_task_indentifier = "uh-api-dms-task" 
   task_settings = file("${path.module}/task_settings.json") 
   task_table_mappings = file("${path.module}/selection_rules.json")
 }
+
