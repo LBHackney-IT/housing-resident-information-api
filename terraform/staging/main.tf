@@ -111,5 +111,5 @@ module "dms_setup_staging" {
   migration_type = "full-load-and-cdc" 
   replication_task_indentifier = "uh-api-dms-task" 
   task_settings = file("${path.module}/task_settings.json") 
-  //task_table_mappings = file("${path.module}/selection_rules.json")
+  task_table_mappings = file("${path.module}/selection_rules.json")
 }
