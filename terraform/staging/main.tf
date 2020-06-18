@@ -78,7 +78,7 @@ data "aws_ssm_parameter" "uh_test_hostname" {
 
 /* DMS SET UP INCLUDING DMS INSTANCE AS NONE EXISTS */
 
-module "staging_dms_setup" {
+module "dms_setup_staging" {
   source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance" 
   environment_name = "staging" //used for resource tags
   project_name = "resident-information-api" //used for resource tags
