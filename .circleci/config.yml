@@ -183,20 +183,20 @@ workflows:
       - build-and-test:
           filters:
             branches:
-              only: master
+              only: PA-139-testing
       - assume-role-staging:
           context: api-assume-role-staging-context
           requires:
               - build-and-test
           filters:
             branches:
-              only: master
+              only: PA-139-testing
       - terraform-init-and-apply-to-staging:
           requires:
             - assume-role-staging
           filters:
             branches:
-              only: master
+              only: PA-139-testing
       - deploy-to-staging:
           requires:
             - assume-role-staging
