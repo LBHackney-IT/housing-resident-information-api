@@ -32,7 +32,7 @@ data "aws_vpc" "staging_vpc" {
     Name = "vpc-staging-apis-staging"
   }
 }
-data "aws_subnet_ids" "staging_private_subnets" {
+data "aws_subnet_ids" "staging" {
   vpc_id = data.aws_vpc.staging_vpc.id
   filter {
     name   = "tag:Type"
