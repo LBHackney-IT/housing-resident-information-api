@@ -84,7 +84,7 @@ data "aws_ssm_parameter" "uh_db_name" {
     name = "/uh-api/live-server/db_name"
 }
 
- module "dms_setup_production" {
+ module "dms_setup_existing_instance" {
    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_full_setup"
    environment_name = "production" //used for resource tags
    project_name = "resident-information-api" //used for resource tags
@@ -106,15 +106,9 @@ data "aws_ssm_parameter" "uh_db_name" {
    source_db_password = data.aws_ssm_parameter.uh_password.value
    source_db_server = data.aws_ssm_parameter.uh_hostname.value
    source_endpoint_ssl_mode = "none"
-   //replication instance set up -> IF SOURCE IS 'dms_full_setup'
-   allocated_storage = 20 //in GB
-   maintenance_window = "sun:07:00-sun:07:30"
-   replication_instance_class = "dms.t2.small"
-   replication_instance_identifier = "production-dms-instance"
-   vpc_name = "vpc-production-apis"
-   dms_instance_publicly_accessible = false
    //dms task set up
    migration_type = "full-load-and-cdc"
+   replication_instance_arn = "arn:aws:dms:eu-west-2:153306643385:rep:65CJ5HE2DMCUW5X6EPKTKUDVWA"
    replication_task_indentifier = "uh-api-dms-task"
    task_settings = file("${path.module}/task_settings.json")
    task_table_mappings = file("${path.module}/selection_rules.json")
