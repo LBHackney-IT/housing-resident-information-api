@@ -74,6 +74,23 @@ data "aws_ssm_parameter" "uh_hostname" {
 data "aws_ssm_parameter" "uh_postgres_hostname" {
    name = "/uh-api/production/postgres-hostname"
 }
+
+/*Target Endpoint*/
+module "target_dms_endpoint" {
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_endpoint"
+    database_name = "uh_mirror"
+    dms_endpoint_identifier = "target-uh-endpoint"
+    engine_name = "postgres"
+    database_port = 5303
+    db_username = data.aws_ssm_parameter.uh_postgres_username.value
+    db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
+    db_server = data.aws_ssm_parameter.uh_postgres_hostname.value
+    ssl_mode = "none"
+    endpoint_type = "target"
+    environment_name = "production"
+    project_name = "resident-information-api"
+}
+
 /*UHT credentials*/
 data "aws_ssm_parameter" "uht_db_name" {
     name = "/uh-api/live-server/uht_db_name"
@@ -84,6 +101,38 @@ data "aws_ssm_parameter" "uht_username" {
 data "aws_ssm_parameter" "uht_password" {
     name = "/uh-api/live-server/uht-password"
 }
+/*UHT Source endpoint*/
+module "uht_source_dms_endpoint" {
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_endpoint"
+    database_name = data.aws_ssm_parameter.uht_db_name
+    dms_endpoint_identifier = "source-uh-uht-endpoint"
+    engine_name = "sqlserver"
+    database_port = 1433
+    db_username = data.aws_ssm_parameter.uht_username.value
+    db_password = data.aws_ssm_parameter.uht_password.value
+    db_server = data.aws_ssm_parameter.uh_hostname.value
+    ssl_mode = "none"
+    endpoint_type = "source"
+    environment_name = "production"
+    project_name = "resident-information-api"
+}
+
+/*UHT replication task*/
+module "dms_uht_setup_production" {
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_replication_task"
+    environment_name = "production" //used for resource tags
+    project_name = "resident-information-api" //used for resource tags
+    //dms task set up
+    replication_instance_arn = "arn:aws:dms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rep:65CJ5HE2DMCUW5X6EPKTKUDVWA"
+    migration_type = "full-load-and-cdc"
+    replication_task_indentifier = "uh-uht-api-dms-task"
+    task_settings = file("${path.module}/task_settings.json")
+    task_table_mappings = file("${path.module}/uht_selection_rules.json")
+    //replication endpoints
+    source_endpoint_arn = module.uht_source_dms_endpoint.dms_endpoint_arn
+    target_endpoint_arn = module.target_dms_endpoint.dms_endpoint_arn
+}
+
 /*UHW credentials*/
 data "aws_ssm_parameter" "uhw_username" {
     name = "/uh-api/live-server/uhw-username"
@@ -94,68 +143,33 @@ data "aws_ssm_parameter" "uhw_password" {
 data "aws_ssm_parameter" "uhw_db_name" {
     name = "/uh-api/live-server/uhw_db_name"
 }
-/* UHT DMS setup */
- module "production_uht_dms_setup" {
-   source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
-   environment_name = "production" //used for resource tags
-   project_name = "resident-information-api" //used for resource tags
-   //target db for dms endpoint
-   target_db_name = "uh_mirror"
-   target_endpoint_identifier = "target-uh-endpoint"
-   target_db_engine_name = "postgres"
-   target_db_port = 5303
-   target_db_username = data.aws_ssm_parameter.uh_postgres_username.value
-   target_db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
-   target_db_server = data.aws_ssm_parameter.uh_postgres_hostname.value
-   target_endpoint_ssl_mode = "none"
-   //source db for dms endpoint
-   source_db_name = data.aws_ssm_parameter.uht_db_name.value
-   source_endpoint_identifier = "source-uht-endpoint"
-   source_db_engine_name = "sqlserver"
-   source_db_port = 1433
-   source_db_username = data.aws_ssm_parameter.uht_username.value
-   source_db_password = data.aws_ssm_parameter.uht_password.value
-   source_db_server = data.aws_ssm_parameter.uh_hostname.value
-   source_endpoint_ssl_mode = "none"
-   //dms task set up
-   migration_type = "full-load-and-cdc"
-   replication_instance_arn = "arn:aws:dms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rep:65CJ5HE2DMCUW5X6EPKTKUDVWA"
-   replication_task_indentifier = "uh-uht-api-dms-task"
-   task_settings = file("${path.module}/task_settings.json")
-   task_table_mappings = file("${path.module}/uht_selection_rules.json")
- }
-
-/* UHW DMS setup */
-module "production_uhw_dms_setup" {
-    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
+/*UHT Source endpoint*/
+module "uhw_source_dms_endpoint" {
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_endpoint"
+    database_name = data.aws_ssm_parameter.uhw_db_name
+    dms_endpoint_identifier = "source-uh-uhw-endpoint"
+    engine_name = "sqlserver"
+    database_port = 1433
+    db_username = data.aws_ssm_parameter.uhw_username.value
+    db_password = data.aws_ssm_parameter.uhw_password.value
+    db_server = data.aws_ssm_parameter.uh_hostname.value
+    ssl_mode = "none"
+    endpoint_type = "source"
+    environment_name = "production"
+    project_name = "resident-information-api"
+}
+/* UHW replication task */
+module "dms_uhw_setup" {
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_replication_task"
     environment_name = "production" //used for resource tags
     project_name = "resident-information-api" //used for resource tags
-    //task setup
-    migration_type = "full-load-and-cdc"
+    //dms task set up
     replication_instance_arn = "arn:aws:dms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rep:65CJ5HE2DMCUW5X6EPKTKUDVWA"
+    migration_type = "full-load-and-cdc"
     replication_task_indentifier = "uh-uhw-api-dms-task"
     task_settings = file("${path.module}/task_settings.json")
     task_table_mappings = file("${path.module}/uhw_selection_rules.json")
-
-    //source_endpoint_arn = module.source_dms_endpoint.dms_endpoint_arn
-    //target_endpoint_arn = module.target_dms_endpoint.dms_endpoint_arn
-
-    //target db for dms endpoint
-    target_db_name = "uh_mirror"
-    target_endpoint_identifier = "target-uh-endpoint"
-    target_db_engine_name = "postgres"
-    target_db_port = 5303
-    target_db_username = data.aws_ssm_parameter.uh_postgres_username.value
-    target_db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
-    target_db_server = data.aws_ssm_parameter.uh_postgres_hostname.value
-    target_endpoint_ssl_mode = "none"
-    //source db for dms endpoint
-    source_db_name = data.aws_ssm_parameter.uhw_db_name.value
-    source_endpoint_identifier = "source-uht-endpoint"
-    source_db_engine_name = "sqlserver"
-    source_db_port = 1433
-    source_db_username = data.aws_ssm_parameter.uhw_username.value
-    source_db_password = data.aws_ssm_parameter.uhw_password.value
-    source_db_server = data.aws_ssm_parameter.uh_hostname.value
-    source_endpoint_ssl_mode = "none"
+    //replication endpoints
+    source_endpoint_arn = module.uhw_source_dms_endpoint.dms_endpoint_arn
+    target_endpoint_arn = module.target_dms_endpoint.dms_endpoint_arn
 }
