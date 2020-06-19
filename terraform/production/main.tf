@@ -95,7 +95,7 @@ data "aws_ssm_parameter" "uhw_db_name" {
     name = "/uh-api/live-server/uhw_db_name"
 }
 /* UHT DMS setup */
- module "production_dms_setup" {
+ module "production_uht_dms_setup" {
    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
    environment_name = "production" //used for resource tags
    project_name = "resident-information-api" //used for resource tags
@@ -126,7 +126,7 @@ data "aws_ssm_parameter" "uhw_db_name" {
  }
 
 /* UHW DMS setup */
-module "production_dms_setup" {
+module "production_uhw_dms_setup" {
     source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
     environment_name = "production" //used for resource tags
     project_name = "resident-information-api" //used for resource tags
