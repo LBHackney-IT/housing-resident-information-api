@@ -100,37 +100,52 @@ data "aws_ssm_parameter" "uht_test_username" {
 data "aws_ssm_parameter" "uht_test_password" {
     name = "/uh-api/test-server/uht-password"
 }
+/* target enpoint */
+module "target_dms_endpoint" {
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_endpoint"
+    database_name = "uh_mirror"
+    dms_endpoint_identifier = "target-uh-test-endpoint"
+    engine_name = "postgres"
+    database_port = 5302
+    db_username = data.aws_ssm_parameter.uh_postgres_username.value //ensure you save your on-prem credentials to the Parameter store and reference it here
+    db_password = data.aws_ssm_parameter.uh_postgres_db_password.value //ensure you save your on-prem credentials to the Parameter store and reference it here
+    db_server = data.aws_ssm_parameter.uh_postgres_hostname.value
+    ssl_mode = "none"
+    endpoint_type = "target"
+    environment_name = "staging"
+    project_name = "resident-information-api"
+}
+
+/* UHT source enpoint */
+module "uht_source_dms_endpoint" {
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_endpoint"
+    database_name = "uhwtest"
+    dms_endpoint_identifier = "source-uh-uht-test-endpoint"
+    engine_name = "sqlserver"
+    database_port = 1433
+    db_username = data.aws_ssm_parameter.uht_test_username.value //ensure you save your on-prem credentials to the Parameter store and reference it here
+    db_password = data.aws_ssm_parameter.uht_test_password.value //ensure you save your on-prem credentials to the Parameter store and reference it here
+    db_server = data.aws_ssm_parameter.uh_test_hostname.value
+    ssl_mode = "none"
+    endpoint_type = "source"
+    environment_name = "staging"
+    project_name = "resident-information-api"
+}
 
 /* UHT DMS replication task */
-
 module "dms_uht_setup_staging" {
-  source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
-  environment_name = "staging" //used for resource tags
-  project_name = "resident-information-api" //used for resource tags
-  //target db for dms endpoint
-  target_db_name = "uh_mirror"
-  target_endpoint_identifier = "target-uh-test-endpoint"
-  target_db_engine_name = "postgres"
-  target_db_port = 5302
-  target_db_username = data.aws_ssm_parameter.uh_postgres_username.value
-  target_db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
-  target_db_server = data.aws_ssm_parameter.uh_postgres_hostname.value
-  target_endpoint_ssl_mode = "none"
-  //source db for dms endpoint
-  source_db_name = "uhttest"
-  source_endpoint_identifier = "source-uh-uht-test-endpoint"
-  source_db_engine_name = "sqlserver"
-  source_db_port = 1433
-  source_db_username = data.aws_ssm_parameter.uht_test_username.value //ensure you save your on-prem credentials to the Parameter store and reference it here
-  source_db_password = data.aws_ssm_parameter.uht_test_password.value //ensure you save your on-prem credentials to the Parameter store and reference it here
-  source_db_server = data.aws_ssm_parameter.uh_test_hostname.value
-  source_endpoint_ssl_mode = "none"
-  //dms task set up
-  replication_instance_arn = "arn:aws:dms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rep:DNTOW6TGQEGCAOWQMZYHQRTWAA"
-  migration_type = "full-load-and-cdc"
-  replication_task_indentifier = "uh-api-dms-task"
-  task_settings = file("${path.module}/task_settings.json")
-  task_table_mappings = file("${path.module}/uht_selection_rules.json")
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_replication_task"
+    environment_name = "staging" //used for resource tags
+    project_name = "resident-information-api" //used for resource tags
+    //dms task set up
+    replication_instance_arn = "arn:aws:dms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rep:DNTOW6TGQEGCAOWQMZYHQRTWAA"
+    migration_type = "full-load-and-cdc"
+    replication_task_indentifier = "uh-uht-api-dms-task"
+    task_settings = file("${path.module}/task_settings.json")
+    task_table_mappings = file("${path.module}/uhw_selection_rules.json")
+    //replication endpoints
+    source_endpoint_arn = module.uht_source_dms_endpoint.dms_endpoint_arn
+    target_endpoint_arn = module.target_dms_endpoint.dms_endpoint_arn
 }
 
 /* UHW Credentials*/
@@ -141,35 +156,34 @@ data "aws_ssm_parameter" "uhw_test_username" {
 data "aws_ssm_parameter" "uhw_test_password" {
     name = "/uh-api/test-server/uhw-password"
 }
+/* UHW source endpoint */
+module "uhw_source_dms_endpoint" {
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_endpoint"
+    database_name = "uhwtest"
+    dms_endpoint_identifier = "source-uh-uhw-test-endpoint"
+    engine_name = "sqlserver"
+    database_port = 1433
+    db_username = data.aws_ssm_parameter.uhw_test_username.value //ensure you save your on-prem credentials to the Parameter store and reference it here
+    db_password = data.aws_ssm_parameter.uhw_test_password.value //ensure you save your on-prem credentials to the Parameter store and reference it here
+    db_server = data.aws_ssm_parameter.uh_test_hostname.value
+    ssl_mode = "none"
+    endpoint_type = "source"
+    environment_name = "staging"
+    project_name = "resident-information-api"
+}
 /* UHW DMS replication task */
-
 module "dms_uhw_setup_staging" {
-    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
+    source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_replication_task"
     environment_name = "staging" //used for resource tags
     project_name = "resident-information-api" //used for resource tags
-    //target db for dms endpoint
-    target_db_name = "uh_mirror"
-    target_endpoint_identifier = "target-uh-test-endpoint"
-    target_db_engine_name = "postgres"
-    target_db_port = 5302
-    target_db_username = data.aws_ssm_parameter.uh_postgres_username.value
-    target_db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
-    target_db_server = data.aws_ssm_parameter.uh_postgres_hostname.value
-    target_endpoint_ssl_mode = "none"
-    //source db for dms endpoint
-    source_db_name = "uhwtest"
-    source_endpoint_identifier = "source-uh-uhw-test-endpoint"
-    source_db_engine_name = "sqlserver"
-    source_db_port = 1433
-    source_db_username = data.aws_ssm_parameter.uhw_test_username.value //ensure you save your on-prem credentials to the Parameter store and reference it here
-    source_db_password = data.aws_ssm_parameter.uhw_test_password.value //ensure you save your on-prem credentials to the Parameter store and reference it here
-    source_db_server = data.aws_ssm_parameter.uh_test_hostname.value
-    source_endpoint_ssl_mode = "none"
     //dms task set up
     replication_instance_arn = "arn:aws:dms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rep:DNTOW6TGQEGCAOWQMZYHQRTWAA"
     migration_type = "full-load-and-cdc"
     replication_task_indentifier = "uh-uhw-api-dms-task"
     task_settings = file("${path.module}/task_settings.json")
     task_table_mappings = file("${path.module}/uhw_selection_rules.json")
+    //replication endpoints
+    source_endpoint_arn = module.uhw_source_dms_endpoint.dms_endpoint_arn
+    target_endpoint_arn = module.target_dms_endpoint.dms_endpoint_arn
 }
 
