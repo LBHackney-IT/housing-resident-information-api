@@ -1,6 +1,6 @@
-# INSTRUCTIONS: 
-# 1) ENSURE YOU POPULATE THE LOCALS 
-# 2) ENSURE YOU REPLACE ALL INPUT PARAMETERS, THAT CURRENTLY STATE 'ENTER VALUE', WITH VALID VALUES 
+# INSTRUCTIONS:
+# 1) ENSURE YOU POPULATE THE LOCALS
+# 2) ENSURE YOU REPLACE ALL INPUT PARAMETERS, THAT CURRENTLY STATE 'ENTER VALUE', WITH VALID VALUES
 # 3) YOUR CODE WOULD NOT COMPILE IF STEP NUMBER 2 IS NOT PERFORMED!
 # 4) ENSURE YOU CREATE A BUCKET FOR YOUR STATE FILE AND YOU ADD THE NAME BELOW - MAINTAINING THE STATE OF THE INFRASTRUCTURE YOU CREATE IS ESSENTIAL - FOR APIS, THE BUCKETS ALREADY EXIST
 # 5) THE VALUES OF THE COMMON COMPONENTS THAT YOU WILL NEED ARE PROVIDED IN THE COMMENTS
@@ -19,7 +19,7 @@ locals {
 
 terraform {
   backend "s3" {
-    bucket  = "terraform-state-production-apis" 
+    bucket  = "terraform-state-production-apis"
     encrypt = true
     region  = "eu-west-2"
     key     = "services/uh-resident-information-api/state"
@@ -108,7 +108,7 @@ data "aws_ssm_parameter" "uh_db_name" {
    source_endpoint_ssl_mode = "none"
    //dms task set up
    migration_type = "full-load-and-cdc"
-   replication_instance_arn = "arn:aws:dms:eu-west-2:153306643385:rep:65CJ5HE2DMCUW5X6EPKTKUDVWA"
+   replication_instance_arn = "arn:aws:dms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rep:65CJ5HE2DMCUW5X6EPKTKUDVWA"
    replication_task_indentifier = "uh-api-dms-task"
    task_settings = file("${path.module}/task_settings.json")
    task_table_mappings = file("${path.module}/selection_rules.json")
