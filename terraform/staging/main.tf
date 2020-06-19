@@ -103,7 +103,7 @@ data "aws_ssm_parameter" "uht_test_password" {
 
 /* UHT DMS replication task */
 
-module "dms_setup_staging" {
+module "dms_uht_setup_staging" {
   source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
   environment_name = "staging" //used for resource tags
   project_name = "resident-information-api" //used for resource tags
@@ -143,7 +143,7 @@ data "aws_ssm_parameter" "uhw_test_password" {
 }
 /* UHW DMS replication task */
 
-module "dms_setup_staging" {
+module "dms_uhw_setup_staging" {
     source = "github.com/LBHackney-IT/aws-dms-terraform.git//dms_setup_existing_instance"
     environment_name = "staging" //used for resource tags
     project_name = "resident-information-api" //used for resource tags
