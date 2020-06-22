@@ -1,7 +1,7 @@
 using System;
-using UHResidentInformationAPI.V1.Domain;
 using FluentAssertions;
 using NUnit.Framework;
+using UHResidentInformationAPI.V1.Domain;
 
 namespace UHResidentInformationAPI.Tests.V1.Domain
 {

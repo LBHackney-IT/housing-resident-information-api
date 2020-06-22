@@ -1,7 +1,7 @@
-using UHResidentInformationAPI.V1.Factories;
-using UHResidentInformationAPI.V1.Infrastructure;
 using FluentAssertions;
 using NUnit.Framework;
+using UHResidentInformationAPI.V1.Factories;
+using UHResidentInformationAPI.V1.Infrastructure;
 
 namespace UHResidentInformationAPI.Tests.V1.Factories
 {

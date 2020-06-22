@@ -1,7 +1,7 @@
 using System.Linq;
+using NUnit.Framework;
 using UHResidentInformationAPI.Tests.V1.Helper;
 using UHResidentInformationAPI.V1.Infrastructure;
-using NUnit.Framework;
 
 namespace UHResidentInformationAPI.Tests.V1.Infrastructure
 {

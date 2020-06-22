@@ -1,5 +1,5 @@
-using UHResidentInformationAPI.V1.Boundary;
 using Microsoft.Extensions.HealthChecks;
+using UHResidentInformationAPI.V1.Boundary;
 
 namespace UHResidentInformationAPI.V1.UseCase
 {

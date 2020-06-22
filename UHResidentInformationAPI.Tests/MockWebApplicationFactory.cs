@@ -1,11 +1,11 @@
 using System.Data.Common;
-using UHResidentInformationAPI;
-using UHResidentInformationAPI.V1.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UHResidentInformationAPI;
+using UHResidentInformationAPI.V1.Infrastructure;
 
 namespace UHResidentInformationAPI.Tests
 {

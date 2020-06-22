@@ -1,6 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
