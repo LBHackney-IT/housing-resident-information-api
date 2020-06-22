@@ -4,11 +4,11 @@ using UHResidentInformationAPI.V1.Infrastructure;
 
 namespace UHResidentInformationAPI.V1.Gateways
 {
-    public class ExampleGateway : IExampleGateway
+    public class UHGateway : IUHGateway
     {
         private readonly DatabaseContext _databaseContext;
 
-        public ExampleGateway(DatabaseContext databaseContext)
+        public UHGateway(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
