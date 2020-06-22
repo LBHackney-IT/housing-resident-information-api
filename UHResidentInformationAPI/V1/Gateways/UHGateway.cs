@@ -6,20 +6,13 @@ namespace UHResidentInformationAPI.V1.Gateways
 {
     public class UHGateway : IUHGateway
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly UHContext _UHContext;
 
-        public UHGateway(DatabaseContext databaseContext)
+        public UHGateway(UHContext UHContext)
         {
-            _databaseContext = databaseContext;
+            _UHContext = UHContext;
         }
 
-        public Entity GetEntityById(int id)
-        {
-            var result = _databaseContext.DatabaseEntities.Find(id);
-
-            return (result != null) ?
-                result.ToDomain() :
-                null;
-        }
+        
     }
 }

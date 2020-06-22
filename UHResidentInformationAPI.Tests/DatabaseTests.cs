@@ -9,17 +9,17 @@ namespace UHResidentInformationAPI.Tests
     public class DatabaseTests
     {
         private IDbContextTransaction _transaction;
-        protected DatabaseContext DatabaseContext { get; private set; }
+        protected UHContext UHContext { get; private set; }
 
         [SetUp]
         public void RunBeforeAnyTests()
         {
             var builder = new DbContextOptionsBuilder();
             builder.UseNpgsql(ConnectionString.TestDatabase());
-            DatabaseContext = new DatabaseContext(builder.Options);
+            UHContext = new UHContext(builder.Options);
 
-            DatabaseContext.Database.EnsureCreated();
-            _transaction = DatabaseContext.Database.BeginTransaction();
+            UHContext.Database.EnsureCreated();
+            _transaction = UHContext.Database.BeginTransaction();
         }
 
         [TearDown]

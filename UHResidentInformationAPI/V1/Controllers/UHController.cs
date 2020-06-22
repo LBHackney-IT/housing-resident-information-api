@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UHResidentInformationAPI.V1.Boundary.Responses;
+using UHResidentInformationAPI.V1.UseCase.Interfaces;
 
 namespace UHResidentInformationAPI.V1.Controllers
 {
@@ -8,12 +11,21 @@ namespace UHResidentInformationAPI.V1.Controllers
     [Produces("application/json")]
     public class UHController : BaseController
     {
-        // Declare private Use Case fields
-
-        public UHController()
+        private IGetAllResidentsUseCase _getAllResidentsUseCase;
+        private IGetEntityByIdUseCase _getEntityByIdUseCase;
+        public UHController(IGetAllResidentsUseCase getAllResidentsUseCase, IGetEntityByIdUseCase getEntityByIdUseCase)
         {
-            //Pass in relevant Use Cases as part of the constructor
+            _getAllResidentsUseCase = getAllResidentsUseCase;
+            _getEntityByIdUseCase = getEntityByIdUseCase;
+
         }
+        /// <summary>
+        /// Returns list of contacts who share the query search parameter
+        /// </summary>
+        /// <response code="200">Success. Returns a list of matching residents information</response>
+        /// <response code="400">Invalid Query Parameter.</response>
+        [ProducesResponseType(typeof(ResidentInformationList), StatusCodes.Status200OK)]
+        [HttpGet]
 
         [HttpGet]
         public IActionResult ListRecords()

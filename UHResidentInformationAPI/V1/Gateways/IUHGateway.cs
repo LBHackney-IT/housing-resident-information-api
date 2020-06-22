@@ -4,6 +4,6 @@ namespace UHResidentInformationAPI.V1.Gateways
 {
     public interface IUHGateway
     {
-        Entity GetEntityById(int id);
+        // Entity GetEntityById();
     }
 }

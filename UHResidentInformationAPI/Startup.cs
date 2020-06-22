@@ -112,7 +112,7 @@ namespace UHResidentInformationAPI
         {
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-            services.AddDbContext<DatabaseContext>(
+            services.AddDbContext<UHContext>(
                 opt => opt.UseNpgsql(connectionString));
         }
 
