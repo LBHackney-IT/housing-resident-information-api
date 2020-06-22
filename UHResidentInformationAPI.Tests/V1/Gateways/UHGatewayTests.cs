@@ -8,21 +8,21 @@ using UHResidentInformationAPI.V1.Gateways;
 namespace UHResidentInformationAPI.Tests.V1.Gateways
 {
     [TestFixture]
-    public class ExampleGatewayTests : DatabaseTests
+    public class UHGatewayTests : DatabaseTests
     {
         private Fixture _fixture = new Fixture();
-        private ExampleGateway _classUnderTest;
+        private UHGateway _classUnderTest;
 
         [SetUp]
         public void Setup()
         {
-            _classUnderTest = new ExampleGateway(DatabaseContext);
+            _classUnderTest = new UHGateway(DatabaseContext);
         }
 
         [Test]
         public void GatewayImplementsBoundaryInterface()
         {
-            Assert.NotNull(_classUnderTest is IExampleGateway);
+            Assert.NotNull(_classUnderTest is IUHGateway);
         }
 
         [Test]

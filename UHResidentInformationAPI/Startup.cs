@@ -118,7 +118,7 @@ namespace UHResidentInformationAPI
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            services.AddSingleton<IExampleGateway, ExampleGateway>();
+            services.AddSingleton<IUHGateway, UHGateway>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
