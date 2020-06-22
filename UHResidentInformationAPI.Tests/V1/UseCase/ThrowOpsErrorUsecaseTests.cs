@@ -1,6 +1,6 @@
-using UHResidentInformationAPI.V1.UseCase;
 using FluentAssertions;
 using NUnit.Framework;
+using UHResidentInformationAPI.V1.UseCase;
 
 namespace UHResidentInformationAPI.Tests.V1.UseCase
 {
