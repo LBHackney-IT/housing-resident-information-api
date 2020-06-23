@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UHResidentInformationAPI.V1.Boundary.Requests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
 using UHResidentInformationAPI.V1.UseCase.Interfaces;
 
@@ -7,7 +8,7 @@ namespace UHResidentInformationAPI.V1.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v1/resident-housing-information")]
+    [Route("api/v1/households")]
     [Produces("application/json")]
     public class UHController : BaseController
     {
@@ -28,9 +29,9 @@ namespace UHResidentInformationAPI.V1.Controllers
         [HttpGet]
 
         [HttpGet]
-        public IActionResult ListRecords()
+        public IActionResult ListRecords([FromQuery]ResidentQueryParam rqp)
         {
-            return null;
+            return Ok(_getAllResidentsUseCase.Execute(rqp)) ;
         }
 
         [HttpGet]
