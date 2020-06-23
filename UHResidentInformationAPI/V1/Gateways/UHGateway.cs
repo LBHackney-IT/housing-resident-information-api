@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using UHResidentInformationAPI.V1.Boundary.Responses;
 using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Infrastructure;
@@ -6,20 +8,18 @@ namespace UHResidentInformationAPI.V1.Gateways
 {
     public class UHGateway : IUHGateway
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly UHContext _uHContext;
 
-        public UHGateway(DatabaseContext databaseContext)
+        public UHGateway(UHContext uHContext)
         {
-            _databaseContext = databaseContext;
+            _uHContext = uHContext;
         }
 
-        public Entity GetEntityById(int id)
+        public List<ResidentInformation> GetAllResidents(string houseReference, string residentName, string address)
         {
-            var result = _databaseContext.DatabaseEntities.Find(id);
-
-            return (result != null) ?
-                result.ToDomain() :
-                null;
+            return new List<ResidentInformation>();
         }
+
+
     }
 }
