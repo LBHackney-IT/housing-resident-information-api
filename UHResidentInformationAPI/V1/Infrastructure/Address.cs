@@ -15,11 +15,19 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [MaxLength(9)]
         public int houseRef { get; set; } 
 
-         [Column("address1")]
+        [Column("address1")]
         [MaxLength(9)]
         public int addressLine1 { get; set; } 
 
-         [Column("post_code")]
+        [Column("address2")]
+        [MaxLength(9)]
+        public int addressLine2 { get; set; } 
+
+        [Column("address3")]
+        [MaxLength(9)]
+        public int addressLine3 { get; set; } 
+
+        [Column("post_code")]
         [MaxLength(9)]
         public int postCode { get; set; } 
     }
