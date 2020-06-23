@@ -6,7 +6,7 @@ namespace UHResidentInformationAPI.V1.Gateways
 {
     public interface IUHGateway
     {
-        List<ResidentInformation> GetAllResidents(string houseReference, string residentName, string address);
+        List<ResidentInformation> GetAllResidents(string houseReference, string firstName, string lastName, string address);
         ResidentInformation GetResidentById(string houseReference, int personReference);
     }
 }

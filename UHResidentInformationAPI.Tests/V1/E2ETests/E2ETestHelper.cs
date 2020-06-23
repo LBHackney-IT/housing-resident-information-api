@@ -11,11 +11,11 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
 {
     public static class E2ETestHelpers
     {
-        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string houseRef, int personNo, string firstname = null, string lastname = null, string postcode = null, string addressLines = null)
+        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string houseRef = null, int? personNo = null, string firstname = null, string lastname = null, string postcode = null, string addressLines = null)
         {
             var person = TestHelper.CreateDatabasePersonEntity(firstname, lastname);
-            person.HouseRef = houseRef;
-            person.PersonNo = personNo;
+            person.HouseRef = houseRef ?? person.HouseRef;
+            person.PersonNo = personNo ?? person.PersonNo;
 
             var addedPerson = context.Persons.Add(person);
             context.SaveChanges();
@@ -60,6 +60,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                 },
                 Address = new Address
                 {
+                    PropertyRef = address.PropertyRef,
                     AddressLine1 = address.AddressLine1,
                     PostCode = address.PostCode
                 },

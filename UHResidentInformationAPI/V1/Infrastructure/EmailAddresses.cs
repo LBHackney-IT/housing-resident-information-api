@@ -7,10 +7,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("ccemailaddress")]
     public class EmailAddresses
     {
-        [Column("emailid")]
-        [Key]
-        public int EmailId { get; set; }
-
         [Column("contactno")]
         public int ContactID { get; set; }
 
@@ -29,6 +25,10 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [Column("defualt")]
         [MaxLength(5)]
         public string Default { get; set; }
+
+        [Column("emailid")]
+        [Key]
+        public int EmailId { get; set; }
 
         [Column("moddate")]
         public DateTime DateModified { get; set; }
