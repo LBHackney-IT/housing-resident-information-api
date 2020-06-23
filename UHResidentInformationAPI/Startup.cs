@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using UHResidentInformationAPI.V1.Gateways;
-using UHResidentInformationAPI.V1.Infrastructure;
-using UHResidentInformationAPI.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using UHResidentInformationAPI.V1.Gateways;
+using UHResidentInformationAPI.V1.Infrastructure;
+using UHResidentInformationAPI.Versioning;
 
 namespace UHResidentInformationAPI
 {
@@ -112,13 +112,13 @@ namespace UHResidentInformationAPI
         {
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-            services.AddDbContext<DatabaseContext>(
+            services.AddDbContext<UHContext>(
                 opt => opt.UseNpgsql(connectionString));
         }
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            services.AddSingleton<IExampleGateway, ExampleGateway>();
+            services.AddSingleton<IUHGateway, UHGateway>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)

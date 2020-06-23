@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using UHResidentInformationAPI.V1.Controllers;
-using UHResidentInformationAPI.V1.UseCase;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
+using UHResidentInformationAPI.V1.Controllers;
+using UHResidentInformationAPI.V1.UseCase;
 
 namespace UHResidentInformationAPI.Tests.V1.Controllers
 {

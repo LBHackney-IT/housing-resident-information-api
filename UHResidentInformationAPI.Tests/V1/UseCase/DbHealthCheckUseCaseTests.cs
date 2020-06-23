@@ -1,10 +1,10 @@
 using System.Threading;
-using UHResidentInformationAPI.V1.UseCase;
 using Bogus;
 using FluentAssertions;
 using Microsoft.Extensions.HealthChecks;
 using Moq;
 using NUnit.Framework;
+using UHResidentInformationAPI.V1.UseCase;
 
 namespace UHResidentInformationAPI.Tests.V1.UseCase
 {
