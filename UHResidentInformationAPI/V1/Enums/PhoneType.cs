@@ -1,4 +1,4 @@
-namespace UHResidentInformationAPI.V1.Boundary.Responses
+namespace UHResidentInformationAPI.V1.Enums
 {
     public enum PhoneType
     {
