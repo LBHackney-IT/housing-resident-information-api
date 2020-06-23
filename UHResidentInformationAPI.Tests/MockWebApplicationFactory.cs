@@ -1,11 +1,11 @@
 using System.Data.Common;
-using UHResidentInformationAPI;
-using UHResidentInformationAPI.V1.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UHResidentInformationAPI;
+using UHResidentInformationAPI.V1.Infrastructure;
 
 namespace UHResidentInformationAPI.Tests
 {
@@ -27,11 +27,12 @@ namespace UHResidentInformationAPI.Tests
             {
                 var dbBuilder = new DbContextOptionsBuilder();
                 dbBuilder.UseNpgsql(_connection);
-                var context = new DatabaseContext(dbBuilder.Options);
+
+                var context = new UHContext(dbBuilder.Options);
                 services.AddSingleton(context);
 
                 var serviceProvider = services.BuildServiceProvider();
-                var dbContext = serviceProvider.GetRequiredService<DatabaseContext>();
+                var dbContext = serviceProvider.GetRequiredService<UHContext>();
 
                 dbContext.Database.EnsureCreated();
             });

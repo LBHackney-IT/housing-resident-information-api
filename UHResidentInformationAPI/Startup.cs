@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using UHResidentInformationAPI.V1.Gateways;
-using UHResidentInformationAPI.V1.Infrastructure;
-using UHResidentInformationAPI.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +14,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using UHResidentInformationAPI.V1.Gateways;
+using UHResidentInformationAPI.V1.Infrastructure;
+using UHResidentInformationAPI.V1.UseCase;
+using UHResidentInformationAPI.V1.UseCase.Interfaces;
+using UHResidentInformationAPI.Versioning;
 
 namespace UHResidentInformationAPI
 {
@@ -30,7 +32,7 @@ namespace UHResidentInformationAPI
         public IConfiguration Configuration { get; }
         private static List<ApiVersionDescription> _apiVersions { get; set; }
         //TODO update the below to the name of your API
-        private const string ApiName = "Your API Name";
+        private const string ApiName = "UH Resident Information API";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public static void ConfigureServices(IServiceCollection services)
@@ -112,19 +114,19 @@ namespace UHResidentInformationAPI
         {
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-            services.AddDbContext<DatabaseContext>(
+            services.AddDbContext<UHContext>(
                 opt => opt.UseNpgsql(connectionString));
         }
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            services.AddSingleton<IExampleGateway, ExampleGateway>();
+            services.AddSingleton<IUHGateway, UHGateway>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
         {
-            if (services == null) throw new ArgumentNullException(nameof(services));
-            // your usecases here
+            services.AddScoped<IGetAllResidentsUseCase, GetAllResidentsUseCase>();
+            services.AddScoped<IGetEntityByIdUseCase, IGetEntityByIdUseCase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

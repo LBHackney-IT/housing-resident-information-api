@@ -1,28 +1,39 @@
 using System;
-using UHResidentInformationAPI.V1.Domain;
+using AutoFixture;
 using FluentAssertions;
 using NUnit.Framework;
+using UHResidentInformationAPI.V1.Domain;
 
 namespace UHResidentInformationAPI.Tests.V1.Domain
 {
     [TestFixture]
     public class EntityTests
     {
-        [Test]
-        public void EntitiesHaveAnId()
+        private Fixture _fixture;
+        private ResidentInformation _entity;
+
+        [SetUp]
+        public void Setup()
         {
-            var entity = new Entity();
-            entity.Id.Should().BeGreaterOrEqualTo(0);
+            _fixture = new Fixture();
+            _entity = new ResidentInformation();
+        }
+        [Test]
+        public void EntitiesHaveAnHouseReference()
+        {
+            var houseRef = _fixture.Create<string>();
+            _entity.HouseReference = houseRef;
+
+            _entity.HouseReference.Should().Be(houseRef);
         }
 
         [Test]
-        public void EntitiesHaveACreatedAt()
+        public void EntitiesHaveAnPersonNumber()
         {
-            var entity = new Entity();
-            var date = new DateTime(2019, 02, 21);
-            entity.CreatedAt = date;
+            var personNo = _fixture.Create<int>();
+            _entity.PersonNumber = personNo;
 
-            entity.CreatedAt.Should().BeSameDateAs(date);
+            _entity.PersonNumber.Should().Be(personNo);
         }
     }
 }

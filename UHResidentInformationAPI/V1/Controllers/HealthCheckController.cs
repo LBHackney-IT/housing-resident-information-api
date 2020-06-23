@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UHResidentInformationAPI.V1.UseCase;
 using Microsoft.AspNetCore.Mvc;
+using UHResidentInformationAPI.V1.UseCase;
 
 namespace UHResidentInformationAPI.V1.Controllers
 {

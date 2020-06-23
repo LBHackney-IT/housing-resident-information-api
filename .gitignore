@@ -34,6 +34,7 @@ ipch/
 *.vssscc
 *.bak.*
 *.bak
+*.launchSettings
 
 #Tools
 _ReSharper.*
@@ -59,7 +60,7 @@ bin/
 .idea/
 tmp/
 .vs/
-/uh-resident-information-api.Tests/Properties/launchSettings.json
 
 .fake
 .ionide
+.vscode

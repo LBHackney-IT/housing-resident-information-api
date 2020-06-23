@@ -1,21 +1,23 @@
 using System.Net.Http;
-using UHResidentInformationAPI.V1.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
 using NUnit.Framework;
+using UHResidentInformationAPI.V1.Infrastructure;
 
 namespace UHResidentInformationAPI.Tests
 {
-    public class IntegrationTests<TStartup> where TStartup : class
+    [NonParallelizable]
+    [TestFixture]
+    public class EndToEndTests<TStartup> where TStartup : class
     {
         protected HttpClient Client { get; private set; }
-        protected DatabaseContext DatabaseContext { get; private set; }
 
         private MockWebApplicationFactory<TStartup> _factory;
         private NpgsqlConnection _connection;
         private IDbContextTransaction _transaction;
         private DbContextOptionsBuilder _builder;
+        protected UHContext UHContext { get; private set; }
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -28,17 +30,18 @@ namespace UHResidentInformationAPI.Tests
 
             _builder = new DbContextOptionsBuilder();
             _builder.UseNpgsql(_connection);
-
         }
 
         [SetUp]
         public void BaseSetup()
         {
+            UHContext = new UHContext(_builder.Options);
+            UHContext.Database.EnsureCreated();
+
             _factory = new MockWebApplicationFactory<TStartup>(_connection);
             Client = _factory.CreateClient();
-            DatabaseContext = new DatabaseContext(_builder.Options);
-            DatabaseContext.Database.EnsureCreated();
-            _transaction = DatabaseContext.Database.BeginTransaction();
+
+            _transaction = UHContext.Database.BeginTransaction();
         }
 
         [TearDown]
