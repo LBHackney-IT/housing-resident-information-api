@@ -29,9 +29,9 @@ namespace UHResidentInformationAPI.V1.Controllers
         [HttpGet]
 
         [HttpGet]
-        public IActionResult ListRecords([FromQuery]ResidentQueryParam rqp)
+        public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp)
         {
-            return Ok(_getAllResidentsUseCase.Execute(rqp)) ;
+            return Ok(_getAllResidentsUseCase.Execute(rqp));
         }
 
         [HttpGet]
