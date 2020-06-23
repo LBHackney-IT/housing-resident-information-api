@@ -10,7 +10,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
     [TestFixture]
     public class UHGatewayTests : DatabaseTests
     {
-        private Fixture _fixture = new Fixture();
+        //private Fixture _fixture = new Fixture();
         private UHGateway _classUnderTest;
 
         [SetUp]

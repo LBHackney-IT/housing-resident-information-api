@@ -16,7 +16,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [MaxLength(80)]
         public string Number { get; set; }
 
-        
+
         [Column("PhoneType")]
         [MaxLength(80)]
         public string Type { get; set; }
@@ -24,6 +24,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [Column("ModDate")]
         [MaxLength(80)]
         public DateTime DateCreated { get; set; }
-        
+
     }
 }

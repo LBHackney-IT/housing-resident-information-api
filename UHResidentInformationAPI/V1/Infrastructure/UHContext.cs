@@ -13,6 +13,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public DbSet<Address> Addresses { get; set; }
 
         public DbSet<EmailAddresses> EmailAddresses { get; set; }
-    
+
     }
 }
