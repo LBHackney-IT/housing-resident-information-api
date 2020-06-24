@@ -21,7 +21,6 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
-        [Ignore("TO DO")]
         public async Task IfNoQueryParametersReturnsAllResidentRecordsFromUH()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
@@ -123,11 +122,11 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
         [Ignore("TO DO")]
         public async Task UsingQueryParametersReturnsAPaginatedResponse()
         {
-            var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", firstname: "ciasom", lastname: "shape", id: 1);
-            var nonmatchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", lastname: "shap", id: 2);
-            var matchingResident5 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", id: 5);
-            var matchingResident4 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", id: 4);
-            var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, id: 3);
+            var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", firstname: "ciasom", lastname: "shape", id: "1");
+            var nonmatchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", lastname: "shap", id: "2");
+            var matchingResident5 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", id: "5");
+            var matchingResident4 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", id: "4");
+            var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, id: "3");
 
             var uri = new Uri("api/v1/households?postcode=e21rr&cursor=2&limit=2", UriKind.Relative);
             var response = Client.GetAsync(uri);
