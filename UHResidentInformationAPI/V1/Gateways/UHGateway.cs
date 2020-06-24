@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using UHResidentInformationAPI.V1.Boundary.Responses;
 using UHResidentInformationAPI.V1.Domain;
-using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Infrastructure;
 
 namespace UHResidentInformationAPI.V1.Gateways
@@ -15,11 +13,15 @@ namespace UHResidentInformationAPI.V1.Gateways
             _uHContext = uHContext;
         }
 
+
         public List<ResidentInformation> GetAllResidents(string houseReference, string residentName, string address)
         {
             return new List<ResidentInformation>();
         }
 
-
+        public ResidentInformation GetResidentById(string houseReference, int personReference)
+        {
+            return null;
+        }
     }
 }

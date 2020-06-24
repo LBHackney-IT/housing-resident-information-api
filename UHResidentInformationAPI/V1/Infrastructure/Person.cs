@@ -10,11 +10,11 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [Column("house_ref")]
         [MaxLength(16)]
         [Key]
-        public int houseRef { get; set; }
+        public string houseRef { get; set; }
 
         [Column("person_no")]
         [MaxLength(8)]
-        public string personNo { get; set; }
+        public int personNo { get; set; }
 
         [Column("title")]
         [MaxLength(8)]
@@ -30,7 +30,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
 
         [Column("ni_no")]
         [MaxLength(10)]
-        public int NINumber { get; set; }
+        public string NINumber { get; set; }
 
         [Column("dob")]
         public DateTime DateOfBirth { get; set; }
