@@ -30,7 +30,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
 
         [Column("ni_no")]
         [MaxLength(10)]
-        public int NINumber { get; set; }
+        public string NINumber { get; set; }
 
         [Column("dob")]
         public DateTime DateOfBirth { get; set; }
