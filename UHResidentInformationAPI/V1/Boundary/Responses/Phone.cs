@@ -1,3 +1,5 @@
+using UHResidentInformationAPI.V1.Enums;
+
 namespace UHResidentInformationAPI.V1.Boundary.Responses
 {
     public class Phone
