@@ -16,7 +16,7 @@ namespace UHResidentInformationAPI.Tests.V1.Domain
         public void Setup()
         {
             _fixture = new Fixture();
-            _entity =  new ResidentInformation();
+            _entity = new ResidentInformation();
         }
         [Test]
         public void EntitiesHaveAnHouseReference()
