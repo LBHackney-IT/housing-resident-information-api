@@ -16,15 +16,15 @@ namespace UHResidentInformationAPI.V1.Domain
         public string UPRN { get; set; }
         public List<Phone> PhoneNumber { get; set; }
         public List<Email> Email { get; set; }
-        public Address Address { get; set; }
+        public Address ResidentAddress { get; set; }
     }
 
     public class Address
     {
+        public string PropertyRef { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
-        public string AddressLine4 { get; set; }
         public string PostCode { get; set; }
     }
 
