@@ -13,6 +13,6 @@ namespace UHResidentInformationAPI.V1.Boundary.Responses
 
         public string DateOfBirth { get; set; }
         public List<Phone> PhoneNumber { get; set; }
-        public List<Address> AddressList { get; set; }
+        public Address ResidentAddress { get; set; }
     }
 }

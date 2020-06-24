@@ -10,13 +10,15 @@ namespace UHResidentInformationAPI.V1.Factories
         {
             return new ResidentInformation
             {
-                HouseReference = databaseEntity.houseRef,
-                PersonNumber = databaseEntity.personNo,
+                HouseReference = databaseEntity.HouseRef,
+                PersonNumber = databaseEntity.PersonNo,
                 FirstName = databaseEntity.FirstName,
                 LastName = databaseEntity.LastName,
                 DateOfBirth = databaseEntity.DateOfBirth.ToString("O", CultureInfo.InvariantCulture),
                 NINumber = databaseEntity.NINumber
             };
         }
+
+        
     }
 }

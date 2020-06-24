@@ -9,7 +9,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
 {
     public static class E2ETestHelpers
     {
-        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, int? id = null, string firstname = null, string lastname = null, string postcode = null, string addressLines = null)
+        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string id = null, string firstname = null, string lastname = null, string postcode = null, string addressLines = null)
         {
             var person = TestHelper.CreateDatabasePersonEntity(firstname, lastname, id);
             var addedPerson = context.Persons.Add(person);
