@@ -8,28 +8,28 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     public class Person
     {
         [Column("house_ref")]
-        [MaxLength(16)]
-        [Key]
-        public int HouseRef { get; set; }
+        [MaxLength(10)]
+
+        public string HouseRef { get; set; }
 
         [Column("person_no")]
-        [MaxLength(8)]
+        [MaxLength(32)]
         public int PersonNo { get; set; }
 
         [Column("title")]
-        [MaxLength(8)]
+        [MaxLength(10)]
         public string Title { get; set; }
 
         [Column("forename")]
-        [MaxLength(30)]
+        [MaxLength(24)]
         public string FirstName { get; set; }
 
         [Column("surname")]
-        [MaxLength(30)]
+        [MaxLength(20)]
         public string LastName { get; set; }
 
         [Column("ni_no")]
-        [MaxLength(10)]
+        [MaxLength(12)]
         public string NINumber { get; set; }
 
         [Column("dob")]

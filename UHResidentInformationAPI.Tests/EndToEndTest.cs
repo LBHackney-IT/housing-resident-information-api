@@ -11,16 +11,13 @@ namespace UHResidentInformationAPI.Tests
     [TestFixture]
     public class EndToEndTests<TStartup> where TStartup : class
     {
-        private HttpClient _client;
-        private UHContext _uHContext;
+        protected HttpClient Client { get; private set; }
 
         private MockWebApplicationFactory<TStartup> _factory;
         private NpgsqlConnection _connection;
         private IDbContextTransaction _transaction;
         private DbContextOptionsBuilder _builder;
-
-        protected HttpClient Client => _client;
-        protected UHContext UHContext => _uHContext;
+        protected UHContext UHContext { get; private set; }
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -38,17 +35,19 @@ namespace UHResidentInformationAPI.Tests
         [SetUp]
         public void BaseSetup()
         {
+            UHContext = new UHContext(_builder.Options);
+            UHContext.Database.EnsureCreated();
+
             _factory = new MockWebApplicationFactory<TStartup>(_connection);
-            _client = _factory.CreateClient();
-            _uHContext = new UHContext(_builder.Options);
-            _uHContext.Database.EnsureCreated();
+            Client = _factory.CreateClient();
+
             _transaction = UHContext.Database.BeginTransaction();
         }
 
         [TearDown]
         public void BaseTearDown()
         {
-            _client.Dispose();
+            Client.Dispose();
             _factory.Dispose();
             _transaction.Rollback();
             _transaction.Dispose();

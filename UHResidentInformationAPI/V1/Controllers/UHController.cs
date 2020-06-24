@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UHResidentInformationAPI.V1.Boundary.Requests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
+using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.UseCase.Interfaces;
 
 namespace UHResidentInformationAPI.V1.Controllers
@@ -18,7 +19,6 @@ namespace UHResidentInformationAPI.V1.Controllers
         {
             _getAllResidentsUseCase = getAllResidentsUseCase;
             _getEntityByIdUseCase = getEntityByIdUseCase;
-
         }
         /// <summary>
         /// Returns list of contacts who share the query search parameter
@@ -26,16 +26,22 @@ namespace UHResidentInformationAPI.V1.Controllers
         /// <response code="200">Success. Returns a list of matching residents information</response>
         /// <response code="400">Invalid Query Parameter.</response>
         [ProducesResponseType(typeof(ResidentInformationList), StatusCodes.Status200OK)]
-        [HttpGet]
 
         [HttpGet]
         public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp)
         {
-            return Ok(_getAllResidentsUseCase.Execute(rqp));
+            try
+            {
+                return Ok(_getAllResidentsUseCase.Execute(rqp));
+            }
+            catch (InvalidQueryParameterException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet]
-        // [Route()]
+        [Route("/people")]
         // Add route for view endpoint
         public IActionResult ViewRecord()
         {

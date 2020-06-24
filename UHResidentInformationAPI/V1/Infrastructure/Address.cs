@@ -7,28 +7,20 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     public class Address
     {
         [Column("prop_ref")]
-        [MaxLength(9)]
+        [MaxLength(12)]
         [Key]
-        public int PropertyRef { get; set; }
+        public string PropertyRef { get; set; }
 
         [Column("house_ref")]
-        [MaxLength(9)]
-        public int HouseRef { get; set; }
+        [MaxLength(10)]
+        public string HouseRef { get; set; }
 
         [Column("address1")]
-        [MaxLength(9)]
+        [MaxLength(255)]
         public string AddressLine1 { get; set; }
 
-        [Column("address2")]
-        [MaxLength(9)]
-        public string AddressLine2 { get; set; }
-
-        [Column("address3")]
-        [MaxLength(9)]
-        public string AddressLine3 { get; set; }
-
         [Column("post_code")]
-        [MaxLength(9)]
+        [MaxLength(10)]
         public string PostCode { get; set; }
     }
 }

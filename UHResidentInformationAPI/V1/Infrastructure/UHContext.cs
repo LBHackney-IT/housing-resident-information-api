@@ -14,5 +14,22 @@ namespace UHResidentInformationAPI.V1.Infrastructure
 
         public DbSet<EmailAddresses> EmailAddresses { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+            modelBuilder.Entity<Person>()
+                    .HasKey(person => new
+                    {
+                        person.HouseRef,
+                        person.PersonNo
+                    });
+
+            modelBuilder.Entity<TelephoneNumber>()
+                .HasOne<Person>()
+                .WithMany()
+                .HasForeignKey(t => t.ContactID)
+                .HasPrincipalKey(p => p.PersonNo);
+        }
+
     }
 }

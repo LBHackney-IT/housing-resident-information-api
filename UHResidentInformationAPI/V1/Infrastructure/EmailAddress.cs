@@ -4,24 +4,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("CCEmail")]
+    [Table("ccemailaddress")]
     public class EmailAddresses
     {
-        [Column("ContactNo")]
+        [Column("emailid")]
         [MaxLength(9)]
         [Key]
+        public int EmailId { get; set; }
+
+        [Column("contactno")]
+        [MaxLength(9)]
         public int ContactID { get; set; }
 
-        [Column("Email")]
-        [MaxLength(9)]
-        public int EmailAddress { get; set; }
+        [Column("email")]
+        [MaxLength(50)]
+        public string EmailAddress { get; set; }
 
-        [Column("EmailType")]
-        [MaxLength(9)]
-        public int EmailType { get; set; }
+        [Column("emailtype")]
+        [MaxLength(5)]
+        public string EmailType { get; set; }
 
-        [Column("ModDate")]
-        [MaxLength(9)]
+        [Column("moddate")]
         public DateTime DateModified { get; set; }
 
     }
