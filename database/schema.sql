@@ -1,4 +1,3 @@
-
 CREATE TABLE cccontactlink(
 	ContactNo int NOT NULL,
 	LinkType varchar(40) NOT NULL,
@@ -43,7 +42,8 @@ CREATE TABLE cccontactlink(
 	source char(10) NULL,
 	MODDATE Timestamp(3) NULL,
 	MODUSER varchar(20) NULL,
-	MODTYPE varchar(1) NOT NULL
+	MODTYPE varchar(1) NOT NULL DEFAULT '0',
+	CONSTRAINT PK_cccontactLink PRIMARY KEY (ContactNo)
 );
 
 
@@ -57,7 +57,8 @@ CREATE TABLE CCEmailAddress(
 	modDate Timestamp(3) NOT NULL,
 	modUser varchar(20) NOT NULL,
 	modType char(1) NOT NULL,
-	modProc int NULL
+	modProc int NULL,
+	CONSTRAINT PK_emailAddress PRIMARY KEY (EmailID)
 );
 
 
@@ -70,7 +71,8 @@ CREATE TABLE CCPhone(
 	modDate Timestamp(3) NOT NULL,
 	modUser varchar(20) NOT NULL,
 	modType char(1) NOT NULL,
-	modProc int NULL
+	modProc int NULL,
+	CONSTRAINT PK_phone PRIMARY KEY (PhoneID)
 );
 
 
@@ -128,7 +130,8 @@ CREATE TABLE member(
 	resp_dep varchar(3) NULL,
 	pregnant Boolean NULL,
 	bank_acc_type char(3) NOT NULL,
-	homeless varchar(3) NULL
+	homeless varchar(3) NULL,
+	CONSTRAINT PK_member PRIMARY KEY (person_no, house_ref)
 );
 
 
@@ -378,7 +381,8 @@ CREATE TABLE property(
 	u_external_steps int NULL,
 	u_hoists Boolean NULL,
 	u_intercom Boolean NULL,
-	u_adapted_kitchen char(3) NULL
+	u_adapted_kitchen char(3) NULL,
+	CONSTRAINT PK_property PRIMARY KEY (prop_ref)
 );
 
 
@@ -558,5 +562,6 @@ CREATE TABLE tenagree(
 	u_under_occ_reduct Boolean NULL,
 	u_mutual_ex Boolean NULL,
 	u_uc_start_date Timestamp(0) NULL,
-	u_uc_bal_at_start numeric(10, 2) NULL
+	u_uc_bal_at_start numeric(10, 2) NULL,
+	CONSTRAINT PK_tenagree PRIMARY KEY (tag_ref)
 );

@@ -2,9 +2,10 @@ namespace UHResidentInformationAPI.V1.Enums
 {
     public enum PhoneType
     {
-        Primary,
-        Home,
-        Mobile,
-        Fax
+        H,
+        W,
+        X,
+        F,
+        M
     }
 }
