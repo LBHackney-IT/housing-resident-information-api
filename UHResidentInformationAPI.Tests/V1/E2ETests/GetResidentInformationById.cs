@@ -22,7 +22,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
         public async Task GetResidentInformationByIdReturnsTheCorrectInformation()
         {
             var personId = _fixture.Create<int>();
-            var expectedResponse = E2ETestHelper.AddPersonWithRelatedEntitiesToDb(UHContext, personId);
+            var expectedResponse = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, personId);
 
             var uri = new Uri($"api/v1/residents/{personId}", UriKind.Relative);
             var response = Client.GetAsync(uri);

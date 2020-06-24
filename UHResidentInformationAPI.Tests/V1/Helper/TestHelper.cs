@@ -20,6 +20,31 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
             return fp;
         }
-        
+        public static Address CreateDatabaseAddressForPersonId(int personId, string postcode = null, string address = null)
+        {
+            var faker = new Fixture();
+
+            var fa = faker.Build<Address>()
+                .With(add => add.PersonId, personId)
+                .Without(add => add.PersonAddressId)
+                .Without(add => add.Person)
+                .Create();
+
+            fa.PostCode = postcode ?? fa.PostCode;
+            fa.AddressLines = address ?? fa.AddressLines;
+            return fa;
+        }
+
+        public static TelephoneNumber CreateDatabaseTelephoneNumberForPersonId(int personId)
+        {
+            var faker = new Fixture();
+
+            return faker.Build<TelephoneNumber>()
+                .With(tel => tel.PersonId, personId)
+                .With(tel => tel.Type, PhoneType.Mobile.ToString)
+                .Without(tel => tel.Id)
+                .Without(tel => tel.Person)
+                .Create();
+        }
     }
 }
