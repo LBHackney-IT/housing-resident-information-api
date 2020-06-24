@@ -10,7 +10,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [Column("ContactNo")]
         [MaxLength(32)]
         [Key]
-        public string ContactID { get; set; }
+        public int ContactID { get; set; }
 
         [Column("PhoneNo")]
         [MaxLength(80)]

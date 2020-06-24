@@ -19,33 +19,20 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             _classUnderTest = new UHGateway(UHContext);
         }
 
-        // [Test]
-        // public void GatewayImplementsBoundaryInterface()
-        // {
-        //     Assert.NotNull(_classUnderTest is IUHGateway);
-        // }
+        [Test]
+        public void GatewayImplementsBoundaryInterface()
+        {
+            Assert.NotNull(_classUnderTest is IUHGateway);
+        }
 
-        // [Test]
-        // public void GetEntityByIdReturnsEmptyArray()
-        // {
-        //     var response = _classUnderTest.GetEntityById(123);
+        [Test]
+        public void GetAllResidentsIfThereAreNoResidentsReturnsAnEmptyList()
+        {
+            _classUnderTest.GetAllResidents("00011", "bob brown", "1 Hillman Street").Should().BeEmpty();
+        }
 
-        //     response.Should().BeNull();
-        // }
 
-        // [Test]
-        // public void GetEntityByIdReturnsCorrectResponse()
-        // {
-        //     var entity = _fixture.Create<Entity>();
-        //     var databaseEntity = DatabaseEntityHelper.CreateDatabaseEntityFrom(entity);
 
-        //     DatabaseContext.DatabaseEntities.Add(databaseEntity);
-        //     DatabaseContext.SaveChanges();
-
-        //     var response = _classUnderTest.GetEntityById(databaseEntity.Id);
-
-        //     databaseEntity.Id.Should().Be(response.Id);
-        //     databaseEntity.CreatedAt.Should().BeSameDateAs(response.CreatedAt);
-        // }
+        
     }
 }

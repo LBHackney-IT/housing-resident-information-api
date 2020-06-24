@@ -1,49 +1,49 @@
 using System;
 using AutoFixture;
+using UHResidentInformationAPI.V1.Enums;
 using UHResidentInformationAPI.V1.Infrastructure;
 
 namespace UHResidentInformationAPI.Tests.V1.Helper
 {
     public static class TestHelper
     {
-        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null, int? id = null)
+        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null, int? houseRef = null)
         {
             var faker = new Fixture();
             var fp = faker.Build<Person>()
-                .Without(p => p.Id)
+                .Without(p => p.HouseRef)
                 .Create();
             fp.DateOfBirth = new DateTime
                 (fp.DateOfBirth.Year, fp.DateOfBirth.Month, fp.DateOfBirth.Day);
             fp.FirstName = firstname ?? fp.FirstName;
             fp.LastName = lastname ?? fp.LastName;
-            if (id != null) fp.Id = (int) id;
+            if (houseRef != null) fp.HouseRef = (int) houseRef;
 
             return fp;
         }
-        public static Address CreateDatabaseAddressForPersonId(int personId, string postcode = null, string address = null)
+        public static Address CreateDatabaseAddressForPersonId(int propertyRef, string postcode = null, string address1 = null, string address2 = null)
         {
             var faker = new Fixture();
 
             var fa = faker.Build<Address>()
-                .With(add => add.PersonId, personId)
-                .Without(add => add.PersonAddressId)
-                .Without(add => add.Person)
+                .With(add => add.PropertyRef, propertyRef)
+                .Without(add => add.HouseRef)
                 .Create();
 
             fa.PostCode = postcode ?? fa.PostCode;
-            fa.AddressLines = address ?? fa.AddressLines;
+            fa.AddressLine1 = address1 ?? fa.AddressLine1;
+            fa.AddressLine2 = address2 ?? fa.AddressLine2;
             return fa;
         }
 
-        public static TelephoneNumber CreateDatabaseTelephoneNumberForPersonId(int personId)
+        public static TelephoneNumber CreateDatabaseTelephoneNumberForPersonId(int contactID)
         {
             var faker = new Fixture();
 
             return faker.Build<TelephoneNumber>()
-                .With(tel => tel.PersonId, personId)
+                .With(tel => tel.ContactID, contactID)
                 .With(tel => tel.Type, PhoneType.Mobile.ToString)
-                .Without(tel => tel.Id)
-                .Without(tel => tel.Person)
+                .Without(tel => tel.ContactID)
                 .Create();
         }
     }
