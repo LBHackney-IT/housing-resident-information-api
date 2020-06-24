@@ -21,6 +21,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
+        [Ignore("TO DO")]
         public async Task IfNoQueryParametersReturnsAllResidentRecordsFromUH()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
