@@ -21,7 +21,6 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
-        [Ignore("TO DO")]
         public async Task IfNoQueryParametersReturnsAllResidentRecordsFromUH()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
@@ -45,14 +44,13 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
 
 
         [Test]
-        [Ignore("TO DO")]
         public async Task FirstNameLastNameQueryParametersReturnsMatchingResidentRecordsFromUH()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "tessellate");
             var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "shape");
             var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
-            var uri = new Uri("api/v1/household?first_name=ciasom&last_name=tessellate", UriKind.Relative);
+            var uri = new Uri("api/v1/household?firstName=ciasom&lastName=tessellate", UriKind.Relative);
             var response = Client.GetAsync(uri);
 
             var statusCode = response.Result.StatusCode;

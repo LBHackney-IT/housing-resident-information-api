@@ -9,7 +9,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     {
         [Column("house_ref")]
         [MaxLength(16)]
-        [Key]
+        
         public string HouseRef { get; set; }
 
         [Column("person_no")]

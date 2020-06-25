@@ -17,7 +17,7 @@ namespace UHResidentInformationAPI.V1.Factories
                 FirstName = domain.FirstName,
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,
-                ResidentAddress = domain.Address.ToResponse()
+                ResidentAddress = domain.ResidentAddress.ToResponse()
             };
         }
         public static List<ResidentInformationResponse> ToResponse(this IEnumerable<ResidentInformation> people)

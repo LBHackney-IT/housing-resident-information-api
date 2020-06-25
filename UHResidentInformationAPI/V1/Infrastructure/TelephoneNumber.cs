@@ -7,9 +7,13 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("CCPhone")]
     public class TelephoneNumber
     {
-        [Column("ContactNo")]
+        [Column("PhoneID")]
         [MaxLength(32)]
         [Key]
+        public int PhoneID { get; set; }
+
+        [Column("ContactNo")]
+        [MaxLength(32)]
         public int ContactID { get; set; }
 
         [Column("PhoneNo")]

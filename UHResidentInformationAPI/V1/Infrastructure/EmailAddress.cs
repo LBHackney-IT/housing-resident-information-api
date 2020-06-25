@@ -7,18 +7,22 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("CCEmail")]
     public class EmailAddresses
     {
-        [Column("ContactNo")]
+        [Column("EmailID")]
         [MaxLength(9)]
         [Key]
+        public int EmailId { get; set; }
+        
+        [Column("ContactNo")]
+        [MaxLength(9)]
         public int ContactID { get; set; }
 
         [Column("Email")]
         [MaxLength(9)]
-        public int EmailAddress { get; set; }
+        public string EmailAddress { get; set; }
 
         [Column("EmailType")]
         [MaxLength(9)]
-        public int EmailType { get; set; }
+        public string EmailType { get; set; }
 
         [Column("ModDate")]
         [MaxLength(9)]

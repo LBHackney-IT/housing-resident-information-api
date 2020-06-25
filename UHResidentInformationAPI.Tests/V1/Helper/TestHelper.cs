@@ -11,7 +11,6 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
         {
             var faker = new Fixture();
             var fp = faker.Build<Person>()
-                .Without(p => p.HouseRef)
                 .Create();
             fp.DateOfBirth = new DateTime
                 (fp.DateOfBirth.Year, fp.DateOfBirth.Month, fp.DateOfBirth.Day);

@@ -1,8 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UHResidentInformationAPI.V1.Domain;
+using UHResidentInformationAPI.V1.Enums;
 using UHResidentInformationAPI.V1.Infrastructure;
+using Address = UHResidentInformationAPI.V1.Domain.Address;
+using DbAddress = UHResidentInformationAPI.V1.Infrastructure.Address;
 
 namespace UHResidentInformationAPI.V1.Factories
 {
@@ -22,14 +26,37 @@ namespace UHResidentInformationAPI.V1.Factories
             };
         }
 
-        public static Domain.Address ToDomain(this Infrastructure.Address databaseEntity)
+         public static List<ResidentInformation> ToDomain(this IEnumerable<Person> people)
         {
-            return new Domain.Address();
+            return people.Select(p => p.ToDomain()).ToList();
+        }
+        public static Address ToDomain(this DbAddress databaseEntity)
+        {
+            return new Address
+            {
+                AddressLine1 = databaseEntity.AddressLine1,
+                PostCode = databaseEntity.PostCode
+            };
         }
 
-        public static Domain.Phone ToDomain(this Infrastructure.TelephoneNumber databaseEntity)
+        public static Phone ToDomain(this TelephoneNumber databaseEntity)
         {
-            return new Domain.Phone();
+            var canParseType = Enum.TryParse<PhoneType>(databaseEntity.Type, out var type);
+            return canParseType ? new Phone
+            {
+                PhoneNumber = databaseEntity.Number,
+                Type = type,
+                LastModified = databaseEntity.DateCreated
+            } : null;
+        }
+
+        public static Email ToDomain(this EmailAddresses databaseEntity)
+        {
+            return new Email
+            {
+                EmailAddress = databaseEntity.EmailAddress,
+                LastModified = databaseEntity.DateModified
+            };
         }
 
         public static List<Domain.Phone> ToDomain(this IEnumerable<Infrastructure.TelephoneNumber> phoneList)
