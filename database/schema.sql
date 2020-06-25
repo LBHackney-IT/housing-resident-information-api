@@ -51,36 +51,36 @@ CREATE TABLE CCEmailAddress(
 	ContactNo int NOT NULL,
 	Email varchar(50) NOT NULL,
 	EmailType varchar(5) NOT NULL,
-	OKToEmail varchar(5) NOT NULL,
+	OKToEmail varchar NOT NULL DEFAULT '0CDE',
 	Defualt varchar(5) NOT NULL,
 	EmailID int NOT NULL,
-	modDate Timestamp(3) NOT NULL,
+	modDate Timestamp NOT NULL,
 	modUser varchar(20) NOT NULL,
-	modType char(1) NOT NULL,
+	modType char NOT NULL DEFAULT '0ABC',
 	modProc int NULL,
 	CONSTRAINT PK_emailAddress PRIMARY KEY (EmailID)
 
 );
 
 
-CREATE TABLE CCPhone(
-	ContactNo int NOT NULL,
-	PhoneNo varchar(20) NOT NULL,
-	PhoneType varchar(1) NULL,
-	OKToCall varchar(1) NULL,
-	PhoneID int NOT NULL,
-	modDate Timestamp(3) NOT NULL,
-	modUser varchar(20) NOT NULL,
-	modType char(1) NOT NULL,
-	modProc int NULL,
-	CONSTRAINT PK_phone PRIMARY KEY (PhoneID)
+CREATE TABLE CCPHONE(
+	contactno int NOT NULL,
+	phoneno varchar NOT NULL,
+	phonetype varchar NULL,
+	oktocall varchar NULL,
+	phoneid int NOT NULL,
+	moddate Timestamp NOT NULL,
+	moduser varchar NOT NULL DEFAULT '0abc',
+	modtype char NOT NULL DEFAULT '0',
+	modproc int NULL,
+	CONSTRAINT PK_phone PRIMARY KEY (phoneid)
 
 );
 
 
 CREATE TABLE member(
 	house_ref char(10) NOT NULL,
-	person_no numeric(2, 0) NOT NULL,
+	person_no numeric(8, 0) NOT NULL,
 	ethnic_origin char(3) NULL,
 	gender char(1) NULL,
 	title char(10) NULL,
@@ -88,19 +88,19 @@ CREATE TABLE member(
 	forename char(24) NULL,
 	surname char(20) NULL,
 	age numeric(3, 0) NULL,
-	oap Boolean NOT NULL,
+	oap Boolean NOT NULL DEFAULT false,
 	relationship char(1) NULL,
 	econ_status char(1) NULL,
-	responsible Boolean NOT NULL,
+	responsible Boolean NOT NULL DEFAULT false,
 	wheelch_user char(3) NULL,
 	disabled char(3) NULL,
 	cl_group_a char(3) NULL,
 	cl_group_b char(3) NULL,
 	ethnic_colour char(3) NULL,
-	at_risk Boolean NOT NULL,
+	at_risk Boolean NOT NULL DEFAULT false,
 	ni_no char(12) NULL,
-	full_ed Boolean NOT NULL,
-	member_sid int NOT NULL,
+	full_ed Boolean NOT NULL DEFAULT false,
+	member_sid int NOT NULL DEFAULT 0,
 	contacts_sid int NULL,
 	tstamp Bytea NULL,
 	comp_avail char(200) NULL,
@@ -108,7 +108,7 @@ CREATE TABLE member(
 	occupation char(3) NULL,
 	asboissued Boolean NULL,
 	liablemember Boolean NULL,
-	dob Timestamp(3) NOT NULL,
+	dob Timestamp NOT NULL,
 	nationality char(3) NULL,
 	ci_surname varchar(255) NULL,
 	u_pin_number char(20) NULL,
@@ -131,7 +131,7 @@ CREATE TABLE member(
 	corr_type varchar(3) NULL,
 	resp_dep varchar(3) NULL,
 	pregnant Boolean NULL,
-	bank_acc_type char(3) NOT NULL,
+	bank_acc_type char(3) NOT NULL DEFAULT '0ab',
 	homeless varchar(3) NULL,
 	CONSTRAINT PK_member PRIMARY KEY (person_no, house_ref)
 

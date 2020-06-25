@@ -20,7 +20,7 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
             return fp;
         }
-        public static Address CreateDatabaseAddressForPersonId(string houseRef, string postcode = null, string address1 = null, string address2 = null)
+        public static Address CreateDatabaseAddressForPersonId(string houseRef, string postcode = null, string address1 = null)
         {
             var faker = new Fixture();
 
@@ -30,7 +30,6 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
             fa.PostCode = postcode ?? fa.PostCode;
             fa.AddressLine1 = address1 ?? fa.AddressLine1;
-            fa.AddressLine2 = address2 ?? fa.AddressLine2;
             return fa;
         }
 

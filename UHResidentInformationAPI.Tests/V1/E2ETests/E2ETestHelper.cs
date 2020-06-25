@@ -15,7 +15,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var addedPerson = context.Persons.Add(person);
             context.SaveChanges();
 
-            var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines, address2: addressLines, postcode: postcode);
+            var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines, postcode: postcode);
             var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(addedPerson.Entity.PersonNo);
 
             context.Addresses.Add(address);

@@ -34,9 +34,6 @@ services:
       - test-database
   test-database:
     image: postgres:12
-    build:
-      context: .
-      dockerfile: database/Dockerfile
     ports:
       - 5432:5432
     env_file:

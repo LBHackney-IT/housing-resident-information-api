@@ -4,29 +4,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("CCPhone")]
+    [Table("ccphone")]
     public class TelephoneNumber
     {
-        [Column("PhoneID")]
-        [MaxLength(32)]
+        [Column("phoneid")]
         [Key]
         public int PhoneID { get; set; }
 
-        [Column("ContactNo")]
+        [Column("contactno")]
         [MaxLength(32)]
         public int ContactID { get; set; }
 
-        [Column("PhoneNo")]
-        [MaxLength(80)]
+        [Column("phoneno")]
+        [MaxLength(20)]
         public string Number { get; set; }
 
 
-        [Column("PhoneType")]
-        [MaxLength(80)]
+        [Column("phonetype")]
+        [MaxLength(1)]
         public string Type { get; set; }
 
-        [Column("ModDate")]
-        [MaxLength(80)]
+        [Column("moddate")]
         public DateTime DateCreated { get; set; }
 
     }
