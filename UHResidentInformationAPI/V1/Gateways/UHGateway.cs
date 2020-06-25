@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using  UHResidentInformationAPI.V1.Boundary.Responses;
+using UHResidentInformationAPI.V1.Boundary.Responses;
 using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Infrastructure;
@@ -20,17 +20,31 @@ namespace UHResidentInformationAPI.V1.Gateways
         public List<ResidentInformation> GetAllResidents(string houseReference, string residentName, string address)
         {
             var listOfPerson = _uHContext.Persons
-                            .Where(a => string.IsNullOrEmpty(houseReference)|| a.HouseRef.Contains(houseReference))
-                            .Where(a => string.IsNullOrEmpty(residentName)|| a.FirstName.Contains(residentName) || a.LastName.Contains(residentName))
-                            // .Where(a => string.IsNullOrEmpty(residentName)|| a.FirstName.Contains(residentName) || a.LastName.Contains(residentName))
-                            .ToList();
+                .Where(a => string.IsNullOrEmpty(houseReference) || a.HouseRef.Contains(houseReference))
+                .Where(a => string.IsNullOrEmpty(residentName) || a.FirstName.Contains(residentName) || a.LastName.Contains(residentName))
+                .Join( _uHContext.Addresses,
+                person => person.HouseRef,
+                address => address.HouseRef,
+                (person, address) => new { person, address }
+                )
+                .GroupJoin(_uHContext.TelephoneNumbers,
+                pa => pa.person.PersonNo,
+                telephone => telephone.ContactID,
+                (pa, t) => new ResidentInformation
+                {
+                    HouseReference = pa.person.HouseRef,
+                    UPRN = pa.address.PropertyRef,
+                    ResidentAddress = new UHResidentInformationAPI.V1.Domain.Address
+                    {
+                       AddressLine1 = pa.address.AddressLine1
+                    },
+                    PhoneNumber = t.ToDomain()
+                }
+                ).ToList();
 
-            _uHContext.Addresses.Where(a => string.IsNullOrEmpty(houseReference) || a.HouseRef.Contains(houseReference))
 
-                       
-            return new List<ResidentInformation>();
+            return listOfPerson;
         }
-
 
     }
 }
