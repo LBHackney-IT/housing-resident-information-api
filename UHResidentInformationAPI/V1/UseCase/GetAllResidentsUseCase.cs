@@ -1,5 +1,6 @@
 using UHResidentInformationAPI.V1.Boundary.Requests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
+using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Gateways;
 using UHResidentInformationAPI.V1.UseCase.Interfaces;
 
@@ -15,7 +16,11 @@ namespace UHResidentInformationAPI.V1.UseCase
 
         public ResidentInformationList Execute(ResidentQueryParam rqp)
         {
-            return new ResidentInformationList();
+            var residents = _uHGateway.GetAllResidents(rqp.HouseReference, rqp.FirstName, rqp.LastName, rqp.Address).ToResponse();
+            return new ResidentInformationList
+            {
+                Residents = residents
+            };
         }
 
 

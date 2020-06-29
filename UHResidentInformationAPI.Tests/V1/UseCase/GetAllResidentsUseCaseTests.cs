@@ -33,12 +33,13 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
             var stubbedResidents = _fixture.CreateMany<ResidentInformation>();
 
             _mockUHGateway.Setup(x =>
-                    x.GetAllResidents("000011", "ciasom tessellate", "1 Montage street"))
+                    x.GetAllResidents("000011", "ciasom", "tessellate", "1 Montage street"))
                 .Returns(stubbedResidents.ToList());
             var rqp = new ResidentQueryParam
             {
                 HouseReference = "000011",
-                ResidentName = "ciasom tessellate",
+                FirstName = "ciasom",
+                LastName = "tessellate",
                 Address = "1 Montage street"
             };
 
@@ -52,7 +53,7 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
         [Ignore("TO DO")]
         public void IfLimitLessThanTheMinimumWillUseTheMinimumLimit()
         {
-            _mockUHGateway.Setup(x => x.GetAllResidents( null, null, null))
+            _mockUHGateway.Setup(x => x.GetAllResidents( null, null,null, null))
                 .Returns(new List<ResidentInformation>()).Verifiable();
 
             _classUnderTest.Execute(new ResidentQueryParam());
@@ -64,7 +65,7 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
         [Ignore("TO DO")]
         public void IfLimitMoreThanTheMaximumWillUseTheMaximumLimit()
         {
-            _mockUHGateway.Setup(x => x.GetAllResidents(null, null, null))
+            _mockUHGateway.Setup(x => x.GetAllResidents(null, null,null, null))
                 .Returns(new List<ResidentInformation>()).Verifiable();
 
             _classUnderTest.Execute(new ResidentQueryParam());
@@ -82,7 +83,7 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
             var expectedNextCursor = stubbedResidents.Max(r => r.UPRN);
 
             _mockUHGateway.Setup(x =>
-                    x.GetAllResidents(null, null, null))
+                    x.GetAllResidents(null, null, null, null))
                 .Returns(stubbedResidents.ToList());
 
             // _classUnderTest.Execute(new ResidentQueryParam(), 0, 10).NextCursor.Should().Be(expectedNextCursor);
@@ -95,7 +96,7 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
             var stubbedResidents = _fixture.CreateMany<ResidentInformation>(7);
 
             _mockUHGateway.Setup(x =>
-                    x.GetAllResidents(null, null, null))
+                    x.GetAllResidents(null, null,null, null))
                 .Returns(stubbedResidents.ToList());
 
             // _classUnderTest.Execute(new ResidentQueryParam(), 0, 10).NextCursor.Should().Be("");

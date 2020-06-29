@@ -28,7 +28,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         [Test]
         public void GetAllResidentsIfThereAreNoResidentsReturnsAnEmptyList()
         {
-            _classUnderTest.GetAllResidents("00011", "bob brown", "1 Hillman Street").Should().BeEmpty();
+            _classUnderTest.GetAllResidents("00011", "bob", "brown", "1 Hillman Street").Should().BeEmpty();
         }
 
 

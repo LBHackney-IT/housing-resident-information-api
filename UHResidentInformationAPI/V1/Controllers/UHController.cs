@@ -26,7 +26,6 @@ namespace UHResidentInformationAPI.V1.Controllers
         /// <response code="200">Success. Returns a list of matching residents information</response>
         /// <response code="400">Invalid Query Parameter.</response>
         [ProducesResponseType(typeof(ResidentInformationList), StatusCodes.Status200OK)]
-        [HttpGet]
 
         [HttpGet]
         public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp)

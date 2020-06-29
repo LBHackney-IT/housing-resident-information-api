@@ -29,9 +29,15 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                 PhoneNumber =
                     new List<Phone>
                     {
-                        new Phone {PhoneNumber = phone.Number, PhoneType = Enum.Parse<PhoneType>(phone.Type)}
+                        new Phone { PhoneNumber = phone.Number, PhoneType = Enum.Parse<PhoneType>(phone.Type) }
                     },
                 DateOfBirth = person.DateOfBirth.ToString("O"),
+                ResidentAddress = new UHResidentInformationAPI.V1.Boundary.Responses.Address
+                {
+                    PropertyRef = address.PropertyRef,
+                    AddressLine1 = address.AddressLine1,
+                    PostCode = address.PostCode
+                }
                 
             };
         }

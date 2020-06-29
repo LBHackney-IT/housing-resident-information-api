@@ -17,12 +17,13 @@ namespace UHResidentInformationAPI.V1.Gateways
             _uHContext = uHContext;
         }
 
-        public List<ResidentInformation> GetAllResidents(string houseReference, string residentName, string address)
+        public List<ResidentInformation> GetAllResidents(string houseReference, string firstName, string lastName, string address)
         {
             var listOfPerson = _uHContext.Persons
                 .Where(a => string.IsNullOrEmpty(houseReference) || a.HouseRef.Contains(houseReference))
-                .Where(a => string.IsNullOrEmpty(residentName) || a.FirstName.Contains(residentName) || a.LastName.Contains(residentName))
-                .Join( _uHContext.Addresses,
+                .Where(a => string.IsNullOrEmpty(firstName) || a.FirstName.Contains(firstName))
+                .Where(a => string.IsNullOrEmpty(lastName) || a.LastName.Contains(lastName))
+                .Join(_uHContext.Addresses,
                 person => person.HouseRef,
                 address => address.HouseRef,
                 (person, address) => new { person, address }
@@ -33,12 +34,11 @@ namespace UHResidentInformationAPI.V1.Gateways
                 (pa, t) => new ResidentInformation
                 {
                     HouseReference = pa.person.HouseRef,
-                    UPRN = pa.address.PropertyRef,
                     ResidentAddress = new UHResidentInformationAPI.V1.Domain.Address
                     {
-                       AddressLine1 = pa.address.AddressLine1
+                        AddressLine1 = pa.address.AddressLine1
                     },
-                    PhoneNumber = t.ToDomain()
+                    PhoneNumber = t.ToDomain().ToList()
                 }
                 ).ToList();
 
