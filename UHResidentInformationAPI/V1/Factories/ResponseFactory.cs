@@ -40,7 +40,7 @@ namespace UHResidentInformationAPI.V1.Factories
             return new AddressResponse
             {
                 PropertyRef = address.PropertyRef,
-                AddressLine1 = address.AddressLine1.Trim(),
+                AddressLine1 = address.AddressLine1,
                 PostCode = address.PostCode
             };
         }
