@@ -40,7 +40,6 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             return faker.Build<TelephoneNumber>()
                 .With(tel => tel.ContactID, contactID)
                 .With(tel => tel.Type, PhoneType.Mobile.ToString)
-                .Without(tel => tel.ContactID)
                 .Create();
         }
     }

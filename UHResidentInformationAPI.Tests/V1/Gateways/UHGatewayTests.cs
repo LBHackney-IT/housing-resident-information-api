@@ -7,6 +7,7 @@ using UHResidentInformationAPI.V1.Gateways;
 using UHResidentInformationAPI.V1.Factories;
 using System.Collections.Generic;
 using UHResidentInformationAPI.V1.Infrastructure;
+using Address = UHResidentInformationAPI.V1.Infrastructure.Address;
 
 namespace UHResidentInformationAPI.Tests.V1.Gateways
 {
@@ -71,20 +72,22 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
                 databaseEntity1,
                 databaseEntity2
             };
-
+            //Add person entities to test database
             UHContext.Persons.AddRange(personslist);
             UHContext.SaveChanges();
 
             var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef);
-            UHContext.Addresses.Add(address);
-            UHContext.SaveChanges();
-
             var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
-            UHContext.Addresses.Add(address1);
-            UHContext.SaveChanges();
-
             var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef);
-            UHContext.Addresses.Add(address2);
+
+            var addresslist = new List<Address>
+            {
+                address,
+                address1,
+                address2
+            };
+            //Add address enitites to test database
+            UHContext.Addresses.AddRange(addresslist);
             UHContext.SaveChanges();
 
 
@@ -95,12 +98,17 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var telephone1 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseEntity2.PersonNo);
             UHContext.TelephoneNumbers.Add(telephone1);
             UHContext.SaveChanges();
+            var telephone2 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseEntity2.PersonNo);
+            UHContext.TelephoneNumbers.Add(telephone2);
+            UHContext.SaveChanges();
 
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
+            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain() };
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
+            domainEntity2.PhoneNumber = new List<Phone> { telephone1.ToDomain(), telephone2.ToDomain() };
 
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);

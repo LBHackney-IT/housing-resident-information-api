@@ -27,7 +27,8 @@ namespace UHResidentInformationAPI.V1.Infrastructure
             modelBuilder.Entity<TelephoneNumber>()
                 .HasOne<Person>()
                 .WithMany()
-                .HasForeignKey(t => t.ContactID);
+                .HasForeignKey(t => t.ContactID)
+                .HasPrincipalKey(p => p.PersonNo);
         }
 
     }
