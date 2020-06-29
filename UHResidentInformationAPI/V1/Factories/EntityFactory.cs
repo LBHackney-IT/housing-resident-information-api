@@ -26,7 +26,7 @@ namespace UHResidentInformationAPI.V1.Factories
             };
         }
 
-         public static List<ResidentInformation> ToDomain(this IEnumerable<Person> people)
+        public static List<ResidentInformation> ToDomain(this IEnumerable<Person> people)
         {
             return people.Select(p => p.ToDomain()).ToList();
         }

@@ -1,4 +1,3 @@
-
 CREATE TABLE cccontactlink(
 	ContactNo int NOT NULL,
 	LinkType varchar(40) NOT NULL,
@@ -53,13 +52,12 @@ CREATE TABLE CCEmailAddress(
 	EmailType varchar(8) NOT NULL,
 	OKToEmail varchar NOT NULL DEFAULT '0CDE',
 	Defualt varchar(5) NOT NULL DEFAULT 'reg',
-	EmailID int NOT NULL DEFAULT 123,
+	EmailID int NOT NULL,
 	modDate Timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	modUser varchar(20) NOT NULL DEFAULT 'was',
 	modType char NOT NULL DEFAULT '0ABC',
 	modProc int NULL,
 	CONSTRAINT PK_emailAddress PRIMARY KEY (EmailID)
-
 );
 
 
@@ -74,19 +72,18 @@ CREATE TABLE CCPHONE(
 	modtype char NOT NULL DEFAULT '0',
 	modproc int NULL,
 	CONSTRAINT PK_phone PRIMARY KEY (phoneid)
-
 );
 
 
 CREATE TABLE member(
-	house_ref char(10) NOT NULL,
-	person_no numeric(8, 0) NOT NULL,
+	house_ref varchar(10) NOT NULL,
+	person_no int NOT NULL,
 	ethnic_origin char(3) NULL,
 	gender char(1) NULL,
 	title char(10) NULL,
 	initials char(3) NULL,
-	forename char(24) NULL,
-	surname char(20) NULL,
+	forename varchar(24) NULL,
+	surname varchar(20) NULL,
 	age numeric(3, 0) NULL,
 	oap Boolean NOT NULL DEFAULT false,
 	relationship char(1) NULL,
@@ -134,12 +131,11 @@ CREATE TABLE member(
 	bank_acc_type char(3) NOT NULL DEFAULT '0ab',
 	homeless varchar(3) NULL,
 	CONSTRAINT PK_member PRIMARY KEY (person_no, house_ref)
-
 );
 
 
 CREATE TABLE property(
-	prop_ref char(12) NOT NULL,
+	prop_ref varchar(12) NOT NULL,
 	level_code char(1) NULL,
 	major_ref char(12) NULL,
 	man_scheme char(11) NULL,
@@ -170,7 +166,7 @@ CREATE TABLE property(
 	store Boolean NOT NULL DEFAULT false,
 	warden_flat Boolean NOT NULL DEFAULT false,
 	sheltered Boolean NOT NULL DEFAULT false,
-	house_ref char(10) NULL,
+	house_ref varchar(10) NOT NULL,
 	occ_stat char(3) NULL,
 	cyclical_due int NULL,
 	shower Boolean NOT NULL DEFAULT false,
@@ -386,7 +382,6 @@ CREATE TABLE property(
 	u_intercom Boolean NULL,
 	u_adapted_kitchen char(3) NULL,
 	CONSTRAINT PK_property PRIMARY KEY (prop_ref)
-
 );
 
 

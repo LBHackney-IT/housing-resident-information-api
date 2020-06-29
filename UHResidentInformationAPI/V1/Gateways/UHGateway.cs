@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using UHResidentInformationAPI.V1.Boundary.Responses;
 using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Factories;
@@ -17,33 +19,36 @@ namespace UHResidentInformationAPI.V1.Gateways
             _uHContext = uHContext;
         }
 
-        public List<ResidentInformation> GetAllResidents(string houseReference, string firstName, string lastName, string address)
+        public List<ResidentInformation> GetAllResidents(string houseReference = null, string firstName = null, string lastName = null, string address = null)
         {
             var listOfPerson = _uHContext.Persons
                 .Where(a => string.IsNullOrEmpty(houseReference) || a.HouseRef.Contains(houseReference))
-                .Where(a => string.IsNullOrEmpty(firstName) || a.FirstName.Contains(firstName))
+                .Where(a => string.IsNullOrEmpty(firstName) || a.FirstName.ToLower().Contains(firstName.ToLower()))
                 .Where(a => string.IsNullOrEmpty(lastName) || a.LastName.Contains(lastName))
                 .Join(_uHContext.Addresses,
                 person => person.HouseRef,
                 address => address.HouseRef,
-                (person, address) => new { person, address }
-                )
+                (person, address) => new { person, address })
+
                 .GroupJoin(_uHContext.TelephoneNumbers,
-                pa => pa.person.PersonNo,
+                anon => anon.person.PersonNo,
                 telephone => telephone.ContactID,
-                (pa, t) => new ResidentInformation
-                {
-                    HouseReference = pa.person.HouseRef,
-                    ResidentAddress = new UHResidentInformationAPI.V1.Domain.Address
-                    {
-                        AddressLine1 = pa.address.AddressLine1
-                    },
-                    PhoneNumber = t.ToDomain().ToList()
-                }
+                (anon, telephone) => new { anon, telephone }
                 ).ToList();
+                //{
+                //    HouseReference = anon.person.HouseRef,
+                //    ResidentAddress = new UHResidentInformationAPI.V1.Domain.Address
+                //    {
+                //    AddressLine1 = anon.address.AddressLine1
+                //    }
+                //}).ToList();
 
+            return new List<ResidentInformation>();// listOfPerson;
+        }
 
-            return listOfPerson;
+        private static string StripString(string str)
+        {
+            return str?.ToLower().Replace(" ", "");
         }
 
     }

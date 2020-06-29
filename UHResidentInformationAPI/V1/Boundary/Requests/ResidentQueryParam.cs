@@ -18,9 +18,9 @@ namespace UHResidentInformationAPI.V1.Boundary.Requests
         [FromQuery(Name = "firstName")]
         public string FirstName { get; set; }
 
-        [FromQuery(Name = "lastName")]  
+        [FromQuery(Name = "lastName")]
         public string LastName { get; set; }
-        
+
         [FromQuery(Name = "address")]
         public string Address { get; set; }
     }

@@ -38,7 +38,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                     AddressLine1 = address.AddressLine1,
                     PostCode = address.PostCode
                 }
-                
+
             };
         }
     }
