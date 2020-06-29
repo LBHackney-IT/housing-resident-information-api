@@ -23,6 +23,11 @@ namespace UHResidentInformationAPI.V1.Infrastructure
                         person.HouseRef,
                         person.PersonNo
                     });
+
+            modelBuilder.Entity<TelephoneNumber>()
+                .HasOne<Person>()
+                .WithMany()
+                .HasForeignKey(t => t.ContactID);
         }
 
     }
