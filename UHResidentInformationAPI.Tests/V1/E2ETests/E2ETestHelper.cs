@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UHResidentInformationAPI.Tests.V1.Helper;
 using UHResidentInformationAPI.V1.Boundary.Responses;
 using UHResidentInformationAPI.V1.Enums;
@@ -31,7 +32,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                     {
                         new Phone { PhoneNumber = phone.Number, PhoneType = Enum.Parse<PhoneType>(phone.Type) }
                     },
-                DateOfBirth = person.DateOfBirth.ToString("O"),
+                DateOfBirth = person.DateOfBirth.ToString("O", CultureInfo.InvariantCulture),
                 ResidentAddress = new UHResidentInformationAPI.V1.Boundary.Responses.Address
                 {
                     PropertyRef = address.PropertyRef,

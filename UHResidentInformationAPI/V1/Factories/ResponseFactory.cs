@@ -17,7 +17,8 @@ namespace UHResidentInformationAPI.V1.Factories
                 FirstName = domain.FirstName,
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,
-                ResidentAddress = domain.ResidentAddress.ToResponse()
+                ResidentAddress = domain.ResidentAddress.ToResponse(),
+                PhoneNumber = domain.PhoneNumber.Any() ? domain.PhoneNumber.ToResponse() : null
             };
         }
         public static List<ResidentInformationResponse> ToResponse(this IEnumerable<ResidentInformation> people)
@@ -25,12 +26,12 @@ namespace UHResidentInformationAPI.V1.Factories
             return people.Select(p => p.ToResponse()).ToList();
         }
 
-        private static List<Phone> ToResponse(this List<Phone> phoneNumbers)
+        private static List<Phone> ToResponse(this List<Domain.Phone> phoneNumbers)
         {
             return phoneNumbers.Select(number => new Phone
             {
                 PhoneNumber = number.PhoneNumber,
-                PhoneType = number.PhoneType
+                PhoneType = number.Type
             }).ToList();
         }
 
@@ -38,9 +39,8 @@ namespace UHResidentInformationAPI.V1.Factories
         {
             return new AddressResponse
             {
-                AddressLine1 = address.AddressLine1,
-                AddressLine2 = address.AddressLine2,
-                AddressLine3 = address.AddressLine3,
+                PropertyRef = address.PropertyRef,
+                AddressLine1 = address.AddressLine1.Trim(),
                 PostCode = address.PostCode
             };
         }

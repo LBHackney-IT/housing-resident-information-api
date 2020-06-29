@@ -18,7 +18,6 @@ namespace UHResidentInformationAPI.V1.Controllers
         {
             _getAllResidentsUseCase = getAllResidentsUseCase;
             _getEntityByIdUseCase = getEntityByIdUseCase;
-
         }
         /// <summary>
         /// Returns list of contacts who share the query search parameter
@@ -34,7 +33,7 @@ namespace UHResidentInformationAPI.V1.Controllers
         }
 
         [HttpGet]
-        // [Route()]
+        [Route("/people")]
         // Add route for view endpoint
         public IActionResult ViewRecord()
         {

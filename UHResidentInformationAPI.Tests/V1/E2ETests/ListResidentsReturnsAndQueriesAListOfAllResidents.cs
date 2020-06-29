@@ -50,7 +50,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "shape");
             var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
-            var uri = new Uri("api/v1/household?firstName=ciasom&lastName=tessellate", UriKind.Relative);
+            var uri = new Uri("api/v1/households?firstName=ciasom&lastName=tessellate", UriKind.Relative);
             var response = Client.GetAsync(uri);
 
             var statusCode = response.Result.StatusCode;
