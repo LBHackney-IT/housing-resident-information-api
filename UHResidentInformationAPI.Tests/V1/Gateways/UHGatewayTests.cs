@@ -79,7 +79,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         }
 
         [Test]
-        public void GetResidentByIdReturnsPhoneContactDetails()
+        public void GetResidentByIdReturnsPhoneContactDetailsWithPhoneType()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
             var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databasePersonEntity.PersonNo);
@@ -96,6 +96,31 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
                 {
                     PhoneNumber = databasePhoneEntity.Number,
                     Type = PhoneType.Primary,
+                    LastModified = databasePhoneEntity.DateCreated
+                }
+            };
+
+            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            response.PhoneNumber.Should().BeEquivalentTo(expectedPhoneNumberList);
+        }
+
+        [Test]
+        public void GetResidentByIdReturnsPhoneContactDetailsWithOutPhoneType()
+        {
+            var databasePersonEntity = AddPersonRecordToDatabase();
+            var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databasePersonEntity.PersonNo);
+
+            databasePhoneEntity.Type = null;
+
+            UHContext.TelephoneNumbers.Add(databasePhoneEntity);
+            UHContext.SaveChanges();
+
+            var expectedPhoneNumberList = new List<Phone>
+            {
+                new Phone
+                {
+                    PhoneNumber = databasePhoneEntity.Number,
+                    Type = null,
                     LastModified = databasePhoneEntity.DateCreated
                 }
             };

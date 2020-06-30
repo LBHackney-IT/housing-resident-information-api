@@ -43,12 +43,13 @@ namespace UHResidentInformationAPI.V1.Factories
         public static Phone ToDomain(this TelephoneNumber databaseEntity)
         {
             var canParseType = Enum.TryParse<PhoneType>(databaseEntity.Type, out var type);
-            return canParseType ? new Phone
+
+            return new Phone
             {
                 PhoneNumber = databaseEntity.Number,
-                Type = type,
+                Type = canParseType ? type : (PhoneType?) null,
                 LastModified = databaseEntity.DateCreated
-            } : null;
+            };
         }
 
         public static Email ToDomain(this EmailAddresses databaseEntity)

@@ -29,7 +29,7 @@ namespace UHResidentInformationAPI.V1.Domain
     public class Phone
     {
         public string PhoneNumber { get; set; }
-        public PhoneType Type { get; set; }
+        public PhoneType? Type { get; set; }
         public DateTime LastModified { get; set; }
     }
 
