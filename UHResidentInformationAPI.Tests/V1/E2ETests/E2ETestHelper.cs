@@ -10,13 +10,13 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
 {
     public static class E2ETestHelpers
     {
-        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string id = null, string firstname = null, string lastname = null, string postcode = null, string addressLines = null)
+        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string id = null, string firstname = null, string lastname = null, string addressLines = null)
         {
             var person = TestHelper.CreateDatabasePersonEntity(firstname, lastname, id);
             var addedPerson = context.Persons.Add(person);
             context.SaveChanges();
 
-            var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines, postcode: postcode);
+            var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines);
             var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(addedPerson.Entity.PersonNo);
 
             context.Addresses.Add(address);

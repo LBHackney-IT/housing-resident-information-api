@@ -27,13 +27,15 @@ namespace UHResidentInformationAPI.V1.Gateways
                 .Where(a => string.IsNullOrEmpty(firstName) || a.FirstName.ToLower().Contains(firstName.ToLower()))
                 .Where(a => string.IsNullOrEmpty(lastName) || a.LastName.ToLower().Contains(lastName.ToLower()))
                 .Join(
-                _uHContext.Addresses,
+                _uHContext.Addresses
+                .Where(a => string.IsNullOrEmpty(address) || a.AddressLine1.ToLower().Contains(address.ToLower())),
                 person => person.HouseRef,
                 address => address.HouseRef,
                 (person, address) => new { person, address });
 
             //Left join on listOfPerson and PhoneNumbers
             var listOfResident = listOfPerson.ToList()
+                
                 .GroupJoin
                 (
                     _uHContext.TelephoneNumbers,
