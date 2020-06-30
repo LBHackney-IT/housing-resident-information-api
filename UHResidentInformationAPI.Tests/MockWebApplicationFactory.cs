@@ -27,6 +27,7 @@ namespace UHResidentInformationAPI.Tests
             {
                 var dbBuilder = new DbContextOptionsBuilder();
                 dbBuilder.UseNpgsql(_connection);
+
                 var context = new UHContext(dbBuilder.Options);
                 services.AddSingleton(context);
 

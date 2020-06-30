@@ -13,11 +13,11 @@ namespace UHResidentInformationAPI.V1.Controllers
     public class UHController : BaseController
     {
         private IGetAllResidentsUseCase _getAllResidentsUseCase;
-        private IGetEntityByIdUseCase _getEntityByIdUseCase;
-        public UHController(IGetAllResidentsUseCase getAllResidentsUseCase, IGetEntityByIdUseCase getEntityByIdUseCase)
+        private IGetResidentByIdUseCase _getResidentByIdUseCase;
+        public UHController(IGetAllResidentsUseCase getAllResidentsUseCase, IGetResidentByIdUseCase getResidentByIdUseCase)
         {
             _getAllResidentsUseCase = getAllResidentsUseCase;
-            _getEntityByIdUseCase = getEntityByIdUseCase;
+            _getResidentByIdUseCase = getResidentByIdUseCase;
 
         }
         /// <summary>
@@ -35,11 +35,10 @@ namespace UHResidentInformationAPI.V1.Controllers
         }
 
         [HttpGet]
-        // [Route()]
-        // Add route for view endpoint
-        public IActionResult ViewRecord()
+        [Route("/households/{houseReference}/people/{personReference}")]
+        public IActionResult ViewRecord(string houseReference, int personReference)
         {
-            return null;
+            return Ok(_getResidentByIdUseCase.Execute(houseReference, personReference));
         }
     };
 }
