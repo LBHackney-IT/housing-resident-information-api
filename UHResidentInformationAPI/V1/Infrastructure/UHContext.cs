@@ -16,7 +16,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            //composite key
             modelBuilder.Entity<Person>()
                     .HasKey(person => new
                     {
@@ -24,11 +24,18 @@ namespace UHResidentInformationAPI.V1.Infrastructure
                         person.PersonNo
                     });
 
+            //one to many relation
             modelBuilder.Entity<TelephoneNumber>()
                 .HasOne<Person>()
                 .WithMany()
                 .HasForeignKey(t => t.ContactID)
                 .HasPrincipalKey(p => p.PersonNo);
+
+            modelBuilder.Entity<EmailAddresses>()
+               .HasOne<Person>()
+               .WithMany()
+               .HasForeignKey(e => e.ContactID)
+               .HasPrincipalKey(p => p.PersonNo);
         }
 
     }

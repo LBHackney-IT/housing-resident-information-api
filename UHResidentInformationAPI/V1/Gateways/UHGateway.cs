@@ -33,9 +33,10 @@ namespace UHResidentInformationAPI.V1.Gateways
                 address => address.HouseRef,
                 (person, address) => new { person, address });
 
+
+
             //Left join on listOfPerson and PhoneNumbers
             var listOfResident = listOfPerson.ToList()
-
                 .GroupJoin
                 (
                     _uHContext.TelephoneNumbers,
@@ -49,6 +50,20 @@ namespace UHResidentInformationAPI.V1.Gateways
                         return resident;
                     }
                 ).ToList();
+
+            //Left join on listOfResident and Emailaddresses
+            listOfResident = listOfResident
+                .GroupJoin
+                (
+                    _uHContext.EmailAddresses,
+                    resident => resident.PersonNumber,
+                    email => email.ContactID,
+                    (resident, email) =>
+                    {
+                        resident.Email = email.Any() ? email.Select(e => e.ToDomain()).ToList() : null;
+                        return resident;
+                    }
+                 ).ToList();
 
             return listOfResident;
         }
