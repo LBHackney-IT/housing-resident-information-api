@@ -38,8 +38,8 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                     PropertyRef = address.PropertyRef,
                     AddressLine1 = address.AddressLine1,
                     PostCode = address.PostCode
-                }
-
+                },
+                Email = null
             };
         }
     }

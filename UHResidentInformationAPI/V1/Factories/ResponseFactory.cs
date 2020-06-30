@@ -18,8 +18,8 @@ namespace UHResidentInformationAPI.V1.Factories
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,
                 ResidentAddress = domain.ResidentAddress.ToResponse(),
-                PhoneNumber = domain.PhoneNumber.Any() ? domain.PhoneNumber.ToResponse() : null,
-                Email = domain.Email.Any() ? domain.Email.ToResponse() : null
+                PhoneNumber = domain.PhoneNumber?.ToResponse() ?? null,
+                Email = domain.Email?.ToResponse() ?? null
             };
         }
         public static List<ResidentInformationResponse> ToResponse(this IEnumerable<ResidentInformation> people)
@@ -47,7 +47,7 @@ namespace UHResidentInformationAPI.V1.Factories
         }
         private static List<Email> ToResponse(this List<Domain.Email> emailAddresses)
         {
-            return emailAddresses.Select(email => new Email()
+            return emailAddresses.Select(email => new Email
             {
                 EmailAddress = email.EmailAddress,
                 LastModified = email.LastModified.ToString("O")

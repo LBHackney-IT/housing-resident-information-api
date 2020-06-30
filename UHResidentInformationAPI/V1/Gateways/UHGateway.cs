@@ -33,8 +33,6 @@ namespace UHResidentInformationAPI.V1.Gateways
                 address => address.HouseRef,
                 (person, address) => new { person, address });
 
-
-
             //Left join on listOfPerson and PhoneNumbers
             var listOfResident = listOfPerson.ToList()
                 .GroupJoin
