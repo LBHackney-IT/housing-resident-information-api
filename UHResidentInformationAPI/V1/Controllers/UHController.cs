@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UHResidentInformationAPI.V1.Boundary.Requests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
+using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.UseCase.Interfaces;
 
 namespace UHResidentInformationAPI.V1.Controllers
@@ -29,7 +30,15 @@ namespace UHResidentInformationAPI.V1.Controllers
         [HttpGet]
         public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp)
         {
-            return Ok(_getAllResidentsUseCase.Execute(rqp));
+            try
+            {
+                return Ok(_getAllResidentsUseCase.Execute(rqp));
+            }
+            catch (InvalidQueryParameterException e)
+            {
+                return BadRequest(e.Message);
+            }
+            // return Ok(_getAllResidentsUseCase.Execute(rqp));
         }
 
         [HttpGet]

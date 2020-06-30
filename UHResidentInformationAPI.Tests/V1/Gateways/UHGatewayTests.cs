@@ -35,30 +35,6 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             _classUnderTest.GetAllResidents("00011", "bob", "brown", "1 Hillman Street").Should().BeEmpty();
         }
 
-        //[Test]
-        //public void GetAllClaimantsIfThereAreClaimantWillReturnThemWithAddresses()
-        //{
-        //    var databaseEntity = AddPersonRecordToDatabase();
-
-        //    var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.ClaimId, databaseEntity.HouseId);
-        //    AcademyContext.Addresses.Add(address);
-        //    AcademyContext.SaveChanges();
-
-        //    var domainEntity = databaseEntity.ToDomain();
-        //    domainEntity.ClaimantAddress = address.ToDomain();
-
-        //    var listOfPersons = _classUnderTest.GetAllClaimants(0, 20, postcode: address.PostCode);
-
-        //    listOfPersons.Should().ContainEquivalentOf(domainEntity);
-
-        //    listOfPersons
-        //        .First(p => p.ClaimId == databaseEntity.ClaimId)
-        //        .ClaimantAddress
-        //        .Should().BeEquivalentTo(address.ToDomain());
-        //}
-
-
-
         [Test]
         public void GetAllResidentsWithFirstNameQueryParameterReturnsMatchingResident()
         {

@@ -65,7 +65,6 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
-        [Ignore("TO DO")]
         public async Task PostcodeAndAddressQueryParametersReturnsMatchingResidentsRecordsFromUH()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR", addressLines: "1 Seasame street, Hackney, LDN");
@@ -91,7 +90,6 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
-        [Ignore("TO DO")]
         public async Task UsingAllQueryParametersReturnsMatchingResidentsRecordsFromUH()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E2 1RR",
