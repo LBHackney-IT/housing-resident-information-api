@@ -16,7 +16,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public string HouseRef { get; set; }
 
         [Column("address1")]
-        [MaxLength(500)]
+        [MaxLength(255)]
         public string AddressLine1 { get; set; }
 
         [Column("post_code")]

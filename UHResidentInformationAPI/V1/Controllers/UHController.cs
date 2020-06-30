@@ -38,7 +38,6 @@ namespace UHResidentInformationAPI.V1.Controllers
             {
                 return BadRequest(e.Message);
             }
-            // return Ok(_getAllResidentsUseCase.Execute(rqp));
         }
 
         [HttpGet]
