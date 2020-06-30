@@ -28,11 +28,31 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
         }
 
         [Test]
-        public void ReturnsAClaimantInformationRecordForTheSpecifiedID()
+        public void ReturnsAClaimantInformationRecordWithAddressForTheSpecifiedID()
         {
             var stubbedResidentInfo = _fixture.Create<ResidentInformation>();
             var houseRef = _fixture.Create<string>();
             var personRef = _fixture.Create<int>();
+
+            _mockUhGateway.Setup(x =>
+                    x.GetResidentById(houseRef, personRef))
+                .Returns(stubbedResidentInfo);
+
+            var response = _classUnderTest.Execute(houseRef, personRef);
+            var expectedResponse = stubbedResidentInfo.ToResponse();
+
+            response.Should().NotBeNull();
+            response.Should().BeEquivalentTo(expectedResponse);
+        }
+
+        [Test]
+        public void ReturnsAClaimantInformationRecordWithOutAddressForTheSpecifiedID()
+        {
+            var stubbedResidentInfo = _fixture.Create<ResidentInformation>();
+            var houseRef = _fixture.Create<string>();
+            var personRef = _fixture.Create<int>();
+
+            stubbedResidentInfo.Address = null;
 
             _mockUhGateway.Setup(x =>
                     x.GetResidentById(houseRef, personRef))

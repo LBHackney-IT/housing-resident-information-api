@@ -52,6 +52,8 @@ namespace UHResidentInformationAPI.V1.Factories
 
         private static AddressResponse ToResponse(this Address address)
         {
+            if (address == null) return new AddressResponse();
+
             return new AddressResponse
             {
                 AddressLine1 = address.AddressLine1,
