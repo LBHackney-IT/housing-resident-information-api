@@ -36,7 +36,7 @@ services:
     image: test-database
     build: 
       context: .
-      dockerfile: ./database/Dockerfile
+      dockerfile: database/Dockerfile
     ports:
       - 5432:5432
     env_file:
