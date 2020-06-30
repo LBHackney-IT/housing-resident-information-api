@@ -42,7 +42,7 @@ CREATE TABLE cccontactlink(
 	source char(10) NULL,
 	MODDATE Timestamp(3) NULL,
 	MODUSER varchar(20) NULL,
-	MODTYPE varchar(1) NOT NULL
+	MODTYPE varchar(1) NOT NULL DEFAULT '0'
 );
 
 
