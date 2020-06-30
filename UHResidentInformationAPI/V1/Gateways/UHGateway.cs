@@ -35,7 +35,7 @@ namespace UHResidentInformationAPI.V1.Gateways
 
             //Left join on listOfPerson and PhoneNumbers
             var listOfResident = listOfPerson.ToList()
-                
+
                 .GroupJoin
                 (
                     _uHContext.TelephoneNumbers,
