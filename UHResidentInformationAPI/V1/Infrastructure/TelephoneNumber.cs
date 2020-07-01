@@ -9,7 +9,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     public class TelephoneNumber
     {
         [Column("contactno")]
-        [Key]
+        //[Key]
         public int ContactID { get; set; }
 
         [Column("phoneno")]
