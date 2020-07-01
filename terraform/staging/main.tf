@@ -133,7 +133,7 @@ module "dms_uht_setup_staging" {
     migration_type = "full-load-and-cdc"
     replication_task_indentifier = "uh-uht-api-dms-task"
     task_settings = file("${path.module}/task_settings.json")
-    task_table_mappings = file("${path.module}/uhw_selection_rules.json")
+    task_table_mappings = file("${path.module}/uht_selection_rules.json")
     //replication endpoints
     source_endpoint_arn = module.uht_source_dms_endpoint.dms_endpoint_arn
     target_endpoint_arn = module.target_dms_endpoint.dms_endpoint_arn
