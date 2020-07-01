@@ -156,8 +156,12 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsTheEmailDetails()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseEmailEntity = TestHelper.CreateDatabaseEmailForPerson(databasePersonEntity.PersonNo);
+            var databaseTenaagre = TestHelper.CreateDatabaseTenancyAgreementForPerson(databasePersonEntity.HouseRef);
+            var databaseContactLink = TestHelper.CreateDatabaseContactLinkForPerson(databaseTenaagre.TagRef);
+            var databaseEmailEntity = TestHelper.CreateDatabaseEmailForPerson(databaseContactLink.ContactID);
 
+            UHContext.TenancyAgreements.Add(databaseTenaagre);
+            UHContext.ContactLinks.Add(databaseContactLink);
             UHContext.EmailAddresses.Add(databaseEmailEntity);
             UHContext.SaveChanges();
 

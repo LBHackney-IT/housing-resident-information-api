@@ -24,7 +24,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var tenancyAgreement = TestHelper.CreateDatabaseTenancyAgreementForPerson(addedPerson.Entity.HouseRef);
             var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreement.TagRef);
             var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLink.ContactID);
-            var email = TestHelper.CreateDatabaseEmailForPerson(addedPerson.Entity.PersonNo);
+            var email = TestHelper.CreateDatabaseEmailForPerson(contactLink.ContactID);
 
             context.Addresses.Add(address);
             context.TelephoneNumbers.Add(phone);

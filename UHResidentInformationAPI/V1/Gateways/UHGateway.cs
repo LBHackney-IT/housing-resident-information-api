@@ -40,7 +40,7 @@ namespace UHResidentInformationAPI.V1.Gateways
             var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == retrievedContactLinkNo).ToList();
 
             var emailAddressForPerson =
-                _uHContext.EmailAddresses.Where(c => c.ContactID == databaseRecord.PersonNo).ToList();
+                _uHContext.EmailAddresses.Where(c => c.ContactID == retrievedContactLinkNo).ToList();
 
 
             var person = MapPersonAndAddressesToResidentInformation(databaseRecord, addressForPerson);
