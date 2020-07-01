@@ -42,7 +42,7 @@ CREATE TABLE cccontactlink(
 	source char(10) NULL,
 	MODDATE Timestamp(3) NULL,
 	MODUSER varchar(20) NULL,
-	MODTYPE varchar(1) NOT NULL
+	MODTYPE varchar(1) NOT NULL DEFAULT '0'
 );
 
 
@@ -56,7 +56,8 @@ CREATE TABLE CCEmailAddress(
 	modDate Timestamp(3) NOT NULL,
 	modUser varchar(20) NOT NULL,
 	modType char(1) NOT NULL,
-	modProc int NULL
+	modProc int NULL,
+	CONSTRAINT PK_emailAddress PRIMARY KEY (EmailID)
 );
 
 
@@ -69,7 +70,8 @@ CREATE TABLE CCPhone(
 	modDate Timestamp(3) NOT NULL,
 	modUser varchar(20) NOT NULL,
 	modType char(1) NOT NULL,
-	modProc int NULL
+	modProc int NULL,
+	CONSTRAINT PK_phone PRIMARY KEY (PhoneID)
 );
 
 
@@ -127,12 +129,13 @@ CREATE TABLE member(
 	resp_dep varchar(3) NULL,
 	pregnant Boolean NULL,
 	bank_acc_type char(3) NOT NULL,
-	homeless varchar(3) NULL
+	homeless varchar(3) NULL,
+	CONSTRAINT PK_member PRIMARY KEY (person_no, house_ref)
 );
 
 
 CREATE TABLE property(
-	prop_ref char(12) NOT NULL,
+		prop_ref char(12) NOT NULL,
 	level_code char(1) NULL,
 	major_ref char(12) NULL,
 	man_scheme char(11) NULL,
@@ -377,7 +380,8 @@ CREATE TABLE property(
 	u_external_steps int NULL,
 	u_hoists Boolean NULL,
 	u_intercom Boolean NULL,
-	u_adapted_kitchen char(3) NULL
+	u_adapted_kitchen char(3) NULL,
+	CONSTRAINT PK_property PRIMARY KEY (prop_ref)
 );
 
 
