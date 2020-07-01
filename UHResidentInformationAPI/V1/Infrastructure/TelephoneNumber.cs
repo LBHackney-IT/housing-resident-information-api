@@ -9,7 +9,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     public class TelephoneNumber
     {
         [Column("contactno")]
-        //[Key]
         public int ContactID { get; set; }
 
         [Column("phoneno")]
@@ -23,6 +22,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public DateTime DateCreated { get; set; }
 
         [Column("phoneid")]
+        [Key]
         public int PhoneId { get; set; }
 
         [Column("moduser")]

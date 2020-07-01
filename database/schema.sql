@@ -42,7 +42,8 @@ CREATE TABLE cccontactlink(
 	source char(10) NULL,
 	MODDATE Timestamp(3) NULL,
 	MODUSER varchar(20) NULL,
-	MODTYPE varchar(1) NOT NULL DEFAULT '0'
+	MODTYPE varchar(1) NOT NULL DEFAULT '0',
+	CONSTRAINT PK_cccontactLink PRIMARY KEY (ContactNo)
 );
 
 
@@ -561,5 +562,6 @@ CREATE TABLE tenagree(
 	u_under_occ_reduct Boolean NULL,
 	u_mutual_ex Boolean NULL,
 	u_uc_start_date Timestamp(0) NULL,
-	u_uc_bal_at_start numeric(10, 2) NULL
+	u_uc_bal_at_start numeric(10, 2) NULL,
+	CONSTRAINT PK_tenagree PRIMARY KEY (tag_ref)
 );

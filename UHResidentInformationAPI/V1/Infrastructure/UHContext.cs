@@ -12,6 +12,10 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public DbSet<TelephoneNumber> TelephoneNumbers { get; set; }
         public DbSet<Address> Addresses { get; set; }
 
+        public DbSet<TenancyAgreement> Tenancy {get; set;}
+
+        public DbSet<ContactLink> Contact {get; set;}
+
         public DbSet<EmailAddresses> EmailAddresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,18 +28,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
                         person.PersonNo
                     });
 
-            //one to many relation
-            modelBuilder.Entity<TelephoneNumber>()
-                .HasOne<Person>()
-                .WithMany()
-                .HasForeignKey(t => t.ContactID)
-                .HasPrincipalKey(p => p.PersonNo);
-
-            modelBuilder.Entity<EmailAddresses>()
-               .HasOne<Person>()
-               .WithMany()
-               .HasForeignKey(e => e.ContactID)
-               .HasPrincipalKey(p => p.PersonNo);
         }
 
     }
