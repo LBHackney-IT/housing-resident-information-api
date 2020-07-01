@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Infrastructure;
@@ -31,7 +32,7 @@ namespace UHResidentInformationAPI.V1.Gateways
             var addressForPerson =
                 _uHContext.Addresses.OrderByDescending(a => a.Dtstamp).FirstOrDefault(a => a.HouseRef == databaseRecord.HouseRef);
 
-            var contactLinkNoForPerson = GetContactNoFromContactLink(databaseRecord.HouseRef);
+            var contactLinkNoForPerson = GetContactNoFromContactLink(databaseRecord.HouseRef, databaseRecord.PersonNo);
 
             var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == contactLinkNoForPerson).ToList();
 
@@ -64,10 +65,12 @@ namespace UHResidentInformationAPI.V1.Gateways
             person.Email = emails.Any() ? emails.Select(n => n.ToDomain()).ToList() : null;
         }
 
-        private int? GetContactNoFromContactLink(string houseReference)
+        private int? GetContactNoFromContactLink(string houseReference, int personReference)
         {
             var tagReference = _uHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef == houseReference)?.TagRef;
-            var contactLinkUsingTagReference = _uHContext.ContactLinks.FirstOrDefault(co => co.TagRef == tagReference)?.ContactID;
+            var contactLinkUsingTagReference = _uHContext.ContactLinks
+                .FirstOrDefault(co => (co.TagRef == tagReference) && (co.PersonNo == personReference.ToString(CultureInfo.InvariantCulture)))?.ContactID;
+
             return contactLinkUsingTagReference;
         }
 

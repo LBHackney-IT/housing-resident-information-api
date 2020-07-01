@@ -22,7 +22,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
 
             var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines, postcode: postcode);
             var tenancyAgreement = TestHelper.CreateDatabaseTenancyAgreementForPerson(addedPerson.Entity.HouseRef);
-            var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreement.TagRef);
+            var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreement.TagRef, addedPerson.Entity.PersonNo);
             var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLink.ContactID);
             var email = TestHelper.CreateDatabaseEmailForPerson(contactLink.ContactID);
 

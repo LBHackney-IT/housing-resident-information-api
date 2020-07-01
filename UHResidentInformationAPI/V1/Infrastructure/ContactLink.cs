@@ -15,6 +15,10 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [StringLength(20)]
         public string TagRef { get; set; }
 
+        [Column("key2")]
+        [StringLength(10)]
+        public string PersonNo { get; set; }
+
         [Column("linktype")]
         [MaxLength(40)]
         public string LinkType { get; set; }

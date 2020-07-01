@@ -82,7 +82,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsPhoneContactDetailsWithPhoneType()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef);
+            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
 
             var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseContactLink.ContactID);
 
@@ -110,7 +110,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsPhoneContactDetailsWithOutPhoneType()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef);
+            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
 
             var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseContactLink.ContactID);
 
@@ -150,7 +150,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsTheEmailDetails()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef);
+            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
 
             var databaseEmailEntity = TestHelper.CreateDatabaseEmailForPerson(databaseContactLink.ContactID);
 
@@ -179,11 +179,11 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             return databaseEntity;
         }
 
-        private ContactLink AddContactLinkForPersonToDatabase(string houseReference)
+        private ContactLink AddContactLinkForPersonToDatabase(string houseReference, int personNumber)
         {
 
             var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
-            var contactLinkDatabaseEntity = TestHelper.CreateDatabaseContactLinkForPerson(tenancyDatabaseEntity.TagRef);
+            var contactLinkDatabaseEntity = TestHelper.CreateDatabaseContactLinkForPerson(tenancyDatabaseEntity.TagRef, personNumber);
 
             UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
             UHContext.ContactLinks.Add(contactLinkDatabaseEntity);

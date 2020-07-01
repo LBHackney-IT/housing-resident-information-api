@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using AutoFixture;
 using UHResidentInformationAPI.V1.Enums;
 using UHResidentInformationAPI.V1.Infrastructure;
@@ -74,12 +75,14 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             return ft;
         }
 
-        public static ContactLink CreateDatabaseContactLinkForPerson(string tagRef)
+        public static ContactLink CreateDatabaseContactLinkForPerson(string tagRef, int personNo)
         {
             var faker = new Fixture();
+            var stringPersonNo = personNo.ToString(CultureInfo.InvariantCulture);
 
             var cl = faker.Build<ContactLink>()
                 .With(cl => cl.TagRef, tagRef)
+                .With(cl => cl.PersonNo, stringPersonNo)
                 .Create();
 
             return cl;
