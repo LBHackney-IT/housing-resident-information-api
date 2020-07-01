@@ -74,17 +74,32 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var telephone1 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseEntity2.PersonNo);
             UHContext.TelephoneNumbers.Add(telephone1);
             UHContext.SaveChanges();
+
             var telephone2 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseEntity2.PersonNo);
             UHContext.TelephoneNumbers.Add(telephone2);
+            UHContext.SaveChanges();
+
+            var emailAddress = TestHelper.CreateDatabaseEmailForPerson(databaseEntity.PersonNo);
+            UHContext.EmailAddresses.Add(emailAddress);
+            UHContext.SaveChanges();
+
+            var emailAddress1 = TestHelper.CreateDatabaseEmailForPerson(databaseEntity2.PersonNo);
+            UHContext.EmailAddresses.Add(emailAddress1);
+            UHContext.SaveChanges();
+
+            var emailAddress2 = TestHelper.CreateDatabaseEmailForPerson(databaseEntity2.PersonNo);
+            UHContext.EmailAddresses.Add(emailAddress2);
             UHContext.SaveChanges();
 
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain() };
+            domainEntity.Email = new List<Email> { emailAddress.ToDomain()};
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
             domainEntity2.PhoneNumber = new List<Phone> { telephone1.ToDomain(), telephone2.ToDomain() };
+            domainEntity2.Email = new List<Email> {emailAddress1.ToDomain(), emailAddress2.ToDomain()};
 
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);

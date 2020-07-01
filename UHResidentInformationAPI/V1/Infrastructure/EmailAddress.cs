@@ -7,13 +7,9 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("ccemailaddress")]
     public class EmailAddresses
     {
-        [Column("emailid")]
-        [MaxLength(9)]
-        [Key]
-        public int EmailId { get; set; }
-
+        
         [Column("contactno")]
-        [MaxLength(9)]
+        [Key]
         public int ContactID { get; set; }
 
         [Column("email")]
@@ -24,8 +20,26 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [MaxLength(5)]
         public string EmailType { get; set; }
 
+        [Column("oktoemail")]
+        [MaxLength(5)]
+        public string OkToEmail { get; set; }
+
+        [Column("defualt")]
+        [MaxLength(5)]
+        public string Default { get; set; }
+
+        [Column("emailid")]
+        public int EmailId { get; set; }
+
         [Column("moddate")]
         public DateTime DateModified { get; set; }
 
+        [Column("moduser")]
+        [MaxLength(20)]
+        public string ModUser { get; set; }
+
+        [Column("modtype")]
+        [StringLength(1)]
+        public string ModType { get; set; }
     }
 }

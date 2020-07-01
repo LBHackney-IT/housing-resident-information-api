@@ -41,5 +41,21 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
                 .With(tel => tel.Type, PhoneType.Mobile.ToString)
                 .Create();
         }
+
+        public static EmailAddresses CreateDatabaseEmailForPerson(int personNo)
+        {
+            var faker = new Fixture();
+
+            var fakeEmail = faker.Build<EmailAddresses>()
+                .With(tel => tel.ContactID, personNo)
+                .Create();
+
+            fakeEmail.DateModified = new DateTime
+                (fakeEmail.DateModified.Year, fakeEmail.DateModified.Month, fakeEmail.DateModified.Day);
+
+            return fakeEmail;
+        }
+
+
     }
 }
