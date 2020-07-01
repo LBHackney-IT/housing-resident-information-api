@@ -16,9 +16,11 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public string Number { get; set; }
 
         [Column("phonetype")]
+        [MaxLength(1)]
         public string Type { get; set; }
 
         [Column("moddate")]
+        [MaxLength(3)]
         public DateTime DateCreated { get; set; }
 
         [Column("phoneid")]
@@ -30,7 +32,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public string ModUser { get; set; }
 
         [Column("modtype")]
-        [StringLength(1)]
+        [MaxLength(1)]
         public string ModType { get; set; }
     }
 }

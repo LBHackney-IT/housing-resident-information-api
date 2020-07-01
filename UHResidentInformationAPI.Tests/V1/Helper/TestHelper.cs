@@ -38,22 +38,44 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
             return faker.Build<TelephoneNumber>()
                 .With(tel => tel.ContactID, contactID)
-                .With(tel => tel.Type, PhoneType.Mobile.ToString)
+                .With(tel => tel.Type, PhoneType.M.ToString)
                 .Create();
         }
 
-        public static EmailAddresses CreateDatabaseEmailForPerson(int personNo)
+        public static EmailAddresses CreateDatabaseEmailForPerson(int contactID)
         {
             var faker = new Fixture();
 
             var fakeEmail = faker.Build<EmailAddresses>()
-                .With(tel => tel.ContactID, personNo)
+                .With(tel => tel.ContactID, contactID)
                 .Create();
 
             fakeEmail.DateModified = new DateTime
                 (fakeEmail.DateModified.Year, fakeEmail.DateModified.Month, fakeEmail.DateModified.Day);
 
             return fakeEmail;
+        }
+
+        public static TenancyAgreement CreateDatabaseTenancyAgreementForPerson(string houseRef)
+        {
+            var faker = new Fixture();
+
+            var ft = faker.Build<TenancyAgreement>()
+                .With(ta => ta.HouseRef, houseRef)
+                .Create();
+
+            return ft;
+        }
+
+        public static ContactLink CreateDatabaseContactLinkForPerson(string tagRef)
+        {
+            var faker = new Fixture();
+
+            var cl = faker.Build<ContactLink>()
+                .With(cl => cl.TagRef, tagRef)
+                .Create();
+
+            return cl;
         }
 
 

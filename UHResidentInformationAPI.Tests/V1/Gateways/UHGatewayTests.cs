@@ -66,40 +66,67 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             UHContext.Addresses.AddRange(addresslist);
             UHContext.SaveChanges();
 
+            var tenancy1 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address.HouseRef);
+            var tenancy2 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address1.HouseRef);
+            var tenancy3 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address2.HouseRef);
 
-            var telephone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseEntity.PersonNo);
+            var tenancyList = new List<TenancyAgreement>
+            {
+                tenancy1,
+                tenancy2,
+                tenancy3
+            };
+
+            UHContext.TenancyAgreements.AddRange(tenancyList);
+            UHContext.SaveChanges();
+
+            var link1 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy1.TagRef);
+            var link2 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy3.TagRef);
+            var link3 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy2.TagRef);
+
+            var contactLinkList = new List<ContactLink>
+            {
+                link1,
+                link2,
+                link3
+            };
+
+            UHContext.ContactLinks.AddRange(contactLinkList);
+            UHContext.SaveChanges();
+
+            var telephone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link1.ContactID);
             UHContext.TelephoneNumbers.Add(telephone);
             UHContext.SaveChanges();
 
-            var telephone1 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseEntity2.PersonNo);
+            var telephone1 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link1.ContactID);
             UHContext.TelephoneNumbers.Add(telephone1);
             UHContext.SaveChanges();
 
-            var telephone2 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseEntity2.PersonNo);
+            var telephone2 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link2.ContactID);
             UHContext.TelephoneNumbers.Add(telephone2);
             UHContext.SaveChanges();
 
-            var emailAddress = TestHelper.CreateDatabaseEmailForPerson(databaseEntity.PersonNo);
+            var emailAddress = TestHelper.CreateDatabaseEmailForPerson(link1.ContactID);
             UHContext.EmailAddresses.Add(emailAddress);
             UHContext.SaveChanges();
 
-            var emailAddress1 = TestHelper.CreateDatabaseEmailForPerson(databaseEntity2.PersonNo);
+            var emailAddress1 = TestHelper.CreateDatabaseEmailForPerson(link1.ContactID);
             UHContext.EmailAddresses.Add(emailAddress1);
             UHContext.SaveChanges();
 
-            var emailAddress2 = TestHelper.CreateDatabaseEmailForPerson(databaseEntity2.PersonNo);
+            var emailAddress2 = TestHelper.CreateDatabaseEmailForPerson(link2.ContactID);
             UHContext.EmailAddresses.Add(emailAddress2);
             UHContext.SaveChanges();
 
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
-            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain() };
-            domainEntity.Email = new List<Email> { emailAddress.ToDomain()};
+            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
+            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain()};
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
-            domainEntity2.PhoneNumber = new List<Phone> { telephone1.ToDomain(), telephone2.ToDomain() };
-            domainEntity2.Email = new List<Email> {emailAddress1.ToDomain(), emailAddress2.ToDomain()};
+            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain()};
+            domainEntity2.Email = new List<Email> {emailAddress2.ToDomain()};
 
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);

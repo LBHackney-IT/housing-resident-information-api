@@ -40,7 +40,7 @@ namespace UHResidentInformationAPI.V1.Gateways
         // Join to get tag_ref from tenagree
             var resident = listOfPerson.ToList()
             .Join(
-                    _uHContext.Tenancy,
+                    _uHContext.TenancyAgreements,
                     anon => anon.person.HouseRef,
                     tenancy => tenancy.HouseRef,
                     (anon, tenancy) =>
@@ -56,9 +56,9 @@ namespace UHResidentInformationAPI.V1.Gateways
             );
 
         // Join on tagRef to get contactNo from cccontactLink
-            var resident1 = resident.ToList()
-            .Join(
-                    _uHContext.Contact,
+            var resident1 = resident
+            .GroupJoin(
+                    _uHContext.ContactLinks,
                     anon => anon.tenancy.TagRef,
                     contact => contact.TagRef,
                     (anon, contact) =>
@@ -67,20 +67,20 @@ namespace UHResidentInformationAPI.V1.Gateways
                         {
                         person = anon.person,
                         address = anon.address,
-                        contact = contact
+                        contact = contact.DefaultIfEmpty()
                         };
                         return people;
                     }
-            ).ToList();
+            );
             
 
 
             //Left join on resident1 and PhoneNumbers using contactID 
-            var resident2 = resident1.ToList()
+            var resident2 = resident1
                 .GroupJoin
                 (
                     _uHContext.TelephoneNumbers,
-                    anon => anon.contact.ContactID,
+                    anon => anon.contact.First()?.ContactID,
                     telephone => telephone.ContactID,
                     (anon, telephone) =>
                     {
@@ -93,14 +93,14 @@ namespace UHResidentInformationAPI.V1.Gateways
                         };
                         return resident;
                     }
-                ).ToList();
+                );
 
             //Left join on resident2 using contactID from cccontactLink
             var listOfResident = resident2
                 .GroupJoin
                 (
                     _uHContext.EmailAddresses,
-                    anon => anon.contact.ContactID,
+                    anon => anon.contact.First()?.ContactID,
                     email => email.ContactID,
                     (anon, email) =>
                     {

@@ -4,16 +4,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
     [Table("cccontactlink")]
-
     public class ContactLink
     {
-       [Column("contactno")]
-       [Key]
+        [Column("contactno")]
+        [Key]
         public int ContactID { get; set; }
 
         [Column("key1")]
+        [StringLength(20)]
+        public string TagRef { get; set; }
 
-        public string TagRef {get; set;}
- 
+        [Column("linktype")]
+        [MaxLength(40)]
+        public string LinkType { get; set; }
+
+        [Column("linkno")]
+        public int LinkNo { get; set; }
+
+        [Column("modtype")]
+        [MaxLength(1)]
+        public string MODTYPE { get; set; }
     }
 }
