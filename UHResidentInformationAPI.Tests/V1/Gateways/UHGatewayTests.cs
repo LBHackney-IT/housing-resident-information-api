@@ -82,16 +82,13 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsPhoneContactDetailsWithPhoneType()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseTenaagre = TestHelper.CreateDatabaseTenancyAgreementForPerson(databasePersonEntity.HouseRef);
-            var databaseContactLink = TestHelper.CreateDatabaseContactLinkForPerson(databaseTenaagre.TagRef);
+            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef);
 
             var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseContactLink.ContactID);
 
             var type = (int) PhoneType.Primary;
             databasePhoneEntity.Type = type.ToString();
 
-            UHContext.TenancyAgreements.Add(databaseTenaagre);
-            UHContext.ContactLinks.Add(databaseContactLink);
             UHContext.TelephoneNumbers.Add(databasePhoneEntity);
             UHContext.SaveChanges();
 
@@ -113,15 +110,12 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsPhoneContactDetailsWithOutPhoneType()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseTenaagre = TestHelper.CreateDatabaseTenancyAgreementForPerson(databasePersonEntity.HouseRef);
-            var databaseContactLink = TestHelper.CreateDatabaseContactLinkForPerson(databaseTenaagre.TagRef);
+            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef);
 
             var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseContactLink.ContactID);
 
             databasePhoneEntity.Type = null;
 
-            UHContext.TenancyAgreements.Add(databaseTenaagre);
-            UHContext.ContactLinks.Add(databaseContactLink);
             UHContext.TelephoneNumbers.Add(databasePhoneEntity);
             UHContext.SaveChanges();
 
@@ -156,12 +150,10 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsTheEmailDetails()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseTenaagre = TestHelper.CreateDatabaseTenancyAgreementForPerson(databasePersonEntity.HouseRef);
-            var databaseContactLink = TestHelper.CreateDatabaseContactLinkForPerson(databaseTenaagre.TagRef);
+            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef);
+
             var databaseEmailEntity = TestHelper.CreateDatabaseEmailForPerson(databaseContactLink.ContactID);
 
-            UHContext.TenancyAgreements.Add(databaseTenaagre);
-            UHContext.ContactLinks.Add(databaseContactLink);
             UHContext.EmailAddresses.Add(databaseEmailEntity);
             UHContext.SaveChanges();
 
@@ -185,6 +177,19 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             UHContext.Persons.Add(databaseEntity);
             UHContext.SaveChanges();
             return databaseEntity;
+        }
+
+        private ContactLink AddContactLinkForPersonToDatabase(string houseReference)
+        {
+
+            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
+            var contactLinkDatabaseEntity = TestHelper.CreateDatabaseContactLinkForPerson(tenancyDatabaseEntity.TagRef);
+
+            UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
+            UHContext.ContactLinks.Add(contactLinkDatabaseEntity);
+            UHContext.SaveChanges();
+
+            return contactLinkDatabaseEntity;
         }
     }
 }

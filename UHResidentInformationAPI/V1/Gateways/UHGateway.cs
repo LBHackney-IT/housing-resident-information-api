@@ -31,17 +31,12 @@ namespace UHResidentInformationAPI.V1.Gateways
             var addressForPerson =
                 _uHContext.Addresses.OrderByDescending(a => a.Dtstamp).FirstOrDefault(a => a.HouseRef == databaseRecord.HouseRef);
 
-            var retrievedTagReference =
-                _uHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef == databaseRecord.HouseRef)?.TagRef;
+            var contactLinkNoForPerson = GetContactNoFromContactLink(databaseRecord.HouseRef);
 
-            var retrievedContactLinkNo =
-                _uHContext.ContactLinks.FirstOrDefault(co => co.TagRef == retrievedTagReference)?.ContactID;
-
-            var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == retrievedContactLinkNo).ToList();
+            var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == contactLinkNoForPerson).ToList();
 
             var emailAddressForPerson =
-                _uHContext.EmailAddresses.Where(c => c.ContactID == retrievedContactLinkNo).ToList();
-
+                _uHContext.EmailAddresses.Where(c => c.ContactID == contactLinkNoForPerson).ToList();
 
             var person = MapPersonAndAddressesToResidentInformation(databaseRecord, addressForPerson);
 
@@ -67,6 +62,13 @@ namespace UHResidentInformationAPI.V1.Gateways
         {
             person.PhoneNumber = phoneNumbers.Any() ? phoneNumbers.Select(n => n.ToDomain()).ToList() : null;
             person.Email = emails.Any() ? emails.Select(n => n.ToDomain()).ToList() : null;
+        }
+
+        private int? GetContactNoFromContactLink(string houseReference)
+        {
+            var tagReference = _uHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef == houseReference)?.TagRef;
+            var contactLinkUsingTagReference = _uHContext.ContactLinks.FirstOrDefault(co => co.TagRef == tagReference)?.ContactID;
+            return contactLinkUsingTagReference;
         }
 
     }
