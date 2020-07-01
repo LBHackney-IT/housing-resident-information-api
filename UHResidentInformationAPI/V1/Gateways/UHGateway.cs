@@ -28,13 +28,20 @@ namespace UHResidentInformationAPI.V1.Gateways
 
             if (databaseRecord == null) return null;
 
-            var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == databaseRecord.PersonNo).ToList();
+            var addressForPerson =
+                _uHContext.Addresses.OrderByDescending(a => a.Dtstamp).FirstOrDefault(a => a.HouseRef == databaseRecord.HouseRef);
+
+            var retrievedTagReference =
+                _uHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef == databaseRecord.HouseRef)?.TagRef;
+
+            var retrievedContactLinkNo =
+                _uHContext.ContactLinks.FirstOrDefault(co => co.TagRef == retrievedTagReference)?.ContactID;
+
+            var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == retrievedContactLinkNo).ToList();
 
             var emailAddressForPerson =
                 _uHContext.EmailAddresses.Where(c => c.ContactID == databaseRecord.PersonNo).ToList();
 
-            var addressForPerson =
-                _uHContext.Addresses.OrderByDescending(a => a.Dtstamp).FirstOrDefault(a => a.HouseRef == databaseRecord.HouseRef);
 
             var person = MapPersonAndAddressesToResidentInformation(databaseRecord, addressForPerson);
 

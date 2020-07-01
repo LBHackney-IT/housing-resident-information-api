@@ -33,13 +33,13 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             return fa;
         }
 
-        public static TelephoneNumber CreateDatabaseTelephoneNumberForPersonId(int personNo)
+        public static TelephoneNumber CreateDatabaseTelephoneNumberForPersonId(int contactNo)
         {
             var faker = new Fixture();
             var fakePhoneType = (int) PhoneType.Mobile;
 
             var fakeNumber = faker.Build<TelephoneNumber>()
-                .With(tel => tel.ContactID, personNo)
+                .With(tel => tel.ContactID, contactNo)
                 .With(tel => tel.Type, fakePhoneType.ToString)
                 .Create();
 
@@ -61,6 +61,28 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
                 (fakeEmail.DateModified.Year, fakeEmail.DateModified.Month, fakeEmail.DateModified.Day);
 
             return fakeEmail;
+        }
+
+        public static TenancyAgreement CreateDatabaseTenancyAgreementForPerson(string houseRef)
+        {
+            var faker = new Fixture();
+
+            var ft = faker.Build<TenancyAgreement>()
+                .With(ta => ta.HouseRef, houseRef)
+                .Create();
+
+            return ft;
+        }
+
+        public static ContactLink CreateDatabaseContactLinkForPerson(string tagRef)
+        {
+            var faker = new Fixture();
+
+            var cl = faker.Build<ContactLink>()
+                .With(cl => cl.TagRef, tagRef)
+                .Create();
+
+            return cl;
         }
     }
 }

@@ -21,12 +21,16 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             context.SaveChanges();
 
             var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines, postcode: postcode);
-            var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(addedPerson.Entity.PersonNo);
+            var tenancyAgreement = TestHelper.CreateDatabaseTenancyAgreementForPerson(addedPerson.Entity.HouseRef);
+            var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreement.TagRef);
+            var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLink.ContactID);
             var email = TestHelper.CreateDatabaseEmailForPerson(addedPerson.Entity.PersonNo);
 
             context.Addresses.Add(address);
             context.TelephoneNumbers.Add(phone);
             context.EmailAddresses.Add(email);
+            context.TenancyAgreements.Add(tenancyAgreement);
+            context.ContactLinks.Add(contactLink);
             context.SaveChanges();
 
             return new ResidentInformation
