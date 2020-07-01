@@ -34,7 +34,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                 _uHContext.EmailAddresses.Where(c => c.ContactID == databaseRecord.PersonNo).ToList();
 
             var addressForPerson =
-                _uHContext.Addresses.FirstOrDefault(a => a.HouseRef == databaseRecord.HouseRef);
+                _uHContext.Addresses.OrderByDescending(a => a.Dtstamp).FirstOrDefault(a => a.HouseRef == databaseRecord.HouseRef);
 
             var person = MapPersonAndAddressesToResidentInformation(databaseRecord, addressForPerson);
 
