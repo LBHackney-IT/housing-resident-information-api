@@ -37,7 +37,7 @@ namespace UHResidentInformationAPI.V1.Gateways
             if (!listOfPerson.Any())
                 return new List<ResidentInformation>();
 
-        // Join to get tag_ref from tenagree
+            // Join to get tag_ref from tenagree
             var resident = listOfPerson.ToList()
             .Join(
                     _uHContext.TenancyAgreements,
@@ -45,34 +45,34 @@ namespace UHResidentInformationAPI.V1.Gateways
                     tenancy => tenancy.HouseRef,
                     (anon, tenancy) =>
                     {
-                        var people = new 
+                        var people = new
                         {
-                        person = anon.person,
-                        address = anon.address,
-                        tenancy = tenancy
+                            person = anon.person,
+                            address = anon.address,
+                            tenancy = tenancy
                         };
                         return people;
                     }
             );
 
-        // Join on tagRef to get contactNo from cccontactLink
+            // Join on tagRef to get contactNo from cccontactLink
             var resident1 = resident
             .GroupJoin(
                     _uHContext.ContactLinks,
-                    anon => anon.tenancy.TagRef,
-                    contact => contact.TagRef,
+                    anon => anon.tenancy.TagRef.Trim(),
+                    contact => contact.TagRef.Trim(),
                     (anon, contact) =>
                     {
-                        var people = new 
+                        var person = new
                         {
-                        person = anon.person,
-                        address = anon.address,
-                        contact = contact.DefaultIfEmpty()
+                            person = anon.person,
+                            address = anon.address,
+                            contact = contact.DefaultIfEmpty()
                         };
-                        return people;
+                        return person;
                     }
             );
-            
+
 
 
             //Left join on resident1 and PhoneNumbers using contactID 
@@ -95,7 +95,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                     }
                 );
 
-            //Left join on resident2 using contactID from cccontactLink
+            //Left join on resident2 and email addresses using contactID from cccontactLink
             var listOfResident = resident2
                 .GroupJoin
                 (

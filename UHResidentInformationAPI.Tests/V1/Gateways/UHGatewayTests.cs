@@ -121,12 +121,12 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
-            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain()};
+            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
-            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain()};
-            domainEntity2.Email = new List<Email> {emailAddress2.ToDomain()};
+            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
+            domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
 
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);

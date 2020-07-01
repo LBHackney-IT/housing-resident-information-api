@@ -82,7 +82,6 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var content = response.Result.Content;
             var stringContent = await content.ReadAsStringAsync().ConfigureAwait(true);
             var convertedResponse = JsonConvert.DeserializeObject<ResidentInformationList>(stringContent);
-            var r = convertedResponse.Residents.ToList();
 
             convertedResponse.Residents.Count.Should().Be(2);
             convertedResponse.Residents.Should().ContainEquivalentOf(matchingResidentOne);

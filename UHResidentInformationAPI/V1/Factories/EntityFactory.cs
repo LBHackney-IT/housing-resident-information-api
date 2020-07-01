@@ -19,8 +19,8 @@ namespace UHResidentInformationAPI.V1.Factories
             {
                 HouseReference = databaseEntity.HouseRef,
                 PersonNumber = databaseEntity.PersonNo,
-                FirstName = databaseEntity.FirstName,
-                LastName = databaseEntity.LastName,
+                FirstName = databaseEntity.FirstName.Trim(),
+                LastName = databaseEntity.LastName.Trim(),
                 DateOfBirth = databaseEntity.DateOfBirth.ToString("O", CultureInfo.InvariantCulture),
                 NINumber = databaseEntity.NINumber
             };

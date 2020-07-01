@@ -11,7 +11,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public int ContactID { get; set; }
 
         [Column("key1")]
-        [StringLength(20)]
+        [StringLength(20)] //Needs trim
         public string TagRef { get; set; }
 
         [Column("linktype")]

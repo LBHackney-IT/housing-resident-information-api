@@ -7,7 +7,7 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 {
     public static class TestHelper
     {
-        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null, string houseRef = null, int? personNo = null)
+        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null, string houseRef = null)
         {
             var faker = new Fixture();
             var fp = faker.Build<Person>()
@@ -17,7 +17,6 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             fp.FirstName = firstname ?? fp.FirstName;
             fp.LastName = lastname ?? fp.LastName;
             if (houseRef != null) fp.HouseRef = (string) houseRef;
-            fp.PersonNo = personNo ?? fp.PersonNo;
             return fp;
         }
         public static Address CreateDatabaseAddressForPersonId(string houseRef, string address1 = null)
@@ -45,7 +44,6 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
         public static EmailAddresses CreateDatabaseEmailForPerson(int contactID)
         {
             var faker = new Fixture();
-
             var fakeEmail = faker.Build<EmailAddresses>()
                 .With(tel => tel.ContactID, contactID)
                 .Create();
@@ -66,7 +64,6 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
             return ft;
         }
-
         public static ContactLink CreateDatabaseContactLinkForPerson(string tagRef)
         {
             var faker = new Fixture();

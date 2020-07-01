@@ -136,7 +136,7 @@ CREATE TABLE member(
 
 
 CREATE TABLE property(
-		prop_ref char(12) NOT NULL,
+	prop_ref char(12) NOT NULL,
 	level_code char(1) NULL,
 	major_ref char(12) NULL,
 	man_scheme char(11) NULL,

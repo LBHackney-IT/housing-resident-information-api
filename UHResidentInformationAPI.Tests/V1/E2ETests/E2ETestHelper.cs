@@ -16,27 +16,25 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var addedPerson = context.Persons.Add(person);
             context.SaveChanges();
 
-            var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines);          
-            var tenancyAgreement = TestHelper.CreateDatabaseTenancyAgreementForPerson(address.HouseRef);
+            var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines);
+            //Save entities for tenancy agreement and contact
+            var tenancyAgreement = TestHelper.CreateDatabaseTenancyAgreementForPerson(addedPerson.Entity.HouseRef);
             var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreement.TagRef);
             var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLink.ContactID);
             var email = TestHelper.CreateDatabaseEmailForPerson(contactLink.ContactID);
-            
 
             context.Addresses.Add(address);
-            context.SaveChanges();
             context.TenancyAgreements.Add(tenancyAgreement);
-            context.SaveChanges();
             context.ContactLinks.Add(contactLink);
-            context.SaveChanges();
             context.TelephoneNumbers.Add(phone);
             context.EmailAddresses.Add(email);
             context.SaveChanges();
 
+
             return new ResidentInformation
             {
-                FirstName = person.FirstName,
-                LastName = person.LastName,
+                FirstName = person.FirstName.Trim(),
+                LastName = person.LastName.Trim(),
                 PhoneNumber =
                     new List<Phone>
                     {
