@@ -8,8 +8,11 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("ccphone")]
     public class TelephoneNumber
     {
-        [Column("contactno")]
+        [Column("phoneid")]
         [Key]
+        public int PhoneId { get; set; }
+
+        [Column("contactno")]
         public int ContactID { get; set; }
 
         [Column("phoneno")]
@@ -21,9 +24,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
 
         [Column("moddate")]
         public DateTime DateCreated { get; set; }
-
-        [Column("phoneid")]
-        public int PhoneId { get; set; }
 
         [Column("moduser")]
         [MaxLength(20)]
