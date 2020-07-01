@@ -7,7 +7,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("ccemailaddress")]
     public class EmailAddresses
     {
-        
         [Column("contactno")]
         [Key]
         public int ContactID { get; set; }

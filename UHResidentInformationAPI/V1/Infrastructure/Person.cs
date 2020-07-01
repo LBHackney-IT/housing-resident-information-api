@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
     [Table("member")]
@@ -9,7 +10,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         [Column("house_ref")]
         [StringLength(10)]
         [Key]
-        public string houseRef { get; set; }
         public string HouseRef { get; set; }
 
         [Column("person_no")]
@@ -29,7 +29,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public string LastName { get; set; }
 
         [Column("ni_no")]
-        [MaxLength(10)]
         [StringLength(12)]
         public string NINumber { get; set; }
 
