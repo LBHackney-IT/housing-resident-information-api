@@ -10,6 +10,10 @@ namespace UHResidentInformationAPI.V1.Factories
 {
     public static class ResponseFactory
     {
+<<<<<<< HEAD
+=======
+        //Convert application domain objects to response object
+>>>>>>> ab789b17c3111f0f79d7aae0a82c90809933ee75
         public static ResidentInformationResponse ToResponse(this ResidentInformation domain)
         {
             return new ResidentInformationResponse
