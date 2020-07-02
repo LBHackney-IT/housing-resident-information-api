@@ -5,7 +5,7 @@ namespace UHResidentInformationAPI.V1.Boundary.Responses
 
     public class ResidentInformation
     {
-        public int UPRN { get; set; }
+        public string UPRN { get; set; }
 
         public string FirstName { get; set; }
 

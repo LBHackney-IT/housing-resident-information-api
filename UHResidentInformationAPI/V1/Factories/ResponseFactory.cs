@@ -14,6 +14,7 @@ namespace UHResidentInformationAPI.V1.Factories
         {
             return new ResidentInformationResponse
             {
+                UPRN = domain.UPRN,
                 FirstName = domain.FirstName,
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,

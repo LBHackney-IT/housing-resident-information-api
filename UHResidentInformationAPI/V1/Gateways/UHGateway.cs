@@ -24,8 +24,8 @@ namespace UHResidentInformationAPI.V1.Gateways
             //Inner join on person and address
             var listOfPerson = _uHContext.Persons
                 .Where(a => string.IsNullOrEmpty(houseReference) || a.HouseRef.Contains(houseReference))
-                .Where(a => string.IsNullOrEmpty(firstName) || a.FirstName.ToLower().Contains(firstName.ToLower()))
-                .Where(a => string.IsNullOrEmpty(lastName) || a.LastName.ToLower().Contains(lastName.ToLower()))
+                .Where(a => string.IsNullOrEmpty(firstName) || a.FirstName.Trim().ToLower().Contains(firstName.ToLower()))
+                .Where(a => string.IsNullOrEmpty(lastName) || a.LastName.Trim().ToLower().Contains(lastName.ToLower()))
                 .Join(
                 _uHContext.Addresses
                 .Where(a => string.IsNullOrEmpty(address) || a.AddressLine1.ToLower().Contains(address.ToLower())),
@@ -54,7 +54,6 @@ namespace UHResidentInformationAPI.V1.Gateways
                         return people;
                     }
             );
-
             // Join on tagRef to get contactNo from cccontactLink
             var resident1 = resident
             .GroupJoin(
@@ -67,20 +66,19 @@ namespace UHResidentInformationAPI.V1.Gateways
                         {
                             person = anon.person,
                             address = anon.address,
-                            contact = contact.DefaultIfEmpty()
+                            contact = contact.FirstOrDefault()
                         };
                         return person;
                     }
             );
-
-
 
             //Left join on resident1 and PhoneNumbers using contactID 
             var resident2 = resident1
                 .GroupJoin
                 (
                     _uHContext.TelephoneNumbers,
-                    anon => anon.contact.First()?.ContactID,
+
+                    anon => anon.contact?.ContactID,
                     telephone => telephone.ContactID,
                     (anon, telephone) =>
                     {
@@ -100,13 +98,14 @@ namespace UHResidentInformationAPI.V1.Gateways
                 .GroupJoin
                 (
                     _uHContext.EmailAddresses,
-                    anon => anon.contact.First()?.ContactID,
+                    anon => anon.contact?.ContactID,
                     email => email.ContactID,
                     (anon, email) =>
                     {
                         var resident = anon.person.ToDomain();
                         resident.Email = email.Any() ? email.Select(e => e.ToDomain()).ToList() : null;
                         resident.ResidentAddress = anon.address.ToDomain();
+                        resident.UPRN = anon.address.UPRN;
                         resident.PhoneNumber = anon.phone.Any() ? anon.phone.ToList().ToDomain() : null;
                         return resident;
                     }
