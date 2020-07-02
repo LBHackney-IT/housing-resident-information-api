@@ -1,6 +1,6 @@
 
 CREATE TABLE cccontactlink(
-	ContactNo int NOT NULL,
+	ContactNo int NOT NULL PRIMARY KEY,
 	LinkType varchar(40) NOT NULL,
 	GFAreaNo int NULL,
 	GFSectionNo int NULL,
@@ -53,7 +53,7 @@ CREATE TABLE CCEmailAddress(
 	EmailType varchar(5) NOT NULL,
 	OKToEmail varchar(5) NOT NULL,
 	Defualt varchar(5) NOT NULL,
-	EmailID int NOT NULL,
+	EmailID int NOT NULL PRIMARY KEY,
 	modDate Timestamp(3) NOT NULL,
 	modUser varchar(20) NOT NULL,
 	modType char(1) NOT NULL,
@@ -66,13 +66,12 @@ CREATE TABLE CCPhone(
 	PhoneNo varchar(20) NOT NULL,
 	PhoneType varchar(1) NULL,
 	OKToCall varchar(1) NULL,
-	PhoneID int NOT NULL,
+	PhoneID int NOT NULL PRIMARY KEY,
 	modDate Timestamp(3) NOT NULL,
 	modUser varchar(20) NOT NULL,
 	modType char(1) NOT NULL,
 	modProc int NULL
 );
-
 
 CREATE TABLE member(
 	house_ref char(10) NOT NULL,
@@ -128,12 +127,13 @@ CREATE TABLE member(
 	resp_dep varchar(3) NULL,
 	pregnant Boolean NULL,
 	bank_acc_type char(3) NOT NULL,
-	homeless varchar(3) NULL
+	homeless varchar(3) NULL,
+	CONSTRAINT PK_member PRIMARY KEY (house_ref, person_no)
 );
 
 
 CREATE TABLE property(
-	prop_ref char(12) NOT NULL,
+	prop_ref char(12) NOT NULL PRIMARY KEY,
 	level_code char(1) NULL,
 	major_ref char(12) NULL,
 	man_scheme char(11) NULL,
@@ -383,7 +383,7 @@ CREATE TABLE property(
 
 
 CREATE TABLE tenagree(
-	tag_ref char(11) NOT NULL,
+	tag_ref char(11) NOT NULL PRIMARY KEY,
 	prop_ref char(12) NULL,
 	house_ref char(10) NULL,
 	tag_desc char(200) NULL,

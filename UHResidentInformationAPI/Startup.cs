@@ -16,6 +16,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using UHResidentInformationAPI.V1.Gateways;
 using UHResidentInformationAPI.V1.Infrastructure;
+using UHResidentInformationAPI.V1.UseCase;
+using UHResidentInformationAPI.V1.UseCase.Interfaces;
 using UHResidentInformationAPI.Versioning;
 
 namespace UHResidentInformationAPI
@@ -30,7 +32,7 @@ namespace UHResidentInformationAPI
         public IConfiguration Configuration { get; }
         private static List<ApiVersionDescription> _apiVersions { get; set; }
         //TODO update the below to the name of your API
-        private const string ApiName = "Your API Name";
+        private const string ApiName = "Housing Resident Information API";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public static void ConfigureServices(IServiceCollection services)
@@ -123,8 +125,8 @@ namespace UHResidentInformationAPI
 
         private static void RegisterUseCases(IServiceCollection services)
         {
-            if (services == null) throw new ArgumentNullException(nameof(services));
-            // your usecases here
+            services.AddScoped<IGetAllResidentsUseCase, GetAllResidentsUseCase>();
+            services.AddScoped<IGetResidentByIdUseCase, GetResidentByIdUseCase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

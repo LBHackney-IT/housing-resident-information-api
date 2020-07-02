@@ -1,29 +1,36 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using UHResidentInformationAPI.V1.Enums;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("CCPhone")]
+    [Table("ccphone")]
     public class TelephoneNumber
     {
-        [Column("ContactNo")]
-        [MaxLength(32)]
+        [Column("phoneid")]
         [Key]
-        public string ContactID { get; set; }
+        public int PhoneId { get; set; }
 
-        [Column("PhoneNo")]
-        [MaxLength(80)]
+        [Column("contactno")]
+        public int ContactID { get; set; }
+
+        [Column("phoneno")]
+        [MaxLength(20)]
         public string Number { get; set; }
 
-
-        [Column("PhoneType")]
-        [MaxLength(80)]
+        [Column("phonetype")]
         public string Type { get; set; }
 
-        [Column("ModDate")]
-        [MaxLength(80)]
+        [Column("moddate")]
         public DateTime DateCreated { get; set; }
 
+        [Column("moduser")]
+        [MaxLength(20)]
+        public string ModUser { get; set; }
+
+        [Column("modtype")]
+        [StringLength(1)]
+        public string ModType { get; set; }
     }
 }
