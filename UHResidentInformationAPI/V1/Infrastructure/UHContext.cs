@@ -26,13 +26,6 @@ namespace UHResidentInformationAPI.V1.Infrastructure
                         person.HouseRef,
                         person.PersonNo
                     });
-            //modelBuilder.Entity<EmailAddresses>()
-            //    .HasOne<ContactLink>()
-            //    .WithMany()
-            //    .HasForeignKey(e => e.ContactID)
-            //    .HasPrincipalKey(p => p.ContactID);
-
-
         }
 
     }
