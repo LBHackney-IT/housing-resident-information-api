@@ -1,4 +1,3 @@
-using AutoFixture;
 using FluentAssertions;
 using NUnit.Framework;
 using UHResidentInformationAPI.Tests.V1.Helper;
@@ -130,13 +129,14 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
             domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
 
-
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
 
         }
+
+
         [Test]
         public void GetAllResidentsWithNoEmailWithLastNameQueryParameterReturnsMatchingResidents()
         {

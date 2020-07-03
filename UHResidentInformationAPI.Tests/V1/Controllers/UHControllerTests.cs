@@ -33,7 +33,6 @@ namespace UHResidentInformationAPI.Tests.V1.Controllers
             {
                 new ResidentInformation()
                 {
-
                     UPRN = "123456789",
                     FirstName = "test",
                     LastName = "test",

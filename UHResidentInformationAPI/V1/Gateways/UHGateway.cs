@@ -1,9 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using UHResidentInformationAPI.V1.Boundary.Responses;
-using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Infrastructure;
 using ResidentInformation = UHResidentInformationAPI.V1.Domain.ResidentInformation;
@@ -77,7 +73,6 @@ namespace UHResidentInformationAPI.V1.Gateways
                 .GroupJoin
                 (
                     _uHContext.TelephoneNumbers,
-
                     anon => anon.contact?.ContactID,
                     telephone => telephone.ContactID,
                     (anon, telephone) =>
