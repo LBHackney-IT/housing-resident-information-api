@@ -42,6 +42,7 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             var fakeNumber = faker.Build<TelephoneNumber>()
                 .With(tel => tel.ContactID, contactNo)
                 .With(tel => tel.Type, fakePhoneType.ToString)
+                .Without(tel => tel.PhoneId)
                 .Create();
 
             fakeNumber.DateCreated = new DateTime
@@ -55,7 +56,8 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             var faker = new Fixture();
 
             var fakeEmail = faker.Build<EmailAddresses>()
-                .With(tel => tel.ContactID, contactNo)
+                .With(email => email.ContactID, contactNo)
+                .Without(email => email.ContactID)
                 .Create();
 
             fakeEmail.DateModified = new DateTime
@@ -83,6 +85,7 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             var cl = faker.Build<ContactLink>()
                 .With(cl => cl.TagRef, tagRef)
                 .With(cl => cl.PersonNo, stringPersonNo)
+                .Without(cl => cl.ContactID)
                 .Create();
 
             return cl;
