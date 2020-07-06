@@ -155,12 +155,12 @@ namespace UHResidentInformationAPI.V1.Gateways
                     email => email.ContactID,
                     (anon, email) =>
                     {
-                        var telephones = new
+                        var emails = new
                         {
                             contactid = anon.ContactID,
                             email = email,
                         };
-                        return telephones;
+                        return emails;
                     }
                 );
 

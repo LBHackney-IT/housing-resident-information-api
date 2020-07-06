@@ -60,10 +60,5 @@ namespace UHResidentInformationAPI.V1.Factories
             };
         }
 
-        /*public static List<Domain.Phone> ToDomain(this IEnumerable<Infrastructure.TelephoneNumber> phoneList)
-        {
-            return phoneList.Select(p => p.ToDomain()).ToList();
-        }*/
-
     }
 }
