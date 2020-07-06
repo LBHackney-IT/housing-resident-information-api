@@ -50,12 +50,12 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             return fakeNumber;
         }
 
-        public static EmailAddresses CreateDatabaseEmailForPerson(int personNo)
+        public static EmailAddresses CreateDatabaseEmailForPerson(int contactNo)
         {
             var faker = new Fixture();
 
             var fakeEmail = faker.Build<EmailAddresses>()
-                .With(tel => tel.ContactID, personNo)
+                .With(tel => tel.ContactID, contactNo)
                 .Create();
 
             fakeEmail.DateModified = new DateTime

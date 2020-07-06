@@ -11,6 +11,7 @@ namespace UHResidentInformationAPI.V1.Factories
 {
     public static class ResponseFactory
     {
+        //Convert application domain objects to response object
         public static ResidentInformationResponse ToResponse(this ResidentInformation domain)
         {
             return new ResidentInformationResponse
@@ -21,9 +22,9 @@ namespace UHResidentInformationAPI.V1.Factories
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,
                 NINumber = domain.NINumber,
-                PhoneNumber = domain.PhoneNumber.ToResponse(),
-                Email = domain.Email.ToResponse(),
-                Address = domain.Address.ToResponse()
+                Address = domain.ResidentAddress.ToResponse(),
+                PhoneNumber = domain.PhoneNumber?.ToResponse(),
+                Email = domain.Email?.ToResponse()
             };
         }
         public static List<ResidentInformationResponse> ToResponse(this IEnumerable<ResidentInformation> people)
@@ -53,9 +54,9 @@ namespace UHResidentInformationAPI.V1.Factories
         private static AddressResponse ToResponse(this Address address)
         {
             if (address == null) return new AddressResponse();
-
             return new AddressResponse
             {
+                PropertyRef = address.PropertyRef,
                 AddressLine1 = address.AddressLine1,
                 PostCode = address.PostCode
             };

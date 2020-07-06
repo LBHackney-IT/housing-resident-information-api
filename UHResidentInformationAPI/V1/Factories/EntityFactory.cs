@@ -10,18 +10,19 @@ using DbAddress = UHResidentInformationAPI.V1.Infrastructure.Address;
 
 namespace UHResidentInformationAPI.V1.Factories
 {
+    //Convert Database result objects to Application Domain objects
     public static class EntityFactory
     {
         public static ResidentInformation ToDomain(this Person databaseEntity)
         {
             return new ResidentInformation
             {
-                HouseReference = databaseEntity.HouseRef,
+                HouseReference = databaseEntity.HouseRef.Trim(),
                 PersonNumber = databaseEntity.PersonNo,
-                FirstName = databaseEntity.FirstName,
-                LastName = databaseEntity.LastName,
+                FirstName = databaseEntity.FirstName.Trim(),
+                LastName = databaseEntity.LastName.Trim(),
                 DateOfBirth = databaseEntity.DateOfBirth.ToString("O", CultureInfo.InvariantCulture),
-                NINumber = databaseEntity.NINumber
+                NINumber = databaseEntity.NINumber.Trim()
             };
         }
 
@@ -29,14 +30,13 @@ namespace UHResidentInformationAPI.V1.Factories
         {
             return people.Select(p => p.ToDomain()).ToList();
         }
-
         public static Address ToDomain(this DbAddress databaseEntity)
         {
             return new Address
             {
-                PropertyRef = databaseEntity.PropertyRef,
+                PropertyRef = databaseEntity.PropertyRef.Trim(),
                 AddressLine1 = databaseEntity.AddressLine1.Trim(),
-                PostCode = databaseEntity.PostCode
+                PostCode = databaseEntity.PostCode.Trim()
             };
         }
 
@@ -51,14 +51,14 @@ namespace UHResidentInformationAPI.V1.Factories
                 LastModified = databaseEntity.DateCreated
             };
         }
-
         public static Email ToDomain(this EmailAddresses databaseEntity)
         {
             return new Email
             {
-                EmailAddress = databaseEntity.EmailAddress,
+                EmailAddress = databaseEntity.EmailAddress.Trim(),
                 LastModified = databaseEntity.DateModified
             };
         }
+
     }
 }
