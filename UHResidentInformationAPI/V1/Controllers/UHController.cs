@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Boundary.Requests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
-using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.UseCase.Interfaces;
 
 namespace UHResidentInformationAPI.V1.Controllers

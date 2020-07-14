@@ -52,7 +52,7 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
             var houseRef = _fixture.Create<string>();
             var personRef = _fixture.Create<int>();
 
-            stubbedResidentInfo.ResidentAddress = null;
+            stubbedResidentInfo.Address = null;
 
             _mockUhGateway.Setup(x =>
                     x.GetResidentById(houseRef, personRef))
