@@ -50,7 +50,8 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
 
             var response = _classUnderTest.Execute(rqp, cursor: 0, limit: 20);
 
-            var expectedResponse = new ResidentInformationList{
+            var expectedResponse = new ResidentInformationList
+            {
                 Residents = gatewayResult.ToResponse()
             };
 

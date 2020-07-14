@@ -20,7 +20,7 @@ namespace UHResidentInformationAPI.V1.Gateways
 
         public List<ResidentInformation> GetAllResidents(int cursor, int limit, string houseReference = null, string firstName = null, string lastName = null, string addressLine1 = null, string postcode = null)
         {
-            return (List<ResidentInformation>)(
+            return (List<ResidentInformation>) (
                 from person in _uHContext.Persons
                 where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef, houseReference)
                 where string.IsNullOrEmpty(firstName) || EF.Functions.ILike(person.FirstName, firstName)
@@ -30,7 +30,8 @@ namespace UHResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(postcode) || EF.Functions.ILike(address.Postcode.Replace(" ", ""), "%" + postcode.Replace(" ", "") + "%")
                 orderby person.HouseRef, person.PersonNo
                 select new { person, address }
-            ).Skip(cursor).Take(limit).ToList().Select(x => {
+            ).Skip(cursor).Take(limit).ToList().Select(x =>
+            {
                 var person = new Person
                 {
                     AtRisk = x.person.AtRisk,
