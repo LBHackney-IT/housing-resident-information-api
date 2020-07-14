@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -16,6 +17,51 @@ namespace UHResidentInformationAPI.V1.Gateways
         {
             _uHContext = uHContext;
         }
+
+        public List<ResidentInformation> GetAllResidents(int cursor, int limit, string houseReference = null, string firstName = null, string lastName = null, string addressLine1 = null, string postcode = null)
+        {
+            return (List<ResidentInformation>)(
+                from person in _uHContext.Persons
+                where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef, houseReference)
+                where string.IsNullOrEmpty(firstName) || EF.Functions.ILike(person.FirstName, firstName)
+                where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastName)
+                join address in _uHContext.Addresses on person.HouseRef equals address.HouseRef
+                where string.IsNullOrEmpty(addressLine1) || EF.Functions.ILike(address.AddressLine1.Replace(" ", ""), "%" + addressLine1.Replace(" ", "") + "%")
+                where string.IsNullOrEmpty(postcode) || EF.Functions.ILike(address.Postcode.Replace(" ", ""), "%" + postcode.Replace(" ", "") + "%")
+                orderby person.HouseRef, person.PersonNo
+                select new { person, address }
+            ).Skip(cursor).Take(limit).ToList().Select(x => {
+                var person = new Person
+                {
+                    AtRisk = x.person.AtRisk,
+                    BankAccType = x.person.BankAccType,
+                    DateOfBirth = x.person.DateOfBirth,
+                    FirstName = x.person.FirstName,
+                    FullEd = x.person.FullEd,
+                    HouseRef = x.person.HouseRef,
+                    LastName = x.person.LastName,
+                    MemberSID = x.person.MemberSID,
+                    NINumber = x.person.NINumber,
+                    Oap = x.person.Oap,
+                    PersonNo = x.person.PersonNo,
+                    Responsible = x.person.Responsible,
+                    Title = x.person.Title
+                };
+
+                var address = new Address
+                {
+                    PropertyRef = x.address.PropertyRef,
+                    AddressLine1 = x.address.AddressLine1,
+                    Postcode = x.address.Postcode
+                };
+
+                var residentInformation = person.ToDomain();
+                residentInformation.Address = address.ToDomain();
+
+                return residentInformation;
+            }).ToList();
+        }
+
         public ResidentInformation GetResidentById(string houseReference, int personReference)
         {
             var databaseRecord = _uHContext.Persons.FirstOrDefault(p => p.HouseRef == houseReference && p.PersonNo.Equals(personReference));
@@ -45,17 +91,18 @@ namespace UHResidentInformationAPI.V1.Gateways
 
             if (address == null) return resident;
 
-            resident.ResidentAddress = address.ToDomain();
+            resident.Address = address.ToDomain();
             resident.UPRN = address.UPRN;
 
             return resident;
         }
 
-        private static void AttachContactDetailsToPerson(ResidentInformation person, List<TelephoneNumber> phoneNumbers,
+        private static ResidentInformation AttachContactDetailsToPerson(ResidentInformation person, List<TelephoneNumber> phoneNumbers,
             List<EmailAddresses> emails)
         {
-            person.PhoneNumber = phoneNumbers.Any() ? phoneNumbers.Select(n => n.ToDomain()).ToList() : null;
-            person.Email = emails.Any() ? emails.Select(n => n.ToDomain()).ToList() : null;
+            person.PhoneNumberList = phoneNumbers.Any() ? phoneNumbers.Select(n => n.ToDomain()).ToList() : null;
+            person.EmailList = emails.Any() ? emails.Select(n => n.ToDomain()).ToList() : null;
+            return person;
         }
 
         private int? GetContactNoFromContactLink(string houseReference, int personReference)
@@ -128,7 +175,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                     anon => anon.contact
                     );
 
-            //join contacts on PhoneNumbers using contactID 
+            //join contacts on PhoneNumbers using contactID
             var residentWithPhones = contacts
                 .Join
                 (
@@ -146,7 +193,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                     }
                 );
 
-            //join contacts on Emails using contactID 
+            //join contacts on Emails using contactID
             var residentWithEmails = contacts
                 .Join
                 (
@@ -179,9 +226,9 @@ namespace UHResidentInformationAPI.V1.Gateways
                     .Select(e => e.email.ToDomain()).ToList();
 
                     var resident = person.person.ToDomain();
-                    resident.PhoneNumber = phoneList.Any() ? phoneList : null;
-                    resident.Email = emailList.Any() ? emailList : null;
-                    resident.ResidentAddress = person.address.ToDomain();
+                    resident.PhoneNumberList = phoneList.Any() ? phoneList : null;
+                    resident.EmailList = emailList.Any() ? emailList : null;
+                    resident.Address = person.address.ToDomain();
                     resident.UPRN = person.address.UPRN;
                     return resident;
                 }

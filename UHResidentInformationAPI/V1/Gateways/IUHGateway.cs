@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using UHResidentInformationAPI.V1.Domain;
-using ResidentInformation = UHResidentInformationAPI.V1.Domain.ResidentInformation;
 
 namespace UHResidentInformationAPI.V1.Gateways
 {
     public interface IUHGateway
     {
-        List<ResidentInformation> GetAllResidents(string houseReference, string firstName, string lastName, string address);
+        List<ResidentInformation> GetAllResidents(int cursor, int limit, string houseReference, string firstName, string lastName, string addressLine1, string postcode);
         ResidentInformation GetResidentById(string houseReference, int personReference);
     }
 }

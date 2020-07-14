@@ -14,9 +14,9 @@ namespace UHResidentInformationAPI.V1.Domain
         public string DateOfBirth { get; set; }
         public string NINumber { get; set; }
         public string UPRN { get; set; }
-        public List<Phone> PhoneNumber { get; set; }
-        public List<Email> Email { get; set; }
-        public Address ResidentAddress { get; set; }
+        public List<Phone> PhoneNumberList { get; set; }
+        public List<Email> EmailList { get; set; }
+        public Address Address { get; set; }
     }
 
     public class Address

@@ -6,11 +6,11 @@ using NUnit.Framework;
 using UHResidentInformationAPI.Tests.V1.Helper;
 using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Enums;
+using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Gateways;
 using UHResidentInformationAPI.V1.Infrastructure;
 using DomainAddress = UHResidentInformationAPI.V1.Domain.Address;
-using UHResidentInformationAPI.V1.Factories;
-using Address = UHResidentInformationAPI.V1.Infrastructure.Address;
+using DatabaseAddress = UHResidentInformationAPI.V1.Infrastructure.Address;
 
 namespace UHResidentInformationAPI.Tests.V1.Gateways
 {
@@ -31,6 +31,136 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GatewayImplementsBoundaryInterface()
         {
             Assert.NotNull(_classUnderTest is IUHGateway);
+        }
+
+        [Test]
+        public void GetAllResidentsReturnsEmptyArrayWhenNoRecordMatches()
+        {
+            var houseRef = _fixture.Create<string>();
+            var response = _classUnderTest.GetAllResidents(cursor: 0, limit: 20, houseReference: houseRef);
+
+            response.Should().BeEmpty();
+        }
+
+        [Test]
+        public void GetAllResidentsReturnsResultsWhenHouseRefMatchFound()
+        {
+            var databasePersonMatch = AddPersonRecordToDatabase();
+            var databasePersonNonMatch = AddPersonRecordToDatabase();
+
+            AddAddressRecordToDatabase(databasePersonMatch.HouseRef);
+            AddAddressRecordToDatabase(databasePersonNonMatch.HouseRef);
+
+            var houseRef = databasePersonMatch.HouseRef;
+            var results = _classUnderTest
+                .GetAllResidents(cursor: 0, limit: 20, houseReference: houseRef);
+
+            results.Count.Should().Be(1);
+            results[0].HouseReference.Should().Be(databasePersonMatch.HouseRef);
+        }
+
+        [Test]
+        public void GetAllResidentsReturnsResultsWhenFirstNameMatchFound()
+        {
+            var databasePersonMatch = AddPersonRecordToDatabase();
+            var databasePersonNonMatch = AddPersonRecordToDatabase();
+            var addressMatch = AddAddressRecordToDatabase(databasePersonMatch.HouseRef);
+            AddAddressRecordToDatabase(databasePersonNonMatch.HouseRef);
+
+            var firstName = databasePersonMatch.FirstName;
+            var results = _classUnderTest
+                .GetAllResidents(cursor: 0, limit: 20, firstName: firstName);
+
+            results.Count.Should().Be(1);
+            results[0].HouseReference.Should().Be(databasePersonMatch.HouseRef);
+            results[0].Address.AddressLine1.Should().Be(addressMatch.AddressLine1);
+        }
+
+        [Test]
+        public void GetAllResidentsReturnsResultsWhenLastNameMatchFound()
+        {
+            var databasePersonMatch = AddPersonRecordToDatabase();
+            var databasePersonNonMatch = AddPersonRecordToDatabase();
+            var addressMatch = AddAddressRecordToDatabase(databasePersonMatch.HouseRef);
+            AddAddressRecordToDatabase(databasePersonNonMatch.HouseRef);
+
+            var lastName = databasePersonMatch.LastName;
+            var results = _classUnderTest
+                .GetAllResidents(cursor: 0, limit: 20, lastName: lastName);
+
+            results.Count.Should().Be(1);
+            results[0].HouseReference.Should().Be(databasePersonMatch.HouseRef);
+            results[0].Address.AddressLine1.Should().Be(addressMatch.AddressLine1);
+        }
+
+        [Test]
+        public void GetAllResidentsReturnsResultsWhenResidentAddressLine1MatchFound()
+        {
+            var databasePersonMatch = AddPersonRecordToDatabase();
+            var databasePersonNonMatch = AddPersonRecordToDatabase();
+            var addressMatch = AddAddressRecordToDatabase(databasePersonMatch.HouseRef);
+            AddAddressRecordToDatabase(databasePersonNonMatch.HouseRef);
+
+            var addressLine1 = addressMatch.AddressLine1;
+            var results = _classUnderTest
+                .GetAllResidents(cursor: 0, limit: 20, addressLine1: addressLine1);
+
+            results.Count.Should().Be(1);
+            results[0].HouseReference.Should().Be(databasePersonMatch.HouseRef);
+            results[0].Address.AddressLine1.Should().Be(addressMatch.AddressLine1);
+        }
+
+        [Test]
+        public void GetAllResidentsReturnsResultsWhenResidentPostcodeMatchFound()
+        {
+            var databasePersonMatch = AddPersonRecordToDatabase();
+            var databasePersonNonMatch = AddPersonRecordToDatabase();
+            var addressMatch = AddAddressRecordToDatabase(databasePersonMatch.HouseRef);
+            AddAddressRecordToDatabase(databasePersonNonMatch.HouseRef);
+
+            var postCode = addressMatch.Postcode;
+            var results = _classUnderTest
+                .GetAllResidents(cursor: 0, limit: 20, postcode: postCode);
+
+            results.Count.Should().Be(1);
+            results[0].HouseReference.Should().Be(databasePersonMatch.HouseRef);
+            results[0].Address.AddressLine1.Should().Be(addressMatch.AddressLine1);
+        }
+
+        [Test]
+        public void GetAllResidentsWontReturnMoreRecordsThanTheLimit()
+        {
+            var persons = new List<Person>
+            {
+                AddPersonRecordToDatabase(),
+                AddPersonRecordToDatabase(),
+                AddPersonRecordToDatabase()
+            };
+
+            persons.ForEach(p => AddAddressRecordToDatabase(p.HouseRef));
+
+            var results = _classUnderTest.GetAllResidents(0, 2);
+
+            results.Count.Should().Be(2);
+        }
+
+        [Test]
+        public void GetAllResidentsWillOffsetRecordsByTheCursor()
+        {
+            var persons = new List<Person>
+            {
+                AddPersonRecordToDatabase(houseRef: "1"),
+                AddPersonRecordToDatabase(houseRef: "2"),
+                AddPersonRecordToDatabase(houseRef: "3")
+            };
+
+            persons.ForEach(p => AddAddressRecordToDatabase(p.HouseRef));
+
+            var results = _classUnderTest.GetAllResidents(1, 2);
+
+            results.Count.Should().Be(2);
+            results[0].HouseReference.Replace(" ", "").Should().Be(persons[1].HouseRef);
+            results[1].HouseReference.Replace(" ", "").Should().Be(persons[2].HouseRef);
         }
 
         [Test]
@@ -77,7 +207,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
 
             response.HouseReference.Should().Be(databasePersonEntity.HouseRef);
-            response.ResidentAddress.Should().BeEquivalentTo(expectedDomainAddress);
+            response.Address.Should().BeEquivalentTo(expectedDomainAddress);
         }
 
         [Test]
@@ -105,7 +235,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             };
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
-            response.PhoneNumber.Should().BeEquivalentTo(expectedPhoneNumberList);
+            response.PhoneNumberList.Should().BeEquivalentTo(expectedPhoneNumberList);
         }
 
         [Test]
@@ -132,7 +262,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             };
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
-            response.PhoneNumber.Should().BeEquivalentTo(expectedPhoneNumberList);
+            response.PhoneNumberList.Should().BeEquivalentTo(expectedPhoneNumberList);
         }
 
         [Test]
@@ -169,14 +299,22 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             };
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
-            response.Email.Should().BeEquivalentTo(expectedEmailAddressList);
+            response.EmailList.Should().BeEquivalentTo(expectedEmailAddressList);
         }
 
 
-        private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null)
+        private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null, string houseRef = null)
         {
-            var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname, lastname);
+            var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname, lastname, houseRef);
             UHContext.Persons.Add(databaseEntity);
+            UHContext.SaveChanges();
+            return databaseEntity;
+        }
+
+        private DatabaseAddress AddAddressRecordToDatabase(string houseRef)
+        {
+            var databaseEntity = TestHelper.CreateDatabaseAddressForPersonId(houseRef);
+            UHContext.Addresses.Add(databaseEntity);
             UHContext.SaveChanges();
             return databaseEntity;
         }
@@ -219,7 +357,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
             var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef);
 
-            var addresslist = new List<Address>
+            var addresslist = new List<DatabaseAddress>
             {
                 address,
                 address1,
@@ -282,16 +420,16 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             UHContext.SaveChanges();
 
             var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
+            domainEntity.Address = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
-            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
-            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
+            domainEntity.PhoneNumberList = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
+            domainEntity.EmailList = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
 
             var domainEntity2 = databaseEntity2.ToDomain();
-            domainEntity2.ResidentAddress = address2.ToDomain();
+            domainEntity2.Address = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
-            domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
+            domainEntity2.PhoneNumberList = new List<Phone> { telephone2.ToDomain() };
+            domainEntity2.EmailList = new List<Email> { emailAddress2.ToDomain() };
 
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);
@@ -322,7 +460,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
             var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef);
 
-            var addresslist = new List<Address>
+            var addresslist = new List<DatabaseAddress>
             {
                 address,
                 address1,
@@ -374,14 +512,14 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
 
 
             var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
+            domainEntity.Address = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
-            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
+            domainEntity.PhoneNumberList = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
 
             var domainEntity2 = databaseEntity2.ToDomain();
-            domainEntity2.ResidentAddress = address2.ToDomain();
+            domainEntity2.Address = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
+            domainEntity2.PhoneNumberList = new List<Phone> { telephone2.ToDomain() };
 
             var listOfPersons = _classUnderTest.GetAllResidents(lastName: "brown");
             listOfPersons.Count.Should().Be(2);
@@ -411,7 +549,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
             var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef);
 
-            var addresslist = new List<Address>
+            var addresslist = new List<DatabaseAddress>
             {
                 address,
                 address1,
@@ -462,14 +600,14 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             UHContext.SaveChanges();
 
             var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
+            domainEntity.Address = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
-            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
+            domainEntity.EmailList = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
 
             var domainEntity2 = databaseEntity2.ToDomain();
-            domainEntity2.ResidentAddress = address2.ToDomain();
+            domainEntity2.Address = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
+            domainEntity2.EmailList = new List<Email> { emailAddress2.ToDomain() };
 
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom", lastName: "brown");
             listOfPersons.Count.Should().Be(2);
@@ -499,7 +637,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
             var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef, address1: "2 Hillman st");
 
-            var addresslist = new List<Address>
+            var addresslist = new List<DatabaseAddress>
             {
                 address,
                 address1,
@@ -524,7 +662,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             UHContext.SaveChanges();
 
             var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
+            domainEntity.Address = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
 
             var listOfPersons = _classUnderTest.GetAllResidents(address: "1 Hillman st");
