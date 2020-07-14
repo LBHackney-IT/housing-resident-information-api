@@ -5,6 +5,6 @@ namespace UHResidentInformationAPI.V1.UseCase.Interfaces
 {
     public interface IGetAllResidentsUseCase
     {
-        ResidentInformationList Execute(ResidentQueryParam rqp);
+        ResidentInformationList Execute(ResidentQueryParam rqp, int cursor, int limit);
     }
 }

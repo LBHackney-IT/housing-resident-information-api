@@ -22,9 +22,9 @@ namespace UHResidentInformationAPI.V1.Factories
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,
                 NINumber = domain.NINumber,
-                Address = domain.ResidentAddress.ToResponse(),
-                PhoneNumber = domain.PhoneNumber?.ToResponse(),
-                Email = domain.Email?.ToResponse()
+                PhoneNumber = domain.PhoneNumberList.ToResponse(),
+                Email = domain.EmailList.ToResponse(),
+                Address = domain.Address.ToResponse()
             };
         }
         public static List<ResidentInformationResponse> ToResponse(this IEnumerable<ResidentInformation> people)

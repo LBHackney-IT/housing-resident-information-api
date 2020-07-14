@@ -7,6 +7,7 @@ using UHResidentInformationAPI.V1.Enums;
 using UHResidentInformationAPI.V1.Infrastructure;
 using Address = UHResidentInformationAPI.V1.Domain.Address;
 using DbAddress = UHResidentInformationAPI.V1.Infrastructure.Address;
+using ResidentInformationResponse = UHResidentInformationAPI.V1.Boundary.Responses.ResidentInformation;
 
 namespace UHResidentInformationAPI.V1.Factories
 {

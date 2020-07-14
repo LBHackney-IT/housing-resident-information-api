@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Boundary.Requests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
+using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.UseCase.Interfaces;
 
 namespace UHResidentInformationAPI.V1.Controllers
@@ -27,13 +28,12 @@ namespace UHResidentInformationAPI.V1.Controllers
         /// <response code="200">Success. Returns a list of matching residents information</response>
         /// <response code="400">Invalid Query Parameter.</response>
         [ProducesResponseType(typeof(ResidentInformationList), StatusCodes.Status200OK)]
-
         [HttpGet]
-        public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp)
+        public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp, int? cursor = 0, int? limit = 20)
         {
             try
             {
-                return Ok(_getAllResidentsUseCase.Execute(rqp));
+                return Ok(_getAllResidentsUseCase.Execute(rqp, (int) cursor, (int) limit));
             }
             catch (InvalidQueryParameterException e)
             {

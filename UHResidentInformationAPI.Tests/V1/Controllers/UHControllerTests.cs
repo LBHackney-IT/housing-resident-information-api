@@ -29,29 +29,27 @@ namespace UHResidentInformationAPI.Tests.V1.Controllers
         [Test]
         public void ListRecordsTest()
         {
-            var residentInfo = new List<ResidentInformation>()
+            var persons = new List<ResidentInformation>()
             {
                 new ResidentInformation()
                 {
-                    UPRN = "123456789",
                     FirstName = "test",
                     LastName = "test",
                     DateOfBirth = "01/01/2020"
+
                 }
             };
 
             var residentInformationList = new ResidentInformationList()
             {
-                Residents = residentInfo
+                Residents = persons
             };
 
-            var rqp = new ResidentQueryParam
-            {
-                FirstName = "Ciasom",
-                LastName = "Tessellate",
-            };
+            var rqp = new ResidentQueryParam();
 
-            _mockGetAllResidentsUseCase.Setup(x => x.Execute(rqp)).Returns(residentInformationList);
+            _mockGetAllResidentsUseCase
+                .Setup(x => x.Execute(rqp, 0, 20)).Returns(residentInformationList);
+
             var response = _classUnderTest.ListRecords(rqp) as OkObjectResult;
 
             response.Should().NotBeNull();
