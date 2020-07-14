@@ -64,7 +64,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                 {
                     PropertyRef = address.PropertyRef,
                     AddressLine1 = address.AddressLine1,
-                    PostCode = address.PostCode
+                    Postcode = address.Postcode
                 },
                 DateOfBirth = person.DateOfBirth.ToString("O", CultureInfo.InvariantCulture)
             };

@@ -29,7 +29,7 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
                 .With(add => add.HouseRef, houseRef)
                 .Create();
 
-            fa.PostCode = postcode ?? fa.PostCode;
+            fa.Postcode = postcode ?? fa.Postcode;
             fa.AddressLine1 = address1 ?? fa.AddressLine1;
             return fa;
         }

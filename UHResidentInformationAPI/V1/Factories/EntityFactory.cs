@@ -36,7 +36,7 @@ namespace UHResidentInformationAPI.V1.Factories
             {
                 PropertyRef = databaseEntity.PropertyRef.Trim(),
                 AddressLine1 = databaseEntity.AddressLine1.Trim(),
-                PostCode = databaseEntity.PostCode.Trim()
+                Postcode = databaseEntity.Postcode.Trim()
             };
         }
 

@@ -22,7 +22,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
 
         [Column("post_code")]
         [StringLength(10)]
-        public string PostCode { get; set; }
+        public string Postcode { get; set; }
 
         [Column("u_llpg_ref")]
         [StringLength(16)]

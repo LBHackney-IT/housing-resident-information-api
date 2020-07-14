@@ -58,7 +58,7 @@ namespace UHResidentInformationAPI.V1.Factories
             {
                 PropertyRef = address.PropertyRef,
                 AddressLine1 = address.AddressLine1,
-                PostCode = address.PostCode
+                Postcode = address.Postcode
             };
         }
     }

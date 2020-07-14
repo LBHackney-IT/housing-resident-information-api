@@ -71,7 +71,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             {
                 PropertyRef = databaseAddressEntity.PropertyRef,
                 AddressLine1 = databaseAddressEntity.AddressLine1,
-                PostCode = databaseAddressEntity.PostCode
+                Postcode = databaseAddressEntity.Postcode
             };
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
