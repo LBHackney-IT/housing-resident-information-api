@@ -67,19 +67,23 @@ namespace UHResidentInformationAPI.V1.Gateways
             return contactLinkUsingTagReference;
         }
 
-        public List<ResidentInformation> GetAllResidents(string houseReference = null, string firstName = null, string lastName = null, string address = null)
+        public List<ResidentInformation> GetAllResidents(int cursor, int limit, string houseReference = null, string firstName = null, string lastName = null, string address = null)
         {
             //Inner join on person and address
             var listOfPerson = _uHContext.Persons
-                .Where(a => string.IsNullOrEmpty(houseReference) || a.HouseRef.Contains(houseReference))
-                .Where(a => string.IsNullOrEmpty(firstName) || a.FirstName.Trim().ToLower().Contains(firstName.ToLower()))
-                .Where(a => string.IsNullOrEmpty(lastName) || a.LastName.Trim().ToLower().Contains(lastName.ToLower()))
+                .Where(p => string.IsNullOrEmpty(houseReference) || p.HouseRef.Contains(houseReference))
+                .Where(p => string.IsNullOrEmpty(firstName) || p.FirstName.Trim().ToLower().Contains(firstName.ToLower()))
+                .Where(p => string.IsNullOrEmpty(lastName) || p.LastName.Trim().ToLower().Contains(lastName.ToLower()))
                 .Join(
                 _uHContext.Addresses
                 .Where(a => string.IsNullOrEmpty(address) || a.AddressLine1.ToLower().Contains(address.ToLower())),
                 person => person.HouseRef,
                 address => address.HouseRef,
-                (person, address) => new { person, address });
+                (person, address) => new { person, address })
+                .OrderBy(x => x.person.HouseRef) // TO CONFIRM
+                .ThenBy(x => x.person.PersonNo) // TO CONFIRM
+                .Skip(cursor)
+                .Take(limit);
 
             //Query result is empty, return empty list
             if (!listOfPerson.Any())
@@ -128,7 +132,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                     anon => anon.contact
                     );
 
-            //join contacts on PhoneNumbers using contactID 
+            //join contacts on PhoneNumbers using contactID
             var residentWithPhones = contacts
                 .Join
                 (
@@ -146,7 +150,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                     }
                 );
 
-            //join contacts on Emails using contactID 
+            //join contacts on Emails using contactID
             var residentWithEmails = contacts
                 .Join
                 (

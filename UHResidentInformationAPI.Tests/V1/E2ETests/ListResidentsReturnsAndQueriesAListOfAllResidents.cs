@@ -112,10 +112,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             convertedResponse.Residents.Should().ContainEquivalentOf(matchingResidentOne);
         }
 
-
-
         [Test]
-        [Ignore("TO DO")]
         public async Task UsingQueryParametersReturnsAPaginatedResponse()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "shape");

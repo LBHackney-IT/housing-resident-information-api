@@ -57,7 +57,6 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
             var fakeEmail = faker.Build<EmailAddresses>()
                 .With(email => email.ContactID, contactNo)
-                .Without(email => email.ContactID)
                 .Create();
 
             fakeEmail.DateModified = new DateTime

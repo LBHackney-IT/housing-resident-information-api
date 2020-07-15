@@ -195,7 +195,10 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         }
         public void GetAllResidentsIfThereAreNoResidentsReturnsAnEmptyList()
         {
-            _classUnderTest.GetAllResidents("00011", "bob", "brown", "1 Hillman Street").Should().BeEmpty();
+            _classUnderTest
+                .GetAllResidents(0, 20, "00011", "bob", "brown", "1 Hillman Street")
+                .Should()
+                .BeEmpty();
         }
 
         [Test]
@@ -214,6 +217,8 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             //Add person entities to test database
             UHContext.Persons.AddRange(personslist);
             UHContext.SaveChanges();
+
+            //TODO - refactor with method for entity creation
 
             var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef);
             var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
@@ -293,7 +298,9 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
             domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
 
-            var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
+            var listOfPersons = _classUnderTest
+                .GetAllResidents(0, 20, firstName: "ciasom");
+
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -314,6 +321,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
                 databaseEntity1,
                 databaseEntity2
             };
+
             //Add person entities to test database
             UHContext.Persons.AddRange(personslist);
             UHContext.SaveChanges();
@@ -328,6 +336,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
                 address1,
                 address2
             };
+
             //Add address enitites to test database
             UHContext.Addresses.AddRange(addresslist);
             UHContext.SaveChanges();
@@ -372,7 +381,6 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             UHContext.TelephoneNumbers.Add(telephone2);
             UHContext.SaveChanges();
 
-
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
@@ -383,7 +391,9 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity2.UPRN = address2.UPRN;
             domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
 
-            var listOfPersons = _classUnderTest.GetAllResidents(lastName: "brown");
+            var listOfPersons = _classUnderTest
+                .GetAllResidents(0, 20, lastName: "brown");
+
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -471,7 +481,9 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity2.UPRN = address2.UPRN;
             domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
 
-            var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom", lastName: "brown");
+            var listOfPersons = _classUnderTest
+                .GetAllResidents(0, 20, firstName: "ciasom", lastName: "brown");
+
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -491,6 +503,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
                 databaseEntity1,
                 databaseEntity2
             };
+
             //Add person entities to test database
             UHContext.Persons.AddRange(personslist);
             UHContext.SaveChanges();
@@ -505,6 +518,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
                 address1,
                 address2
             };
+
             //Add address enitites to test database
             UHContext.Addresses.AddRange(addresslist);
             UHContext.SaveChanges();
@@ -527,7 +541,9 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
 
-            var listOfPersons = _classUnderTest.GetAllResidents(address: "1 Hillman st");
+            var listOfPersons = _classUnderTest
+                .GetAllResidents(0, 20, address: "1 Hillman st");
+
             listOfPersons.Count.Should().Be(1);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
         }
