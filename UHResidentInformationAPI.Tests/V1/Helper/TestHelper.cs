@@ -8,15 +8,17 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 {
     public static class TestHelper
     {
-        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null)
+        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null, string houseRef = null, int personNo = 1)
         {
             var faker = new Fixture();
-            var fp = faker.Build<Person>()
-                .Create();
+            var fp = faker.Build<Person>().Create();
+
             fp.DateOfBirth = new DateTime
                 (fp.DateOfBirth.Year, fp.DateOfBirth.Month, fp.DateOfBirth.Day);
             fp.FirstName = firstname ?? fp.FirstName;
             fp.LastName = lastname ?? fp.LastName;
+            fp.HouseRef = houseRef ?? fp.HouseRef;
+            fp.PersonNo = personNo;
 
             return fp;
         }
@@ -57,7 +59,8 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
             var fakeEmail = faker.Build<EmailAddresses>()
                 .With(email => email.ContactID, contactNo)
-                .Create();
+                .Without(email => email.ContactID) // otherwise context complains about tracking
+                .Create();                         // multiple entities with same id?
 
             fakeEmail.DateModified = new DateTime
                 (fakeEmail.DateModified.Year, fakeEmail.DateModified.Month, fakeEmail.DateModified.Day);

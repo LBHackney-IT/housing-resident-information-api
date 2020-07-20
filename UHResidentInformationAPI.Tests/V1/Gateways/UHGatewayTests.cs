@@ -172,33 +172,41 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             response.Email.Should().BeEquivalentTo(expectedEmailAddressList);
         }
 
-
-        private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null)
-        {
-            var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname, lastname);
-            UHContext.Persons.Add(databaseEntity);
-            UHContext.SaveChanges();
-            return databaseEntity;
-        }
-
-        private ContactLink AddContactLinkForPersonToDatabase(string houseReference, int personNumber)
-        {
-
-            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
-            var contactLinkDatabaseEntity = TestHelper.CreateDatabaseContactLinkForPerson(tenancyDatabaseEntity.TagRef, personNumber);
-
-            UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
-            UHContext.ContactLinks.Add(contactLinkDatabaseEntity);
-            UHContext.SaveChanges();
-
-            return contactLinkDatabaseEntity;
-        }
+        [Test]
         public void GetAllResidentsIfThereAreNoResidentsReturnsAnEmptyList()
         {
             _classUnderTest
                 .GetAllResidents(0, 20, "00011", "bob", "brown", "1 Hillman Street")
                 .Should()
                 .BeEmpty();
+        }
+
+        [Test]
+        public void GetAllResidentsIfThereAreMatchesReturnsAnOrderedList()
+        {
+            var persons = new List<Person>
+            {
+                AddPersonRecordToDatabase(firstname: "Ciasom", houseRef: "houseRef1", personNo: 1),
+                AddPersonRecordToDatabase(firstname: "CIASOM", houseRef: "houseRef1", personNo: 2),
+                AddPersonRecordToDatabase(firstname: "ciasom", houseRef: "houseRef2", personNo: 1)
+            };
+
+            persons.ForEach(p => AddAddressForPersonToDatabase(p.HouseRef));
+            persons.ForEach(p => AddContactLinkForPersonToDatabase(p.HouseRef, p.PersonNo));
+
+            // var allPersons = UHContext.Persons;
+            // Console.WriteLine("> allPersons:");
+            // Console.WriteLine(JsonConvert.SerializeObject(allPersons));
+
+            var receivedMatches = _classUnderTest.GetAllResidents(0, 10, firstName: "Ciasom");
+
+            // Console.WriteLine("> receivedMatches:");
+            // Console.WriteLine(JsonConvert.SerializeObject(receivedMatches));
+
+            receivedMatches.Count.Should().Be(3);
+            // receivedMatches[0].Should().BeEquivalentTo(persons[0]);
+            // receivedMatches[1].Should().BeEquivalentTo(persons[1]);
+            // receivedMatches[2].Should().BeEquivalentTo(persons[2]);
         }
 
         [Test]
@@ -217,8 +225,6 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             //Add person entities to test database
             UHContext.Persons.AddRange(personslist);
             UHContext.SaveChanges();
-
-            //TODO - refactor with method for entity creation
 
             var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef);
             var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
@@ -304,9 +310,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
-
         }
-
 
         [Test]
         public void GetAllResidentsWithNoEmailWithLastNameQueryParameterReturnsMatchingResidents()
@@ -548,6 +552,33 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
         }
 
+        private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null, string houseRef = null, int personNo = 1)
+        {
+            var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname, lastname, houseRef, personNo);
+            UHContext.Persons.Add(databaseEntity);
+            UHContext.SaveChanges();
+            return databaseEntity;
+        }
 
+        private Address AddAddressForPersonToDatabase(string houseRef = null)
+        {
+            var address = TestHelper.CreateDatabaseAddressForPersonId(houseRef);
+            UHContext.Addresses.Add(address);
+            UHContext.SaveChanges();
+            return address;
+        }
+
+        private ContactLink AddContactLinkForPersonToDatabase(string houseReference, int personNumber)
+        {
+
+            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
+            var contactLinkDatabaseEntity = TestHelper.CreateDatabaseContactLinkForPerson(tenancyDatabaseEntity.TagRef, personNumber);
+
+            UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
+            UHContext.ContactLinks.Add(contactLinkDatabaseEntity);
+            UHContext.SaveChanges();
+
+            return contactLinkDatabaseEntity;
+        }
     }
 }
