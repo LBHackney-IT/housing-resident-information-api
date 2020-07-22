@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("property")]
+    [Table("property", Schema = "dbo")]
     public class Address
     {
         [Column("prop_ref")]

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("tenagree")]
+    [Table("tenagree", Schema = "dbo")]
     public class TenancyAgreement
     {
         [Column("house_ref")]

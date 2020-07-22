@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("ccemailaddress")]
+    [Table("ccemailaddress", Schema = "dbo")]
     public class EmailAddresses
     {
         [Column("contactno")]
