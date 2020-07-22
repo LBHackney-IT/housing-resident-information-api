@@ -8,28 +8,28 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("CCPhone", Schema = "dbo")]
     public class TelephoneNumber
     {
-        [Column("PhoneID")]
+        [Column("phoneid")]
         [Key]
         public int PhoneId { get; set; }
 
-        [Column("ContactNo")]
+        [Column("contactno")]
         public int ContactID { get; set; }
 
-        [Column("PhoneNo")]
+        [Column("phoneno")]
         [MaxLength(20)]
         public string Number { get; set; }
 
-        [Column("PhoneType")]
+        [Column("phonetype")]
         public string Type { get; set; }
 
-        [Column("modDate")]
+        [Column("moddate")]
         public DateTime DateCreated { get; set; }
 
-        [Column("modUser")]
+        [Column("moduser")]
         [MaxLength(20)]
         public string ModUser { get; set; }
 
-        [Column("modType")]
+        [Column("modtype")]
         [StringLength(1)]
         public string ModType { get; set; }
     }

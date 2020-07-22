@@ -7,26 +7,26 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("CCContactLink", Schema = "dbo")]
     public class ContactLink
     {
-        [Column("ContactNo")]
+        [Column("contactno")]
         [Key]
         public int ContactID { get; set; }
 
-        [Column("Key1")]
+        [Column("key1")]
         [StringLength(20)]
         public string TagRef { get; set; }
 
-        [Column("Key2")]
+        [Column("key2")]
         [StringLength(10)]
         public string PersonNo { get; set; }
 
-        [Column("LinkType")]
+        [Column("linktype")]
         [MaxLength(40)]
         public string LinkType { get; set; }
 
-        [Column("LinkNo")]
+        [Column("linkno")]
         public int LinkNo { get; set; }
 
-        [Column("MODTYPE")]
+        [Column("modtype")]
         [MaxLength(1)]
         public string MODTYPE { get; set; }
     }

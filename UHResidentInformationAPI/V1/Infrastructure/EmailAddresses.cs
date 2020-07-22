@@ -7,37 +7,37 @@ namespace UHResidentInformationAPI.V1.Infrastructure
     [Table("CCEmailAddress", Schema = "dbo")]
     public class EmailAddresses
     {
-        [Column("ContactNo")]
+        [Column("contactno")]
         public int ContactID { get; set; }
 
-        [Column("Email")]
+        [Column("email")]
         [MaxLength(50)]
         public string EmailAddress { get; set; }
 
-        [Column("EmailType")]
+        [Column("emailtype")]
         [MaxLength(5)]
         public string EmailType { get; set; }
 
-        [Column("OKToEmail")]
+        [Column("oktoemail")]
         [MaxLength(5)]
         public string OkToEmail { get; set; }
 
-        [Column("Defualt")]
+        [Column("defualt")]
         [MaxLength(5)]
         public string Default { get; set; }
 
-        [Column("EmailID")]
+        [Column("emailid")]
         [Key]
         public int EmailId { get; set; }
 
-        [Column("modDate")]
+        [Column("moddate")]
         public DateTime DateModified { get; set; }
 
-        [Column("modUser")]
+        [Column("moduser")]
         [MaxLength(20)]
         public string ModUser { get; set; }
 
-        [Column("modType")]
+        [Column("modtype")]
         [StringLength(1)]
         public string ModType { get; set; }
     }
