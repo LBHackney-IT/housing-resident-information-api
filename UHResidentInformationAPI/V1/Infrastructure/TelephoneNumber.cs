@@ -5,7 +5,7 @@ using UHResidentInformationAPI.V1.Enums;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("ccphone", Schema = "dbo")]
+    [Table("CCPhone", Schema = "dbo")]
     public class TelephoneNumber
     {
         [Column("phoneid")]

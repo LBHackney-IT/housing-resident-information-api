@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("cccontactlink", Schema = "dbo")]
+    [Table("CCContactLink", Schema = "dbo")]
     public class ContactLink
     {
         [Column("contactno")]
