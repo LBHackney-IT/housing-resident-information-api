@@ -1,3 +1,4 @@
+using System;
 using UHResidentInformationAPI.V1.Boundary.Requests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
 using UHResidentInformationAPI.V1.Factories;
@@ -16,7 +17,10 @@ namespace UHResidentInformationAPI.V1.UseCase
 
         public ResidentInformationList Execute(ResidentQueryParam rqp)
         {
+            Console.WriteLine("Entering List Endpoint UseCase");
             var residents = _uHGateway.GetAllResidents(rqp.HouseReference, rqp.FirstName, rqp.LastName, rqp.Address).ToResponse();
+
+            Console.WriteLine("Leaving List Endpoint UseCase");
             return new ResidentInformationList
             {
                 Residents = residents

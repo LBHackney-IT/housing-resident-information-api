@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Newtonsoft.Json;
 using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Infrastructure;
 using Address = UHResidentInformationAPI.V1.Infrastructure.Address;
@@ -69,6 +71,7 @@ namespace UHResidentInformationAPI.V1.Gateways
 
         public List<ResidentInformation> GetAllResidents(string houseReference = null, string firstName = null, string lastName = null, string address = null)
         {
+            Console.WriteLine("Inner join on person and address");
             //Inner join on person and address
             var listOfPerson = _uHContext.Persons
                 .Where(a => string.IsNullOrEmpty(houseReference) || a.HouseRef.Contains(houseReference))
@@ -81,10 +84,14 @@ namespace UHResidentInformationAPI.V1.Gateways
                 address => address.HouseRef,
                 (person, address) => new { person, address });
 
+            Console.WriteLine($"one person: {JsonConvert.SerializeObject(listOfPerson.FirstOrDefault().person)}");
+
+            Console.WriteLine("Query result is empty, return empty list");
             //Query result is empty, return empty list
             if (!listOfPerson.Any())
                 return new List<ResidentInformation>();
 
+            Console.WriteLine("Join to get tag_ref from tenagree");
             // Join to get tag_ref from tenagree
             var residentWithTagRefs = listOfPerson.ToList()
             .Join(
@@ -102,7 +109,9 @@ namespace UHResidentInformationAPI.V1.Gateways
                         return people;
                     }
             );
+            Console.WriteLine($"tenagreeperson: {JsonConvert.SerializeObject(residentWithTagRefs.FirstOrDefault().person)}, address: {JsonConvert.SerializeObject(residentWithTagRefs.FirstOrDefault().address)}, tenancy: {JsonConvert.SerializeObject(residentWithTagRefs.FirstOrDefault().tenancy)}");
 
+            Console.WriteLine("Left Join on tagRef to get contactNo from cccontactLink");
             //Left Join on tagRef to get contactNo from cccontactLink
             var residentWithContacts = residentWithTagRefs
             .GroupJoin(
@@ -118,17 +127,23 @@ namespace UHResidentInformationAPI.V1.Gateways
                             address = anon.address,
                             contact = contact
                         };
+
                         return person;
                     }
             );
 
+            Console.WriteLine($"cccontactLinkperson: {JsonConvert.SerializeObject(residentWithContacts.FirstOrDefault().person)}, address: {JsonConvert.SerializeObject(residentWithContacts.FirstOrDefault().address)}, contact: {JsonConvert.SerializeObject(residentWithContacts.FirstOrDefault().contact)}");
+
+
+            Console.WriteLine("retrieve and project all contactNo's");
             //retrieve and project all contactNo's
             var contacts = residentWithContacts
                 .SelectMany(
                     anon => anon.contact
                     );
 
-            //join contacts on PhoneNumbers using contactID 
+            Console.WriteLine("join contacts on PhoneNumbers using contactID");
+            //join contacts on PhoneNumbers using contactID
             var residentWithPhones = contacts
                 .Join
                 (
@@ -146,7 +161,8 @@ namespace UHResidentInformationAPI.V1.Gateways
                     }
                 );
 
-            //join contacts on Emails using contactID 
+            Console.WriteLine("join contacts on Emails using contactID");
+            //join contacts on Emails using contactID
             var residentWithEmails = contacts
                 .Join
                 (
@@ -164,6 +180,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                     }
                 );
 
+            Console.WriteLine("create list of residents");
             //create list of residents
             var listOfResident = residentWithContacts.Select(
                 person =>
