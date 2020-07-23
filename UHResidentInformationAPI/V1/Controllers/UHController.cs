@@ -42,7 +42,7 @@ namespace UHResidentInformationAPI.V1.Controllers
         }
 
         [HttpGet]
-        [Route("/households/{houseReference}/people/{personReference}")]
+        [Route("{houseReference}/people/{personReference}")]
         public IActionResult ViewRecord(string houseReference, int personReference)
         {
             return Ok(_getResidentByIdUseCase.Execute(houseReference, personReference));
