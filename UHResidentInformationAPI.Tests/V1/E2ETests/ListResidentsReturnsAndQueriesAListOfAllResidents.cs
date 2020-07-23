@@ -27,7 +27,6 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
             var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
-
             var uri = new Uri("api/v1/households", UriKind.Relative);
             var response = Client.GetAsync(uri);
 

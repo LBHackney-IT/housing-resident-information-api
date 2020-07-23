@@ -37,7 +37,7 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
         public static TelephoneNumber CreateDatabaseTelephoneNumberForPersonId(int contactNo)
         {
             var faker = new Fixture();
-            var fakePhoneType = (int) PhoneType.M;
+            var fakePhoneType = (int) PhoneType.Mobile;
 
             var fakeNumber = faker.Build<TelephoneNumber>()
                 .With(tel => tel.ContactID, contactNo)
