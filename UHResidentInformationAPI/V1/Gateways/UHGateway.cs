@@ -53,11 +53,16 @@ namespace UHResidentInformationAPI.V1.Gateways
                 // where string.IsNullOrEmpty(address) || EF.Functions.ILike(addr.AddressLine1.Replace(" ", ""), "%" + address.Replace(" ", "") + "%")
                 // where string.IsNullOrEmpty(postcode) || EF.Functions.ILike(address.Postcode.Replace(" ", ""), "%" + postcode.Replace(" ", "") + "%")
                 join tenancy in _uHContext.TenancyAgreements on person.HouseRef equals tenancy.HouseRef
-                // join contactLink in _uHContext.ContactLinks on new { TagRef = tenancy.TagRef, PersonNo = person.PersonNo.ToString() } equals new { contactLink.TagRef, contactLink.PersonNo }
-                // join telephone in _uHContext.TelephoneNumbers on contactLink.ContactID equals telephone.ContactID
+                //TODO would there be multiple ContactLinks for a person?
+                join contactLink in _uHContext.ContactLinks
+                    on new { TagRef = tenancy.TagRef, PersonNo = person.PersonNo.ToString() }
+                    equals new { TagRef = contactLink.TagRef, PersonNo = contactLink.PersonNo }
+                    // into contactLinks //?
+                //TODO would there then be 0+ telephone numbers per ContactLink?
+                join telephone in _uHContext.TelephoneNumbers on contactLink.ContactID equals telephone.ContactID into phoneNums
+                //TODO (same as above for email addresses?)
                 orderby person.HouseRef, person.PersonNo
-                // select new { person, addr, telephone }
-                select new { person, addr }
+                select new { person, addr, phoneNums }
             ).Skip(cursor).Take(limit).ToList().Select(x =>
             {
                 var person = new Person
@@ -84,14 +89,9 @@ namespace UHResidentInformationAPI.V1.Gateways
                     PostCode = x.addr.PostCode
                 };
 
-                // var phone = new TelephoneNumber
-                // {
-                //     PhoneId = x.telephone.PhoneId
-                // };
-
                 var residentInformation = person.ToDomain();
                 residentInformation.ResidentAddress = address.ToDomain();
-                // residentInformation.PhoneNumbers = new List<Domain.Phone> { phone.ToDomain() };
+                residentInformation.PhoneNumbers = x.phoneNums.Select(p => p.ToDomain()).ToList();
 
                 return residentInformation;
             }).GroupBy(p => new { p.HouseReference, p.PersonNumber }).Select(personGroup => personGroup.FirstOrDefault()).ToList();
