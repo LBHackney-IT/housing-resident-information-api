@@ -30,7 +30,7 @@ namespace UHResidentInformationApi.Tests.V1.E2ETests
 
             var expectedResponse = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, houseRef, personNo);
 
-            var uri = new Uri($"/households/{houseRef}/people/{personNo}", UriKind.Relative);
+            var uri = new Uri($"api/v1/households/{houseRef}/people/{personNo}", UriKind.Relative);
             var response = Client.GetAsync(uri);
             var statusCode = response.Result.StatusCode;
             statusCode.Should().Be(200);
