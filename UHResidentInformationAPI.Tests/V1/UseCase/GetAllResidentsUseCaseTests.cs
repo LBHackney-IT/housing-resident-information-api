@@ -6,9 +6,9 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using UHResidentInformationAPI.V1.Boundary.Requests;
+using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Gateways;
 using UHResidentInformationAPI.V1.UseCase;
-using UHResidentInformationAPI.V1.Factories;
 using ResidentInformation = UHResidentInformationAPI.V1.Domain.ResidentInformation;
 
 namespace UHResidentInformationAPI.Tests.V1.UseCase
