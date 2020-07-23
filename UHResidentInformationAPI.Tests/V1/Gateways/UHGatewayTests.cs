@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using AutoFixture;
 using FluentAssertions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using UHResidentInformationAPI.Tests.V1.Helper;
 using UHResidentInformationAPI.V1.Domain;
@@ -105,7 +107,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             };
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
-            response.PhoneNumber.Should().BeEquivalentTo(expectedPhoneNumberList);
+            response.PhoneNumbers.Should().BeEquivalentTo(expectedPhoneNumberList);
         }
 
         [Test]
@@ -132,7 +134,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             };
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
-            response.PhoneNumber.Should().BeEquivalentTo(expectedPhoneNumberList);
+            response.PhoneNumbers.Should().BeEquivalentTo(expectedPhoneNumberList);
         }
 
         [Test]
@@ -169,7 +171,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             };
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
-            response.Email.Should().BeEquivalentTo(expectedEmailAddressList);
+            response.Emails.Should().BeEquivalentTo(expectedEmailAddressList);
         }
 
         [Test]
@@ -207,6 +209,9 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             // receivedMatches[0].Should().BeEquivalentTo(persons[0]);
             // receivedMatches[1].Should().BeEquivalentTo(persons[1]);
             // receivedMatches[2].Should().BeEquivalentTo(persons[2]);
+
+            //TODO
+            //do we get _all_ telephone numbers and emails?
         }
 
         [Test]
@@ -295,14 +300,14 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
-            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
-            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
+            domainEntity.PhoneNumbers = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
+            domainEntity.Emails = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
-            domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
+            domainEntity2.PhoneNumbers = new List<Phone> { telephone2.ToDomain() };
+            domainEntity2.Emails = new List<Email> { emailAddress2.ToDomain() };
 
             var listOfPersons = _classUnderTest
                 .GetAllResidents(0, 20, firstName: "ciasom");
@@ -388,12 +393,12 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
-            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
+            domainEntity.PhoneNumbers = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
+            domainEntity2.PhoneNumbers = new List<Phone> { telephone2.ToDomain() };
 
             var listOfPersons = _classUnderTest
                 .GetAllResidents(0, 20, lastName: "brown");
@@ -478,12 +483,12 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
-            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
+            domainEntity.Emails = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
+            domainEntity2.Emails = new List<Email> { emailAddress2.ToDomain() };
 
             var listOfPersons = _classUnderTest
                 .GetAllResidents(0, 20, firstName: "ciasom", lastName: "brown");

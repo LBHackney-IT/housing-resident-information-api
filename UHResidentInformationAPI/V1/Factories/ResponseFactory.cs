@@ -23,8 +23,8 @@ namespace UHResidentInformationAPI.V1.Factories
                 DateOfBirth = domain.DateOfBirth,
                 NINumber = domain.NINumber,
                 Address = domain.ResidentAddress.ToResponse(),
-                PhoneNumber = domain.PhoneNumber?.ToResponse(),
-                Email = domain.Email?.ToResponse()
+                PhoneNumber = domain.PhoneNumbers?.ToResponse(),
+                Email = domain.Emails?.ToResponse()
             };
         }
         public static List<ResidentInformationResponse> ToResponse(this IEnumerable<ResidentInformation> people)
