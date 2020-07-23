@@ -118,7 +118,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                     _uHContext.ContactLinks,
                     //Join on composite key to get list of contactno
                     anon => new { personno = anon.person.PersonNo.ToString(), tagref = anon.tenancy.TagRef.Trim() },
-                    contact => new { personno = contact.PersonNo.Trim(), tagref = contact.TagRef.Trim() },
+                    contact => new { personno = contact?.PersonNo.Trim(), tagref = contact?.TagRef.Trim() },
                     (anon, contact) =>
                     {
                         var person = new
