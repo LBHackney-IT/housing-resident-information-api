@@ -25,6 +25,8 @@ namespace UHResidentInformationAPI.V1.Gateways
             var addressForPerson =
                 _uHContext.Addresses.OrderByDescending(a => a.Dtstamp).FirstOrDefault(a => a.HouseRef == databaseRecord.HouseRef);
 
+            var tenancyForPerson = _uHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef == databaseRecord.HouseRef);
+
             var contactLinkNoForPerson = GetContactNoFromContactLink(databaseRecord.HouseRef, databaseRecord.PersonNo);
 
             var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == contactLinkNoForPerson).ToList();
@@ -32,21 +34,20 @@ namespace UHResidentInformationAPI.V1.Gateways
             var emailAddressForPerson =
                 _uHContext.EmailAddresses.Where(c => c.ContactID == contactLinkNoForPerson).ToList();
 
-            var person = MapPersonAndAddressesToResidentInformation(databaseRecord, addressForPerson);
+            var person = MapPersonWithTenancyAndAddressesToResidentInformation(databaseRecord, addressForPerson, tenancyForPerson);
 
             AttachContactDetailsToPerson(person, telephoneNumberForPerson, emailAddressForPerson);
 
             return person;
         }
 
-        private static ResidentInformation MapPersonAndAddressesToResidentInformation(Person person, Address address)
+        private static ResidentInformation MapPersonWithTenancyAndAddressesToResidentInformation(Person person, Address address, TenancyAgreement tenancyAgreement)
         {
             var resident = person.ToDomain();
 
-            if (address == null) return resident;
-
-            resident.ResidentAddress = address.ToDomain();
-            resident.UPRN = address.UPRN;
+            resident.ResidentAddress = address?.ToDomain();
+            resident.UPRN = address?.UPRN;
+            resident.TenancyReference = tenancyAgreement?.TagRef;
 
             return resident;
         }
@@ -116,6 +117,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                         {
                             person = anon.person,
                             address = anon.address,
+                            tenancy = anon.tenancy,
                             contact = contact
                         };
                         return person;
@@ -183,6 +185,7 @@ namespace UHResidentInformationAPI.V1.Gateways
                     resident.Email = emailList.Any() ? emailList : null;
                     resident.ResidentAddress = person.address.ToDomain();
                     resident.UPRN = person.address.UPRN;
+                    resident.TenancyReference = person.tenancy?.TagRef;
                     return resident;
                 }
                 ).ToList();

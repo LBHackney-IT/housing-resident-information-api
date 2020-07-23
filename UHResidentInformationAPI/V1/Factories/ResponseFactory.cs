@@ -18,10 +18,12 @@ namespace UHResidentInformationAPI.V1.Factories
             {
                 HouseReference = domain.HouseReference,
                 PersonNumber = domain.PersonNumber,
+                TenancyReference = domain.TenancyReference,
                 FirstName = domain.FirstName,
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,
                 NINumber = domain.NINumber,
+                UPRN = domain.UPRN,
                 Address = domain.ResidentAddress.ToResponse(),
                 PhoneNumber = domain.PhoneNumber?.ToResponse(),
                 Email = domain.Email?.ToResponse()

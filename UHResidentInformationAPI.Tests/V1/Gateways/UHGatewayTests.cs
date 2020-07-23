@@ -6,11 +6,11 @@ using NUnit.Framework;
 using UHResidentInformationAPI.Tests.V1.Helper;
 using UHResidentInformationAPI.V1.Domain;
 using UHResidentInformationAPI.V1.Enums;
+using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Gateways;
 using UHResidentInformationAPI.V1.Infrastructure;
-using DomainAddress = UHResidentInformationAPI.V1.Domain.Address;
-using UHResidentInformationAPI.V1.Factories;
 using Address = UHResidentInformationAPI.V1.Infrastructure.Address;
+using DomainAddress = UHResidentInformationAPI.V1.Domain.Address;
 
 namespace UHResidentInformationAPI.Tests.V1.Gateways
 {
@@ -146,6 +146,19 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
             response.UPRN.Should().Be(databaseAddressEntity.UPRN);
+        }
+
+        [Test]
+        public void GetResidentByIdReturnsTheTenancyReferenceInTheResponse()
+        {
+            var databasePersonEntity = AddPersonRecordToDatabase();
+            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(databasePersonEntity.HouseRef);
+
+            UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
+            UHContext.SaveChanges();
+
+            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            response.TenancyReference.Should().Be(tenancyDatabaseEntity.TagRef);
         }
 
         [Test]
@@ -286,12 +299,14 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity.UPRN = address.UPRN;
             domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
             domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
+            domainEntity.TenancyReference = tenancy1.TagRef;
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
             domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
             domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
+            domainEntity2.TenancyReference = tenancy3.TagRef;
 
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);
@@ -377,11 +392,13 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
             domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
+            domainEntity.TenancyReference = tenancy1.TagRef;
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
             domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
+            domainEntity2.TenancyReference = tenancy3.TagRef;
 
             var listOfPersons = _classUnderTest.GetAllResidents(lastName: "brown");
             listOfPersons.Count.Should().Be(2);
@@ -465,11 +482,13 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
             domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
+            domainEntity.TenancyReference = tenancy1.TagRef;
 
             var domainEntity2 = databaseEntity2.ToDomain();
             domainEntity2.ResidentAddress = address2.ToDomain();
             domainEntity2.UPRN = address2.UPRN;
             domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
+            domainEntity2.TenancyReference = tenancy3.TagRef;
 
             var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom", lastName: "brown");
             listOfPersons.Count.Should().Be(2);
@@ -526,6 +545,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var domainEntity = databaseEntity.ToDomain();
             domainEntity.ResidentAddress = address.ToDomain();
             domainEntity.UPRN = address.UPRN;
+            domainEntity.TenancyReference = tenancy1.TagRef;
 
             var listOfPersons = _classUnderTest.GetAllResidents(address: "1 Hillman st");
             listOfPersons.Count.Should().Be(1);

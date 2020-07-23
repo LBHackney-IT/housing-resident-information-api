@@ -9,7 +9,7 @@ using UHResidentInformationAPI.Tests;
 using UHResidentInformationAPI.Tests.V1.E2ETests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
 
-namespace UHResidentInformationApi.Tests.V1.E2ETests
+namespace UHResidentInformationAPI.Tests.V1.E2ETests
 {
     [TestFixture]
     public class GetResidentInformationById : EndToEndTests<Startup>
