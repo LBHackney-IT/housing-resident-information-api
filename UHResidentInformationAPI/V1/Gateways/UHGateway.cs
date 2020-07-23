@@ -116,7 +116,7 @@ namespace UHResidentInformationAPI.V1.Gateways
             //Left Join on tagRef to get contactNo from cccontactLink
             var residentWithContacts = residentWithTagRefs
             .GroupJoin(
-                    _uHContext.ContactLinks,
+                    _uHContext.ContactLinks.Where(c => c.PersonNo != null && c.TagRef != null),
                     //Join on composite key to get list of contactno
                     anon => new { personno = anon.person.PersonNo.ToString(), tagref = anon.tenancy.TagRef.Trim() },
                     contact => new { personno = contact.PersonNo.Trim(), tagref = contact.TagRef.Trim() },

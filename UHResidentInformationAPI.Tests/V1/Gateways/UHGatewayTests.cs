@@ -552,6 +552,37 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
         }
 
+        [Test]
+        public void GetAllResidentsWhenAContactlinkRowsHasNoKey1AndKey2DoesNotBreakTheQuery()
+        {
+            var databaseEntity = TestHelper.CreateDatabasePersonEntity();
+            UHContext.Persons.Add(databaseEntity);
+            UHContext.SaveChanges();
 
+            var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef, address1: "1 Hillman st");
+            UHContext.Addresses.Add(address);
+            UHContext.SaveChanges();
+
+            var tenancy1 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address.HouseRef);
+            UHContext.TenancyAgreements.Add(tenancy1);
+            UHContext.SaveChanges();
+
+            //Create a row in the CCContactLink that has no values in Key1 and Key2. This was found in production.
+            var link1 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy1.TagRef, databaseEntity.PersonNo);
+            link1.TagRef = null; //Key1
+            link1.PersonNo = null; //Key2
+
+            UHContext.ContactLinks.Add(link1);
+            UHContext.SaveChanges();
+
+            var domainEntity = databaseEntity.ToDomain();
+            domainEntity.ResidentAddress = address.ToDomain();
+            domainEntity.UPRN = address.UPRN;
+            domainEntity.TenancyReference = tenancy1.TagRef;
+
+            var listOfPersons = _classUnderTest.GetAllResidents(address: "1 Hillman st");
+            listOfPersons.Count.Should().Be(1);
+            listOfPersons.Should().ContainEquivalentOf(domainEntity);
+        }
     }
 }
