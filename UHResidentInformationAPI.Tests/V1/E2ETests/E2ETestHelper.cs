@@ -39,9 +39,11 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             {
                 HouseReference = person.HouseRef,
                 PersonNumber = person.PersonNo,
+                TenancyReference = tenancyAgreement.TagRef,
                 FirstName = person.FirstName,
                 LastName = person.LastName,
                 NINumber = person.NINumber,
+                UPRN = address.UPRN,
                 PhoneNumber =
                     new List<Phone>
                     {
