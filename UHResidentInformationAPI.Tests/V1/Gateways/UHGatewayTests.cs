@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using AutoFixture;
@@ -194,7 +195,10 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             };
 
             persons.ForEach(p => AddAddressForPersonToDatabase(p.HouseRef));
-            persons.ForEach(p => AddContactLinkForPersonToDatabase(p.HouseRef, p.PersonNo));
+
+            var contactLinks = persons.Select(p => AddContactLinkForPersonToDatabase(p.HouseRef, p.PersonNo));
+            var phoneNumbers = contactLinks.Select(c => AddTelephoneNumberForPersonToDatabase(c.ContactID));
+            var emails = contactLinks.Select(c => AddEmailForPersonToDatabase(c.ContactID));
 
             // var allPersons = UHContext.Persons;
             // Console.WriteLine("> allPersons:");
@@ -584,6 +588,22 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             UHContext.SaveChanges();
 
             return contactLinkDatabaseEntity;
+        }
+
+        private TelephoneNumber AddTelephoneNumberForPersonToDatabase(int contactId)
+        {
+            var telephone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactId);
+            UHContext.TelephoneNumbers.Add(telephone);
+            UHContext.SaveChanges();
+            return telephone;
+        }
+
+        private EmailAddresses AddEmailForPersonToDatabase(int contactId)
+        {
+            var email = TestHelper.CreateDatabaseEmailForPerson(contactId);
+            UHContext.EmailAddresses.Add(email);
+            UHContext.SaveChanges();
+            return email;
         }
     }
 }

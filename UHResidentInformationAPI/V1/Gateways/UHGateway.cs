@@ -44,62 +44,62 @@ namespace UHResidentInformationAPI.V1.Gateways
         public List<ResidentInformation> GetAllResidents(int cursor, int limit, string houseReference = null, string firstName = null, string lastName = null, string address = null)
         {
 
-            return (List<ResidentInformation>) (
-                from person in _uHContext.Persons
-                where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef.Replace(" ", ""), houseReference.Replace(" ", ""))
-                where string.IsNullOrEmpty(firstName) || EF.Functions.ILike(person.FirstName.Replace(" ", ""), "%" + firstName.Replace(" ", "") + "%")
-                where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName.Replace(" ", ""), "%" + lastName.Replace(" ", "") + "%")
-                join addr in _uHContext.Addresses on person.HouseRef equals addr.HouseRef
-                // where string.IsNullOrEmpty(address) || EF.Functions.ILike(addr.AddressLine1.Replace(" ", ""), "%" + address.Replace(" ", "") + "%")
-                // where string.IsNullOrEmpty(postcode) || EF.Functions.ILike(address.Postcode.Replace(" ", ""), "%" + postcode.Replace(" ", "") + "%")
-                join tenancy in _uHContext.TenancyAgreements on person.HouseRef equals tenancy.HouseRef
-                //TODO would there be multiple ContactLinks for a person?
-                join contactLink in _uHContext.ContactLinks
-                    on new { TagRef = tenancy.TagRef, PersonNo = person.PersonNo.ToString() }
-                    equals new { TagRef = contactLink.TagRef, PersonNo = contactLink.PersonNo }
-                    // into contactLinks //?
-                //TODO would there then be 0+ telephone numbers per ContactLink?
-                join telephone in _uHContext.TelephoneNumbers on contactLink.ContactID equals telephone.ContactID into phoneNums
-                //TODO (same as above for email addresses?)
-                orderby person.HouseRef, person.PersonNo
-                select new { person, addr, phoneNums }
-            ).Skip(cursor).Take(limit).ToList().Select(x =>
-            {
-                var person = new Person
-                {
-                    AtRisk = x.person.AtRisk,
-                    BankAccType = x.person.BankAccType,
-                    DateOfBirth = x.person.DateOfBirth,
-                    FirstName = x.person.FirstName,
-                    FullEd = x.person.FullEd,
-                    HouseRef = x.person.HouseRef,
-                    LastName = x.person.LastName,
-                    MemberSID = x.person.MemberSID,
-                    NINumber = x.person.NINumber,
-                    Oap = x.person.Oap,
-                    PersonNo = x.person.PersonNo,
-                    Responsible = x.person.Responsible,
-                    Title = x.person.Title
-                };
+            // return (List<ResidentInformation>) (
+            //     from person in _uHContext.Persons
+            //     where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef.Replace(" ", ""), houseReference.Replace(" ", ""))
+            //     where string.IsNullOrEmpty(firstName) || EF.Functions.ILike(person.FirstName.Replace(" ", ""), "%" + firstName.Replace(" ", "") + "%")
+            //     where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName.Replace(" ", ""), "%" + lastName.Replace(" ", "") + "%")
+            //     join addr in _uHContext.Addresses on person.HouseRef equals addr.HouseRef
+            //     // where string.IsNullOrEmpty(address) || EF.Functions.ILike(addr.AddressLine1.Replace(" ", ""), "%" + address.Replace(" ", "") + "%")
+            //     // where string.IsNullOrEmpty(postcode) || EF.Functions.ILike(address.Postcode.Replace(" ", ""), "%" + postcode.Replace(" ", "") + "%")
+            //     join tenancy in _uHContext.TenancyAgreements on person.HouseRef equals tenancy.HouseRef
+            //     //TODO would there be multiple ContactLinks for a person?
+            //     join contactLink in _uHContext.ContactLinks
+            //         on new { TagRef = tenancy.TagRef, PersonNo = person.PersonNo.ToString() }
+            //         equals new { TagRef = contactLink.TagRef, PersonNo = contactLink.PersonNo }
+            //         // into contactLinks //?
+            //     //TODO would there then be 0+ telephone numbers per ContactLink?
+            //     join telephone in _uHContext.TelephoneNumbers on contactLink.ContactID equals telephone.ContactID into phoneNums
+            //     //TODO (same as above for email addresses?)
+            //     orderby person.HouseRef, person.PersonNo
+            //     select new { person, addr, phoneNums }
+            // ).Skip(cursor).Take(limit).ToList().Select(x =>
+            // {
+            //     var person = new Person
+            //     {
+            //         AtRisk = x.person.AtRisk,
+            //         BankAccType = x.person.BankAccType,
+            //         DateOfBirth = x.person.DateOfBirth,
+            //         FirstName = x.person.FirstName,
+            //         FullEd = x.person.FullEd,
+            //         HouseRef = x.person.HouseRef,
+            //         LastName = x.person.LastName,
+            //         MemberSID = x.person.MemberSID,
+            //         NINumber = x.person.NINumber,
+            //         Oap = x.person.Oap,
+            //         PersonNo = x.person.PersonNo,
+            //         Responsible = x.person.Responsible,
+            //         Title = x.person.Title
+            //     };
 
-                var address = new Address
-                {
-                    PropertyRef = x.addr.PropertyRef,
-                    AddressLine1 = x.addr.AddressLine1,
-                    PostCode = x.addr.PostCode
-                };
+            //     var address = new Address
+            //     {
+            //         PropertyRef = x.addr.PropertyRef,
+            //         AddressLine1 = x.addr.AddressLine1,
+            //         PostCode = x.addr.PostCode
+            //     };
 
-                var residentInformation = person.ToDomain();
-                residentInformation.ResidentAddress = address.ToDomain();
-                residentInformation.PhoneNumbers = x.phoneNums.Select(p => p.ToDomain()).ToList();
+            //     var residentInformation = person.ToDomain();
+            //     residentInformation.ResidentAddress = address.ToDomain();
+            //     residentInformation.PhoneNumbers = x.phoneNums.Select(p => p.ToDomain()).ToList();
 
-                return residentInformation;
-            }).GroupBy(p => new { p.HouseReference, p.PersonNumber }).Select(personGroup => personGroup.FirstOrDefault()).ToList();
+            //     return residentInformation;
+            // }).GroupBy(p => new { p.HouseReference, p.PersonNumber }).Select(personGroup => personGroup.FirstOrDefault()).ToList();
 
-            // var houseRefQuery = "%" + houseReference?.Replace(" ", "") + "%";
-            // var firstNameQuery = "%" + firstName?.Replace(" ", "") + "%";
-            // var lastNameQuery = "%" + lastName?.Replace(" ", "") + "%";
-            // var addressQuery = "%" + address?.Replace(" ", "") + "%";
+            var houseRefQuery = "%" + houseReference?.Replace(" ", "") + "%";
+            var firstNameQuery = "%" + firstName?.Replace(" ", "") + "%";
+            var lastNameQuery = "%" + lastName?.Replace(" ", "") + "%";
+            var addressQuery = "%" + address?.Replace(" ", "") + "%";
 
             // return _uHContext.Persons
             //     .Where(p => string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(p.HouseRef.Replace(" ", ""), houseRefQuery))
@@ -111,130 +111,132 @@ namespace UHResidentInformationAPI.V1.Gateways
             //             person => person.HouseRef,
             //             address => address.HouseRef,
             //             (person, address) => new { person, address })
-            //     .OrderBy(x => x.person.HouseRef + " " + x.person.PersonNo)
-            //     .GroupBy(x => x.person.HouseRef)
-            //     .Select((grouping, anon) => anon.person.ToDomain()) //x.person.ToDomain())
+            //     .OrderBy(x => x.person.HouseRef)
+            //     .ThenBy(x => x.person.PersonNo)
+            //     .GroupBy(x => x.person.HouseRef) // shoud also group by PersonNo?
+            //     .SelectMany((grouping, anon) => grouping.Select(anon => anon.person.ToDomain())) //x.person.ToDomain())
             //     .ToList();
 
-            // //Inner join on person and address
-            // var listOfPerson = _uHContext.Persons
-            //     .Where(p => string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(p.HouseRef.Replace(" ", ""), houseRefQuery))
-            //     .Where(p => string.IsNullOrEmpty(firstName) || EF.Functions.ILike(p.FirstName.Replace(" ", ""), firstNameQuery))
-            //     .Where(p => string.IsNullOrEmpty(lastName) || EF.Functions.ILike(p.LastName.Replace(" ", ""), lastNameQuery))
-            //     .Join(
-            //         _uHContext.Addresses
-            //             .Where(a => string.IsNullOrEmpty(address) || EF.Functions.ILike(address.Replace(" ", ""), addressQuery)),
-            //             person => person.HouseRef,
-            //             address => address.HouseRef,
-            //             (person, address) => new { person, address })
-            //     .OrderBy(x => x.person.HouseRef + " " + x.person.PersonNo);
-            //     // .Skip(cursor)
-            //     // .Take(limit);
+            //Inner join on person and address
+            var listOfPerson = _uHContext.Persons
+                .Where(p => string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(p.HouseRef.Replace(" ", ""), houseRefQuery))
+                .Where(p => string.IsNullOrEmpty(firstName) || EF.Functions.ILike(p.FirstName.Replace(" ", ""), firstNameQuery))
+                .Where(p => string.IsNullOrEmpty(lastName) || EF.Functions.ILike(p.LastName.Replace(" ", ""), lastNameQuery))
+                .Join(
+                    _uHContext.Addresses
+                        .Where(a => string.IsNullOrEmpty(address) || EF.Functions.ILike(address.Replace(" ", ""), addressQuery)),
+                        person => person.HouseRef,
+                        address => address.HouseRef,
+                        (person, address) => new { person, address })
+                .OrderBy(x => x.person.HouseRef)
+                .ThenBy(x => x.person.PersonNo);
+                // .Skip(cursor)
+                // .Take(limit);
 
-            // //Query result is empty, return empty list
-            // if (!listOfPerson.Any())
-            //     return new List<ResidentInformation>();
+            //Query result is empty, return empty list
+            if (!listOfPerson.Any())
+                return new List<ResidentInformation>();
 
-            // // Join to get tag_ref from tenagree
-            // var residentWithTagRefs = listOfPerson
-            //     .ToList()
-            //     .Join(_uHContext.TenancyAgreements,
-            //         anon => anon.person.HouseRef,
-            //         tenancy => tenancy.HouseRef,
-            //         (anon, tenancy) =>
-            //         {
-            //             var people = new
-            //             {
-            //                 person = anon.person,
-            //                 address = anon.address,
-            //                 tenancy = tenancy
-            //             };
-            //             return people;
-            //         });
+            // Join to get tag_ref from tenagree
+            var residentWithTagRefs = listOfPerson
+                .ToList()
+                .Join(_uHContext.TenancyAgreements,
+                    anon => anon.person.HouseRef,
+                    tenancy => tenancy.HouseRef,
+                    (anon, tenancy) =>
+                    {
+                        var people = new
+                        {
+                            person = anon.person,
+                            address = anon.address,
+                            tenancy = tenancy
+                        };
+                        return people;
+                    });
 
-            // //Left Join on tagRef to get contactNo from cccontactLink
-            // var residentWithContacts = residentWithTagRefs
-            //     .GroupJoin(
-            //         _uHContext.ContactLinks,
-            //         //Join on composite key to get list of contactno
-            //         anon => new { personno = anon.person.PersonNo.ToString(), tagref = anon.tenancy.TagRef.Trim() },
-            //         contact => new { personno = contact.PersonNo.Trim(), tagref = contact.TagRef.Trim() },
-            //         (anon, contact) =>
-            //         {
-            //             var person = new
-            //             {
-            //                 person = anon.person,
-            //                 address = anon.address,
-            //                 contact = contact
-            //             };
-            //             return person;
-            //         }
-            //     );
+            //Left Join on tagRef to get contactNo from cccontactLink
+            var residentWithContacts = residentWithTagRefs
+                .GroupJoin(
+                    _uHContext.ContactLinks,
+                    //Join on composite key to get list of contactno
+                    anon => new { personno = anon.person.PersonNo.ToString(), tagref = anon.tenancy.TagRef.Trim() },
+                    contact => new { personno = contact.PersonNo.Trim(), tagref = contact.TagRef.Trim() },
+                    (anon, contact) =>
+                    {
+                        var person = new
+                        {
+                            person = anon.person,
+                            address = anon.address,
+                            contact = contact
+                        };
+                        return person;
+                    }
+                );
 
-            // //retrieve and project all contactNo's
-            // var contacts = residentWithContacts
-            //     .SelectMany(anon => anon.contact);
+            //retrieve and project all contactNo's
+            var contacts = residentWithContacts
+                .SelectMany(anon => anon.contact);
 
-            // //join contacts on PhoneNumbers using contactID
-            // var residentWithPhones = contacts
-            //     .Join
-            //     (
-            //         _uHContext.TelephoneNumbers,
-            //         anon => anon.ContactID,
-            //         telephone => telephone.ContactID,
-            //         (anon, telephone) =>
-            //         {
-            //             var telephones = new
-            //             {
-            //                 contactid = anon.ContactID,
-            //                 phone = telephone,
-            //             };
-            //             return telephones;
-            //         }
-            //     );
+            //join contacts on PhoneNumbers using contactID
+            var residentWithPhones = contacts
+                .Join
+                (
+                    _uHContext.TelephoneNumbers,
+                    anon => anon.ContactID,
+                    telephone => telephone.ContactID,
+                    (anon, telephone) =>
+                    {
+                        var telephones = new
+                        {
+                            contactid = anon.ContactID,
+                            phone = telephone,
+                        };
+                        return telephones;
+                    }
+                );
 
-            // //join contacts on Emails using contactID
-            // var residentWithEmails = contacts
-            //     .Join
-            //     (
-            //         _uHContext.EmailAddresses,
-            //         anon => anon.ContactID,
-            //         email => email.ContactID,
-            //         (anon, email) =>
-            //         {
-            //             var emails = new
-            //             {
-            //                 contactid = anon.ContactID,
-            //                 email = email,
-            //             };
-            //             return emails;
-            //         }
-            //     );
+            //join contacts on Emails using contactID
+            var residentWithEmails = contacts
+                .Join
+                (
+                    _uHContext.EmailAddresses,
+                    anon => anon.ContactID,
+                    email => email.ContactID,
+                    (anon, email) =>
+                    {
+                        var emails = new
+                        {
+                            contactid = anon.ContactID,
+                            email = email,
+                        };
+                        return emails;
+                    }
+                );
 
-            // //create list of residents
-            // var listOfResidents = residentWithContacts
-            //     .Select(person =>
-            //     {
-            //         //Get all the phone numbers
-            //         var phoneList = residentWithPhones.Where(phone =>
-            //                person.contact.Any(c => phone.contactid == c.ContactID))
-            //         .Select(p => p.phone.ToDomain()).ToList();
+            //create list of residents
+            var listOfResidents = residentWithContacts
+                .Select(person =>
+                {
+                    //Get all the phone numbers
+                    var phoneList = residentWithPhones.Where(phone =>
+                           person.contact.Any(c => phone.contactid == c.ContactID))
+                    .Select(p => p.phone.ToDomain()).ToList();
 
-            //         //Get all the email addresses
-            //         var emailList = residentWithEmails.Where(email =>
-            //                person.contact.Any(c => email.contactid == c.ContactID))
-            //         .Select(e => e.email.ToDomain()).ToList();
+                    //Get all the email addresses
+                    var emailList = residentWithEmails.Where(email =>
+                           person.contact.Any(c => email.contactid == c.ContactID))
+                    .Select(e => e.email.ToDomain()).ToList();
 
-            //         var resident = person.person.ToDomain();
-            //         resident.PhoneNumber = phoneList.Any() ? phoneList : null;
-            //         resident.Email = emailList.Any() ? emailList : null;
-            //         resident.ResidentAddress = person.address.ToDomain();
-            //         resident.UPRN = person.address.UPRN;
+                    var resident = person.person.ToDomain();
+                    resident.PhoneNumbers = phoneList.Any() ? phoneList : null;
+                    resident.Emails = emailList.Any() ? emailList : null;
+                    resident.ResidentAddress = person.address.ToDomain();
+                    resident.UPRN = person.address.UPRN;
 
-            //         return resident;
-            //     }).ToList();
+                    return resident;
+                }).ToList();
 
-            // return listOfResidents;
+            return listOfResidents;
         }
 
         private static ResidentInformation MapPersonAndAddressesToResidentInformation(Person person, Address address)
