@@ -206,9 +206,70 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
 
             return contactLinkDatabaseEntity;
         }
+
+        [Test]
         public void GetAllResidentsIfThereAreNoResidentsReturnsAnEmptyList()
         {
             _classUnderTest.GetAllResidents("00011", "bob", "brown", "1 Hillman Street").Should().BeEmpty();
+        }
+
+        [Test]
+        public void GetAllResidentsWillReturnAllResidents()
+        {
+            var dbPerson1 = TestHelper.CreateDatabasePersonEntity();
+            var dbPerson2 = TestHelper.CreateDatabasePersonEntity();
+
+            var personslist = new List<Person>
+            {
+                dbPerson1,
+                dbPerson2
+            };
+
+            //Add person entities to test database
+            UHContext.Persons.AddRange(personslist);
+            UHContext.SaveChanges();
+
+            var person1Address = TestHelper.CreateDatabaseAddressForPersonId(dbPerson1.HouseRef);
+
+            //Add one person's extra details to test database
+            UHContext.Addresses.AddRange(person1Address);
+            UHContext.SaveChanges();
+
+            var tenancyAgreementForPerson1 = TestHelper.CreateDatabaseTenancyAgreementForPerson(person1Address.HouseRef);
+
+            UHContext.TenancyAgreements.AddRange(tenancyAgreementForPerson1);
+            UHContext.SaveChanges();
+
+            var contactLinkForPerson1 = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreementForPerson1.TagRef, dbPerson1.PersonNo);
+
+            UHContext.ContactLinks.AddRange(contactLinkForPerson1);
+            UHContext.SaveChanges();
+
+            var telephoneNumberForPerson1 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLinkForPerson1.ContactID);
+            UHContext.TelephoneNumbers.Add(telephoneNumberForPerson1);
+            UHContext.SaveChanges();
+
+            var secondTelephoneNumberForPerson1 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLinkForPerson1.ContactID);
+            UHContext.TelephoneNumbers.Add(secondTelephoneNumberForPerson1);
+            UHContext.SaveChanges();
+
+            var emailAddressForPerson1 = TestHelper.CreateDatabaseEmailForPerson(contactLinkForPerson1.ContactID);
+            UHContext.EmailAddresses.Add(emailAddressForPerson1);
+            UHContext.SaveChanges();
+
+            var domainEntity = dbPerson1.ToDomain();
+            domainEntity.ResidentAddress = person1Address.ToDomain();
+            domainEntity.UPRN = person1Address.UPRN;
+            domainEntity.PhoneNumber = new List<Phone> { telephoneNumberForPerson1.ToDomain(), secondTelephoneNumberForPerson1.ToDomain() };
+            domainEntity.Email = new List<Email> { emailAddressForPerson1.ToDomain() };
+            domainEntity.TenancyReference = tenancyAgreementForPerson1.TagRef;
+
+            var domainEntity1 = dbPerson2.ToDomain();
+
+            var listOfPersons = _classUnderTest.GetAllResidents();
+            listOfPersons.Count.Should().Be(2);
+            listOfPersons.Should().ContainEquivalentOf(domainEntity);
+            listOfPersons.Should().ContainEquivalentOf(domainEntity1);
         }
 
         [Test]
