@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Newtonsoft.Json;
 using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Infrastructure;
 using Address = UHResidentInformationAPI.V1.Infrastructure.Address;
@@ -124,15 +121,13 @@ namespace UHResidentInformationAPI.V1.Gateways
             resident.ResidentAddress = address?.ToDomain();
             resident.TenancyReference = tenancyAgreement?.TagRef;
 
-            if (contactLink != null)
-            {
-                var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == contactLink.ContactID).ToList();
+            if (contactLink == null) return resident;
+            var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == contactLink.ContactID).ToList();
 
-                var emailAddressForPerson =
-                    _uHContext.EmailAddresses.Where(c => c.ContactID == contactLink.ContactID).ToList();
+            var emailAddressForPerson =
+                _uHContext.EmailAddresses.Where(c => c.ContactID == contactLink.ContactID).ToList();
 
-                AttachContactDetailsToPerson(resident, telephoneNumberForPerson, emailAddressForPerson);
-            }
+            AttachContactDetailsToPerson(resident, telephoneNumberForPerson, emailAddressForPerson);
 
             return resident;
         }
