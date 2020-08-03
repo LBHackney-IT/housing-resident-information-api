@@ -8,7 +8,7 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 {
     public static class TestHelper
     {
-        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null)
+        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null, string houseRef = null, int? personNo = null)
         {
             var faker = new Fixture();
             var fp = faker.Build<Person>()
@@ -17,6 +17,8 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
                 (fp.DateOfBirth.Year, fp.DateOfBirth.Month, fp.DateOfBirth.Day);
             fp.FirstName = firstname ?? fp.FirstName;
             fp.LastName = lastname ?? fp.LastName;
+            fp.HouseRef = houseRef ?? fp.HouseRef;
+            fp.PersonNo = personNo ?? fp.PersonNo;
 
             return fp;
         }
