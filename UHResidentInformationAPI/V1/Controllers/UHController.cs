@@ -29,11 +29,11 @@ namespace UHResidentInformationAPI.V1.Controllers
         [ProducesResponseType(typeof(ResidentInformationList), StatusCodes.Status200OK)]
 
         [HttpGet]
-        public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp)
+        public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp, string cursor = null, int? limit = 20)
         {
             try
             {
-                return Ok(_getAllResidentsUseCase.Execute(rqp));
+                return Ok(_getAllResidentsUseCase.Execute(rqp, cursor, (int) limit));
             }
             catch (InvalidQueryParameterException e)
             {
