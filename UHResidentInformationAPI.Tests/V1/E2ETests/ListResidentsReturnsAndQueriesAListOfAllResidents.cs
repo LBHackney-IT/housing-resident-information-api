@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -112,19 +113,17 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             convertedResponse.Residents.Should().ContainEquivalentOf(matchingResidentOne);
         }
 
-
-
         [Test]
-        [Ignore("TO DO")]
         public async Task UsingQueryParametersReturnsAPaginatedResponse()
         {
-            var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "shape");
-            var nonmatchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, lastname: "shap");
-            var matchingResident5 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
-            var matchingResident4 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
-            var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
+            var residents = new List<ResidentInformation>
+            {
+                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, houseRef: "123", personNo: 1),
+                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, houseRef: "234", personNo: 1),
+                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, houseRef: "345", personNo: 1)
+            };
 
-            var uri = new Uri("api/v1/households?cursor=2&limit=2", UriKind.Relative);
+            var uri = new Uri("api/v1/households?cursor=1231&limit=10", UriKind.Relative);
             var response = Client.GetAsync(uri);
 
             var statusCode = response.Result.StatusCode;
@@ -134,9 +133,11 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var stringContent = await content.ReadAsStringAsync().ConfigureAwait(true);
             var convertedResponse = JsonConvert.DeserializeObject<ResidentInformationList>(stringContent);
 
+            var expectedResponse = residents.OrderBy(resident => resident.HouseReference).TakeLast(2).ToList();
+
             convertedResponse.Residents.Count.Should().Be(2);
-            convertedResponse.Residents.Should().ContainEquivalentOf(matchingResident5);
-            convertedResponse.Residents.Should().ContainEquivalentOf(matchingResident4);
+            convertedResponse.Residents[0].HouseReference.Should().Be(expectedResponse[0].HouseReference);
+            convertedResponse.Residents[1].HouseReference.Should().Be(expectedResponse[1].HouseReference);
         }
     }
 }
