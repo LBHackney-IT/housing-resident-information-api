@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using NUnit.Framework;
@@ -185,30 +186,9 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             response.Email.Should().BeEquivalentTo(expectedEmailAddressList);
         }
 
-
-        private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null)
-        {
-            var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname, lastname);
-            UHContext.Persons.Add(databaseEntity);
-            UHContext.SaveChanges();
-            return databaseEntity;
-        }
-
-        private ContactLink AddContactLinkForPersonToDatabase(string houseReference, int personNumber)
-        {
-
-            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
-            var contactLinkDatabaseEntity = TestHelper.CreateDatabaseContactLinkForPerson(tenancyDatabaseEntity.TagRef, personNumber);
-
-            UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
-            UHContext.ContactLinks.Add(contactLinkDatabaseEntity);
-            UHContext.SaveChanges();
-
-            return contactLinkDatabaseEntity;
-        }
         public void GetAllResidentsIfThereAreNoResidentsReturnsAnEmptyList()
         {
-            _classUnderTest.GetAllResidents("00011", "bob", "brown", "1 Hillman Street").Should().BeEmpty();
+            _classUnderTest.GetAllResidents(null, 10, "00011", "bob", "brown", "1 Hillman Street").Should().BeEmpty();
         }
 
         [Test]
@@ -308,7 +288,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
             domainEntity2.TenancyReference = tenancy3.TagRef;
 
-            var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -400,7 +380,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
             domainEntity2.TenancyReference = tenancy3.TagRef;
 
-            var listOfPersons = _classUnderTest.GetAllResidents(lastName: "brown");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, lastName: "brown");
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -490,7 +470,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
             domainEntity2.TenancyReference = tenancy3.TagRef;
 
-            var listOfPersons = _classUnderTest.GetAllResidents(firstName: "ciasom", lastName: "brown");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", lastName: "brown");
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -547,7 +527,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity.UPRN = address.UPRN;
             domainEntity.TenancyReference = tenancy1.TagRef;
 
-            var listOfPersons = _classUnderTest.GetAllResidents(address: "1 Hillman st");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, address: "1 Hillman st");
             listOfPersons.Count.Should().Be(1);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
         }
@@ -580,9 +560,87 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             domainEntity.UPRN = address.UPRN;
             domainEntity.TenancyReference = tenancy1.TagRef;
 
-            var listOfPersons = _classUnderTest.GetAllResidents(address: "1 Hillman st");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, address: "1 Hillman st");
             listOfPersons.Count.Should().Be(1);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
+        }
+
+        [Test]
+        public void GetAllResidentsWontReturnMoreRecordsThanTheLimit()
+        {
+            var person1 = AddPersonRecordToDatabase(houseRef: "123", personNo: 1);
+            var person2 = AddPersonRecordToDatabase(houseRef: "123", personNo: 2);
+
+            AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
+            AddContactLinkForPersonToDatabase(person1.HouseRef, person1.PersonNo);
+
+            var peopleReturned = _classUnderTest.GetAllResidents(null, 1);
+
+            peopleReturned.Count.Should().Be(1);
+            peopleReturned[0].FirstName.Should().Be(person1.FirstName);
+            peopleReturned[0].LastName.Should().Be(person1.LastName);
+        }
+
+        [Test]
+        public void GetAllResidentsWillOffsetRecordsByTheCursor()
+        {
+            var persons = new List<Person>
+            {
+                AddPersonRecordToDatabase(houseRef: "123", personNo: 1),
+                AddPersonRecordToDatabase(houseRef: "234", personNo: 1),
+                AddPersonRecordToDatabase(houseRef: "123", personNo: 2),
+                AddPersonRecordToDatabase(houseRef: "123", personNo: 3)
+            };
+
+            persons.Take(2).ToList().ForEach(person =>
+            {
+                AddAddressRecordToDatabase(person.HouseRef);
+                AddContactLinkForPersonToDatabase(person.HouseRef, person.PersonNo);
+            });
+
+            var cursor = $"{persons[0].HouseRef}{persons[0].PersonNo}";
+
+            var expectedPersons = persons
+                .OrderBy(p => p.HouseRef)
+                .ThenBy(p => p.PersonNo)
+                .ToList()
+                .TakeLast(2);
+
+            var receivedPersons = _classUnderTest.GetAllResidents(cursor, 3);
+
+            receivedPersons.Count.Should().Be(3);
+            receivedPersons[0].FirstName.Should().Be(persons[2].FirstName);
+            receivedPersons[1].FirstName.Should().Be(persons[3].FirstName);
+            receivedPersons[2].FirstName.Should().Be(persons[1].FirstName);
+        }
+
+        private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null, string houseRef = null, int? personNo = null)
+        {
+            var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname, lastname, houseRef, personNo);
+            UHContext.Persons.Add(databaseEntity);
+            UHContext.SaveChanges();
+            return databaseEntity;
+        }
+
+        private Address AddAddressRecordToDatabase(string houseRef, string postcode = null, string address1 = null)
+        {
+            var address = TestHelper.CreateDatabaseAddressForPersonId(houseRef, postcode, address1);
+            UHContext.Addresses.Add(address);
+            UHContext.SaveChanges();
+            return address;
+        }
+
+        private ContactLink AddContactLinkForPersonToDatabase(string houseReference, int personNumber)
+        {
+
+            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
+            var contactLinkDatabaseEntity = TestHelper.CreateDatabaseContactLinkForPerson(tenancyDatabaseEntity.TagRef, personNumber);
+
+            UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
+            UHContext.ContactLinks.Add(contactLinkDatabaseEntity);
+            UHContext.SaveChanges();
+
+            return contactLinkDatabaseEntity;
         }
     }
 }

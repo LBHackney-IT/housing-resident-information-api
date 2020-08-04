@@ -51,8 +51,8 @@ namespace UHResidentInformationAPI.Tests.V1.Controllers
                 LastName = "Tessellate",
             };
 
-            _mockGetAllResidentsUseCase.Setup(x => x.Execute(rqp)).Returns(residentInformationList);
-            var response = _classUnderTest.ListRecords(rqp) as OkObjectResult;
+            _mockGetAllResidentsUseCase.Setup(x => x.Execute(rqp, null, 10)).Returns(residentInformationList);
+            var response = _classUnderTest.ListRecords(rqp, null, 10) as OkObjectResult;
 
             response.Should().NotBeNull();
             response.StatusCode.Should().Be(200);

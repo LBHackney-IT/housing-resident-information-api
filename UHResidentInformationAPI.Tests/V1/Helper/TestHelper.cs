@@ -8,24 +8,28 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 {
     public static class TestHelper
     {
-        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null)
+        public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null, string houseRef = null, int? personNo = null)
         {
-            var faker = new Fixture();
-            var fp = faker.Build<Person>()
+            var fixture = new Fixture();
+
+            var fp = fixture.Build<Person>()
                 .Create();
+
             fp.DateOfBirth = new DateTime
                 (fp.DateOfBirth.Year, fp.DateOfBirth.Month, fp.DateOfBirth.Day);
             fp.FirstName = firstname ?? fp.FirstName;
             fp.LastName = lastname ?? fp.LastName;
+            fp.HouseRef = houseRef ?? fp.HouseRef;
+            fp.PersonNo = personNo ?? fp.PersonNo;
 
             return fp;
         }
 
         public static Address CreateDatabaseAddressForPersonId(string houseRef, string postcode = null, string address1 = null)
         {
-            var faker = new Fixture();
+            var fixture = new Fixture();
 
-            var fa = faker.Build<Address>()
+            var fa = fixture.Build<Address>()
                 .With(add => add.HouseRef, houseRef)
                 .Create();
 
@@ -36,10 +40,10 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
         public static TelephoneNumber CreateDatabaseTelephoneNumberForPersonId(int contactNo)
         {
-            var faker = new Fixture();
+            var fixture = new Fixture();
             var fakePhoneType = (int) PhoneType.Mobile;
 
-            var fakeNumber = faker.Build<TelephoneNumber>()
+            var fakeNumber = fixture.Build<TelephoneNumber>()
                 .With(tel => tel.ContactID, contactNo)
                 .With(tel => tel.Type, fakePhoneType.ToString)
                 .Without(tel => tel.PhoneId)
@@ -53,9 +57,9 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
         public static EmailAddresses CreateDatabaseEmailForPerson(int contactNo)
         {
-            var faker = new Fixture();
+            var fixture = new Fixture();
 
-            var fakeEmail = faker.Build<EmailAddresses>()
+            var fakeEmail = fixture.Build<EmailAddresses>()
                 .With(email => email.ContactID, contactNo)
                 .Without(email => email.ContactID)
                 .Create();
@@ -68,9 +72,9 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
         public static TenancyAgreement CreateDatabaseTenancyAgreementForPerson(string houseRef)
         {
-            var faker = new Fixture();
+            var fixture = new Fixture();
 
-            var ft = faker.Build<TenancyAgreement>()
+            var ft = fixture.Build<TenancyAgreement>()
                 .With(ta => ta.HouseRef, houseRef)
                 .Create();
 
@@ -79,10 +83,10 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
         public static ContactLink CreateDatabaseContactLinkForPerson(string tagRef, int personNo)
         {
-            var faker = new Fixture();
+            var fixture = new Fixture();
             var stringPersonNo = personNo.ToString(CultureInfo.InvariantCulture);
 
-            var cl = faker.Build<ContactLink>()
+            var cl = fixture.Build<ContactLink>()
                 .With(cl => cl.TagRef, tagRef)
                 .With(cl => cl.PersonNo, stringPersonNo)
                 .Without(cl => cl.ContactID)

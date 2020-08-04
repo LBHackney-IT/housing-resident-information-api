@@ -28,7 +28,6 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(addedContact.Entity.ContactID);
             var email = TestHelper.CreateDatabaseEmailForPerson(addedContact.Entity.ContactID);
 
-
             context.Addresses.Add(address);
             context.TelephoneNumbers.Add(phone);
             context.EmailAddresses.Add(email);

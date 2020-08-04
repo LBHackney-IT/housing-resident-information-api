@@ -6,5 +6,6 @@ namespace UHResidentInformationAPI.V1.Boundary.Responses
     {
         public List<ResidentInformation> Residents { get; set; }
 
+        public string NextCursor { get; set; }
     }
 }

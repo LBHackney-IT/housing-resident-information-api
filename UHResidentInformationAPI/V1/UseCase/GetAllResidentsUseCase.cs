@@ -1,3 +1,4 @@
+using System.Linq;
 using UHResidentInformationAPI.V1.Boundary.Requests;
 using UHResidentInformationAPI.V1.Boundary.Responses;
 using UHResidentInformationAPI.V1.Factories;
@@ -14,12 +15,19 @@ namespace UHResidentInformationAPI.V1.UseCase
             _uHGateway = uHGateway;
         }
 
-        public ResidentInformationList Execute(ResidentQueryParam rqp)
+        public ResidentInformationList Execute(ResidentQueryParam rqp, string cursor, int limit)
         {
-            var residents = _uHGateway.GetAllResidents(rqp.HouseReference, rqp.FirstName, rqp.LastName, rqp.Address).ToResponse();
+            limit = limit < 10 ? 10 : limit;
+            limit = limit > 100 ? 100 : limit;
+
+            var residents = _uHGateway.GetAllResidents(cursor, limit, rqp.HouseReference, rqp.FirstName, rqp.LastName, rqp.Address).ToResponse();
+            var lastResident = residents.LastOrDefault();
+            var nextCursor = residents.Count == limit ? $"{lastResident.HouseReference}{lastResident.PersonNumber}" : "";
+
             return new ResidentInformationList
             {
-                Residents = residents
+                Residents = residents,
+                NextCursor = nextCursor
             };
         }
 
