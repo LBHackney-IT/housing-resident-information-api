@@ -89,7 +89,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
 
             var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseContactLink.ContactID);
 
-            var type = (int) PhoneType.X;
+            var type = PhoneType.X;
             databasePhoneEntity.Type = type.ToString();
 
             UHContext.TelephoneNumbers.Add(databasePhoneEntity);
