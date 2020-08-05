@@ -4,40 +4,40 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("ccemailaddress")]
+    [Table("CCEmailAddress", Schema = "dbo")]
     public class EmailAddresses
     {
-        [Column("contactno")]
+        [Column("ContactNo")]
         public int ContactID { get; set; }
 
-        [Column("email")]
+        [Column("Email")]
         [MaxLength(50)]
         public string EmailAddress { get; set; }
 
-        [Column("emailtype")]
+        [Column("EmailType")]
         [MaxLength(5)]
         public string EmailType { get; set; }
 
-        [Column("oktoemail")]
+        [Column("OKToEmail")]
         [MaxLength(5)]
         public string OkToEmail { get; set; }
 
-        [Column("defualt")]
+        [Column("Defualt")]
         [MaxLength(5)]
         public string Default { get; set; }
 
-        [Column("emailid")]
+        [Column("EmailID")]
         [Key]
         public int EmailId { get; set; }
 
-        [Column("moddate")]
+        [Column("modDate")]
         public DateTime DateModified { get; set; }
 
-        [Column("moduser")]
+        [Column("modUser")]
         [MaxLength(20)]
         public string ModUser { get; set; }
 
-        [Column("modtype")]
+        [Column("modType")]
         [StringLength(1)]
         public string ModType { get; set; }
     }
