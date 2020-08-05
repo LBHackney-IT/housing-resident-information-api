@@ -84,7 +84,7 @@ commands:
           name: Deploy lambda
           command: |
             cd ./UHResidentInformationAPI/
-            sls deploy --force --stage <<parameters.stage>> --conceal
+            sls deploy --stage <<parameters.stage>> --conceal
 
 jobs:
   check-code-formatting:
@@ -180,7 +180,10 @@ workflows:
               only: development
   check-and-deploy-staging-and-production:
     jobs:
-      - build-and-test
+      - build-and-test:
+#          filters:
+#            branches:
+#              only: master
       - assume-role-staging:
           context: api-assume-role-staging-context
           requires:
@@ -209,6 +212,11 @@ workflows:
               only: master
       - assume-role-production:
           context: api-assume-role-production-context
+#          requires:
+#              - permit-production-terraform-release
+#          filters:
+#             branches:
+#               only: master
       - terraform-init-and-apply-to-production:
           requires:
             - assume-role-production
@@ -224,4 +232,8 @@ workflows:
               only: master
       - deploy-to-production:
           requires:
+#            - permit-production-release
             - assume-role-production
+#          filters:
+#            branches:
+#              only: master
