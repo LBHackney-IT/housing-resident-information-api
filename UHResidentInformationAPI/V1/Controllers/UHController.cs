@@ -29,7 +29,7 @@ namespace UHResidentInformationAPI.V1.Controllers
         [ProducesResponseType(typeof(ResidentInformationList), StatusCodes.Status200OK)]
 
         [HttpGet]
-        public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp, string cursor = null, int? limit = 20)
+        public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp, string cursor = null, int? limit = 100)
         {
             try
             {
