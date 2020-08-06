@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UHResidentInformationAPI.V1.Boundary.Responses;
+using UHResidentInformationAPI.V1.Enums;
 using Address = UHResidentInformationAPI.V1.Domain.Address;
 using AddressResponse = UHResidentInformationAPI.V1.Boundary.Responses.Address;
 using ResidentInformation = UHResidentInformationAPI.V1.Domain.ResidentInformation;
@@ -39,7 +41,7 @@ namespace UHResidentInformationAPI.V1.Factories
             return phoneNumbers.Select(number => new Phone
             {
                 PhoneNumber = number.PhoneNumber,
-                PhoneType = number.Type,
+                PhoneType = number.Type.ToString(),
                 LastModified = number.LastModified.ToString("O", CultureInfo.InvariantCulture)
             }).ToList();
         }
