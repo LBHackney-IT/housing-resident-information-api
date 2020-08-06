@@ -45,7 +45,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
         [Test]
         public void GetHousingInformationByIdReturns404NotFound()
         {
-            var requestUri = new Uri($"/this/url/will/not/work", UriKind.Relative);
+            var requestUri = new Uri($"api/v1/households/0/people/0", UriKind.Relative);
             var response = Client.GetAsync(requestUri);
             var statusCode = response.Result.StatusCode;
             statusCode.Should().Be(404);
