@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using UHResidentInformationAPI.V1.Factories;
 using UHResidentInformationAPI.V1.Infrastructure;
 using Address = UHResidentInformationAPI.V1.Infrastructure.Address;
@@ -23,160 +24,76 @@ namespace UHResidentInformationAPI.V1.Gateways
 
             if (databaseRecord == null) return null;
 
-            var addressForPerson =
+            var addressForDatabaseRecord =
                 _uHContext.Addresses.OrderByDescending(a => a.Dtstamp).FirstOrDefault(a => a.HouseRef.Trim() == databaseRecord.HouseRef.Trim());
 
-            var tenancyForPerson = _uHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef.Trim() == databaseRecord.HouseRef.Trim());
+            var tenancyForDatabaseRecord = _uHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef.Trim() == databaseRecord.HouseRef.Trim());
 
-            var contactLinkNoForPerson = GetContactNoFromContactLink(databaseRecord.HouseRef.Trim(), databaseRecord.PersonNo);
+            var contactLinkForDatabaseRecord = GetContactLinkForPerson(databaseRecord.HouseRef.Trim(), databaseRecord.PersonNo);
 
-            var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == contactLinkNoForPerson).ToList();
+            var singleRecord = MapDetailsToResidentInformation(databaseRecord, addressForDatabaseRecord, tenancyForDatabaseRecord, contactLinkForDatabaseRecord);
 
-            var emailAddressForPerson =
-                _uHContext.EmailAddresses.Where(c => c.ContactID == contactLinkNoForPerson).ToList();
-
-            var person = MapPersonWithTenancyAndAddressesToResidentInformation(databaseRecord, addressForPerson, tenancyForPerson);
-
-            AttachContactDetailsToPerson(person, telephoneNumberForPerson, emailAddressForPerson);
-
-            return person;
+            return singleRecord;
         }
 
         public List<ResidentInformation> GetAllResidents(string cursor, int limit, string houseReference = null, string firstName = null, string lastName = null, string address = null)
         {
             var cursorAsInt = string.IsNullOrEmpty(cursor) ? 0 : int.Parse(cursor);
 
-            //Inner join on person and address
-            var listOfPerson = _uHContext.Persons
-                .Where(a => string.IsNullOrEmpty(houseReference) || a.HouseRef.Contains(houseReference))
-                .Where(a => string.IsNullOrEmpty(firstName) || a.FirstName.Trim().ToLower().Contains(firstName.ToLower()))
-                .Where(a => string.IsNullOrEmpty(lastName) || a.LastName.Trim().ToLower().Contains(lastName.ToLower()))
-                .OrderBy(p => p.HouseRef.Trim() + p.PersonNo.ToString())
-                .Where(p => cursorAsInt == 0 || Convert.ToInt32(p.HouseRef.Trim() + p.PersonNo.ToString()) > cursorAsInt)
-                .Take(limit)
-                .Join(
-                    _uHContext.Addresses.Where(a => string.IsNullOrEmpty(address) || a.AddressLine1.ToLower().Contains(address.ToLower())),
-                    person => person.HouseRef.Trim(),
-                    address => address.HouseRef.Trim(),
-                    (person, address) => new { person, address }
-                );
+            var addressSearchPattern = GetSearchPattern(address);
+            var houseReferenceSearchPattern = GetSearchPattern(houseReference);
+            var firstNameSearchPattern = GetSearchPattern(firstName);
+            var lastNameSearchPattern = GetSearchPattern(lastName);
 
-            //Query result is empty, return empty list
-            if (!listOfPerson.Any())
+            var dbRecords = (from person in _uHContext.Persons
+                             where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef.Replace(" ", ""),
+                                 houseReferenceSearchPattern)
+                             where string.IsNullOrEmpty(firstName) ||
+                                   EF.Functions.ILike(person.FirstName, firstNameSearchPattern)
+                             where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastNameSearchPattern)
+                             orderby person.HouseRef, person.PersonNo
+                             where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef.Trim() + person.PersonNo.ToString()) > cursorAsInt
+                             join a in _uHContext.Addresses on person.HouseRef equals a.HouseRef
+                             where string.IsNullOrEmpty(address) ||
+                                   EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
+                             join ta in _uHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
+                             join c in _uHContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
+                             from link in addedContactLink.DefaultIfEmpty()
+                             select new
+                             {
+                                 personDetails = person,
+                                 addressDetails = a,
+                                 tenancyDetails = ta,
+                                 contactDetails = link
+                             }
+                ).Take(limit).ToList();
+
+            if (!dbRecords.Any())
                 return new List<ResidentInformation>();
 
-            // Join to get tag_ref from tenagree
-            var residentWithTagRefs = listOfPerson.ToList()
-            .Join(
-                _uHContext.TenancyAgreements,
-                anon => anon.person.HouseRef.Trim(),
-                tenancy => tenancy.HouseRef.Trim(),
-                (anon, tenancy) =>
-                {
-                    var people = new
-                    {
-                        person = anon.person,
-                        address = anon.address,
-                        tenancy = tenancy
-                    };
-                    return people;
-                }
-            );
-
-            //Left Join on tagRef to get contactNo from cccontactLink
-            var residentWithContacts = residentWithTagRefs
-                .GroupJoin(
-                    _uHContext.ContactLinks.Where(c => c.PersonNo != null && c.TagRef != null),
-                    //Join on composite key to get list of contactno
-                    anon => new { personno = anon.person.PersonNo.ToString(), tagref = anon.tenancy.TagRef.Trim() },
-                    contact => new { personno = contact.PersonNo.Trim(), tagref = contact.TagRef.Trim() },
-                    (anon, contact) =>
-                    {
-                        var person = new
-                        {
-                            person = anon.person,
-                            address = anon.address,
-                            tenancy = anon.tenancy,
-                            contact = contact
-                        };
-                        return person;
-                    }
-                );
-
-            //retrieve and project all contactNo's
-            var contacts = residentWithContacts.SelectMany(anon => anon.contact);
-
-            //join contacts on PhoneNumbers using contactID
-            var residentWithPhones = contacts
-                .Join
-                (
-                    _uHContext.TelephoneNumbers,
-                    anon => anon.ContactID,
-                    telephone => telephone.ContactID,
-                    (anon, telephone) =>
-                    {
-                        var telephones = new
-                        {
-                            contactid = anon.ContactID,
-                            phone = telephone,
-                        };
-                        return telephones;
-                    }
-                );
-
-            //join contacts on Emails using contactID
-            var residentWithEmails = contacts
-                .Join
-                (
-                    _uHContext.EmailAddresses,
-                    anon => anon.ContactID,
-                    email => email.ContactID,
-                    (anon, email) =>
-                    {
-                        var emails = new
-                        {
-                            contactid = anon.ContactID,
-                            email = email,
-                        };
-                        return emails;
-                    }
-                );
-
-            //create list of residents
-            var listOfResident = residentWithContacts
-                .Select(person =>
-                {
-                    //Get all the phone numbers
-                    var phoneList = residentWithPhones
-                        .Where(phone => person.contact.Any(c => phone.contactid == c.ContactID))
-                        .Select(p => p.phone.ToDomain()).ToList();
-
-                    //Get all the email addresses
-                    var emailList = residentWithEmails
-                        .Where(email => person.contact.Any(c => email.contactid == c.ContactID))
-                        .Select(e => e.email.ToDomain()).ToList();
-
-                    var resident = person.person.ToDomain();
-                    resident.PhoneNumber = phoneList.Any() ? phoneList : null;
-                    resident.Email = emailList.Any() ? emailList : null;
-                    resident.ResidentAddress = person.address.ToDomain();
-                    resident.UPRN = person.address.UPRN;
-                    resident.TenancyReference = person.tenancy?.TagRef;
-
-                    return resident;
-                })
+            var listRecords = dbRecords.Select(x =>
+                    MapDetailsToResidentInformation(x.personDetails, x.addressDetails, x.tenancyDetails,
+                        x.contactDetails))
                 .ToList();
 
-            return listOfResident;
+            return listRecords;
         }
 
-        private static ResidentInformation MapPersonWithTenancyAndAddressesToResidentInformation(Person person, Address address, TenancyAgreement tenancyAgreement)
+        private ResidentInformation MapDetailsToResidentInformation(Person person, Address address, TenancyAgreement tenancyAgreement, ContactLink contactLink)
         {
             var resident = person.ToDomain();
-
-            resident.ResidentAddress = address?.ToDomain();
             resident.UPRN = address?.UPRN;
+            resident.ResidentAddress = address?.ToDomain();
             resident.TenancyReference = tenancyAgreement?.TagRef;
+
+            if (contactLink == null) return resident;
+
+            var telephoneNumberForPerson = _uHContext.TelephoneNumbers.Where(t => t.ContactID == contactLink.ContactID).ToList();
+
+            var emailAddressForPerson =
+                _uHContext.EmailAddresses.Where(c => c.ContactID == contactLink.ContactID).ToList();
+
+            AttachContactDetailsToPerson(resident, telephoneNumberForPerson, emailAddressForPerson);
 
             return resident;
         }
@@ -188,13 +105,18 @@ namespace UHResidentInformationAPI.V1.Gateways
             person.Email = emails.Any() ? emails.Select(n => n.ToDomain()).ToList() : null;
         }
 
-        private int? GetContactNoFromContactLink(string houseReference, int personReference)
+        private ContactLink GetContactLinkForPerson(string houseReference, int personReference)
         {
             var tagReference = _uHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef.Trim() == houseReference)?.TagRef;
             var contactLinkUsingTagReference = _uHContext.ContactLinks
-                .FirstOrDefault(co => (co.TagRef == tagReference) && (co.PersonNo == personReference.ToString(CultureInfo.InvariantCulture)))?.ContactID;
+                .FirstOrDefault(co => (co.TagRef == tagReference) && (co.PersonNo == personReference.ToString(CultureInfo.InvariantCulture)));
 
             return contactLinkUsingTagReference;
+        }
+
+        private static string GetSearchPattern(string str)
+        {
+            return $"%{str?.Replace(" ", "")}%";
         }
     }
 }
