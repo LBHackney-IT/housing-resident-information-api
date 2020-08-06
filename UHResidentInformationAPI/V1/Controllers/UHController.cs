@@ -45,7 +45,15 @@ namespace UHResidentInformationAPI.V1.Controllers
         [Route("{houseReference}/people/{personReference}")]
         public IActionResult ViewRecord(string houseReference, int personReference)
         {
-            return Ok(_getResidentByIdUseCase.Execute(houseReference, personReference));
+            try
+            {
+                var record = _getResidentByIdUseCase.Execute(houseReference, personReference);
+                return Ok(record);
+            }
+            catch (ResidentNotFoundException)
+            {
+                return NotFound();
+            }
         }
     };
 }
