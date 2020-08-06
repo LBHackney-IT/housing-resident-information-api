@@ -49,7 +49,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                         new Phone
                         {
                             PhoneNumber = phone.Number,
-                            PhoneType = phone.Type,
+                            PhoneType = Enum.Parse<PhoneType>(phone.Type),
                             LastModified = phone.DateCreated.ToString("O", CultureInfo.InvariantCulture)
                         }
                     },
