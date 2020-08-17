@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 namespace UHResidentInformationAPI.V1.Boundary.Responses
 {
-
     public class ResidentInformation
     {
         public string HouseReference { get; set; }
@@ -11,10 +10,10 @@ namespace UHResidentInformationAPI.V1.Boundary.Responses
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string DateOfBirth { get; set; }
-        public string NINumber { get; set; }
-        public string UPRN { get; set; }
-        public List<Phone> PhoneNumber { get; set; }
-        public List<Email> Email { get; set; }
+        public string NiNumber { get; set; }
+        public string Uprn { get; set; }
+        public List<Phone> PhoneNumbers { get; set; }
+        public List<Email> EmailAddresses { get; set; }
         public Address Address { get; set; }
     }
 }

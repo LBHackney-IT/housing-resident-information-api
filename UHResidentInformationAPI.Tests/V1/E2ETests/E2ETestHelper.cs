@@ -41,9 +41,9 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                 TenancyReference = tenancyAgreement.TagRef,
                 FirstName = person.FirstName,
                 LastName = person.LastName,
-                NINumber = person.NINumber,
-                UPRN = address.UPRN,
-                PhoneNumber =
+                NiNumber = person.NINumber,
+                Uprn = address.UPRN,
+                PhoneNumbers =
                     new List<Phone>
                     {
                         new Phone
@@ -53,7 +53,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                             LastModified = phone.DateCreated.ToString("O", CultureInfo.InvariantCulture)
                         }
                     },
-                Email = new List<Email>
+                EmailAddresses = new List<Email>
                 {
                     new Email
                     {
@@ -65,7 +65,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                 {
                     PropertyRef = address.PropertyRef,
                     AddressLine1 = address.AddressLine1,
-                    PostCode = address.PostCode
+                    Postcode = address.PostCode
                 },
                 DateOfBirth = person.DateOfBirth.ToString("O", CultureInfo.InvariantCulture)
             };
