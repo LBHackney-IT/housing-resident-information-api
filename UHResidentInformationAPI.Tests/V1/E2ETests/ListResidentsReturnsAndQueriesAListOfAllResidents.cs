@@ -52,7 +52,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "shape");
             var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
-            var uri = new Uri("api/v1/households?firstname=ciasom&lastname=tessellate", UriKind.Relative);
+            var uri = new Uri("api/v1/households?first_name=ciasom&last_name=tessellate", UriKind.Relative);
             var response = Client.GetAsync(uri);
 
             var statusCode = response.Result.StatusCode;
@@ -100,7 +100,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             var nonMatchingResident2 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, addressLines: "1 Seasame street, Hackney, LDN");
             var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
-            var uri = new Uri("api/v1/households?address=1 Seasame street&firstname=ciasom&lastname=shape", UriKind.Relative);
+            var uri = new Uri("api/v1/households?address=1 Seasame street&first_name=ciasom&last_name=shape", UriKind.Relative);
             var response = Client.GetAsync(uri);
 
             var statusCode = response.Result.StatusCode;

@@ -33,7 +33,7 @@ namespace UHResidentInformationAPI.Tests.V1.Controllers
             {
                 new ResidentInformation()
                 {
-                    UPRN = "123456789",
+                    Uprn = "123456789",
                     FirstName = "test",
                     LastName = "test",
                     DateOfBirth = "01/01/2020"
@@ -67,7 +67,7 @@ namespace UHResidentInformationAPI.Tests.V1.Controllers
                 FirstName = "test",
                 LastName = "test",
                 DateOfBirth = "01/01/2020",
-                UPRN = "test",
+                Uprn = "test",
                 HouseReference = "testHouseRef",
                 PersonNumber = 123,
             };

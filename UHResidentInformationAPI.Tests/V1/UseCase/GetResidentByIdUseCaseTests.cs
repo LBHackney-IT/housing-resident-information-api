@@ -85,7 +85,7 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
 
             response.Should().NotBeNull();
             response.Should().BeEquivalentTo(expectedResponse);
-            response.PhoneNumber.FirstOrDefault().PhoneType.Should().BeNullOrEmpty();
+            response.PhoneNumbers.FirstOrDefault().PhoneType.Should().BeNullOrEmpty();
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace UHResidentInformationAPI.Tests.V1.UseCase
 
             response.Should().NotBeNull();
             response.Should().BeEquivalentTo(expectedResponse);
-            response.PhoneNumber.FirstOrDefault().PhoneType.Should().Be("F");
+            response.PhoneNumbers.FirstOrDefault().PhoneType.Should().Be("F");
         }
 
         [Test]

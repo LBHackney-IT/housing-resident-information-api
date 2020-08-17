@@ -9,13 +9,13 @@ namespace UHResidentInformationAPI.V1.Boundary.Requests
     public class ResidentQueryParam
     {
 
-        [FromQuery(Name = "housereference")]
+        [FromQuery(Name = "house_reference")]
         public string HouseReference { get; set; }
 
-        [FromQuery(Name = "firstname")]
+        [FromQuery(Name = "first_name")]
         public string FirstName { get; set; }
 
-        [FromQuery(Name = "lastname")]
+        [FromQuery(Name = "last_name")]
         public string LastName { get; set; }
 
         [FromQuery(Name = "address")]

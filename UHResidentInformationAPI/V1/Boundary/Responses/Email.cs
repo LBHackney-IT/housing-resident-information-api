@@ -1,5 +1,3 @@
-using System;
-
 namespace UHResidentInformationAPI.V1.Boundary.Responses
 {
     public class Email

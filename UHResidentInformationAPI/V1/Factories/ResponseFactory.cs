@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UHResidentInformationAPI.V1.Boundary.Responses;
-using UHResidentInformationAPI.V1.Enums;
 using Address = UHResidentInformationAPI.V1.Domain.Address;
 using AddressResponse = UHResidentInformationAPI.V1.Boundary.Responses.Address;
 using ResidentInformation = UHResidentInformationAPI.V1.Domain.ResidentInformation;
@@ -24,11 +22,11 @@ namespace UHResidentInformationAPI.V1.Factories
                 FirstName = domain.FirstName,
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,
-                NINumber = domain.NINumber,
-                UPRN = domain.UPRN,
+                NiNumber = domain.NINumber,
+                Uprn = domain.UPRN,
                 Address = domain.ResidentAddress.ToResponse(),
-                PhoneNumber = domain.PhoneNumber?.ToResponse(),
-                Email = domain.Email?.ToResponse()
+                PhoneNumbers = domain.PhoneNumber?.ToResponse(),
+                EmailAddresses = domain.Email?.ToResponse()
             };
         }
         public static List<ResidentInformationResponse> ToResponse(this IEnumerable<ResidentInformation> people)
@@ -62,7 +60,7 @@ namespace UHResidentInformationAPI.V1.Factories
             {
                 PropertyRef = address.PropertyRef,
                 AddressLine1 = address.AddressLine1,
-                PostCode = address.PostCode
+                Postcode = address.PostCode
             };
         }
     }
