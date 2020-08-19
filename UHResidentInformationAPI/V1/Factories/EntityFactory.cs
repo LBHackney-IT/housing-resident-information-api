@@ -22,7 +22,7 @@ namespace UHResidentInformationAPI.V1.Factories
                 FirstName = databaseEntity.FirstName.Trim(),
                 LastName = databaseEntity.LastName.Trim(),
                 DateOfBirth = databaseEntity.DateOfBirth.ToString("O", CultureInfo.InvariantCulture),
-                NINumber = databaseEntity.NINumber.Trim()
+                NINumber = databaseEntity.NINumber.Trim(),
             };
         }
 

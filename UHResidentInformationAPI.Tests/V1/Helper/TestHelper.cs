@@ -94,5 +94,11 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
 
             return cl;
         }
+
+        public static Contact CreateContactRecordFromTagRef(string tagRef)
+        {
+            var fixture = new Fixture();
+            return new Contact {HouseReference = fixture.Create<string>().Substring(0, 6), TagRef = tagRef};
+        }
     }
 }

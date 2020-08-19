@@ -163,6 +163,21 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         }
 
         [Test]
+        public void GetResidentByIdReturnsTheContactKey()
+        {
+            var person = AddPersonRecordToDatabase();
+            var tenancy = TestHelper.CreateDatabaseTenancyAgreementForPerson(person.HouseRef);
+            var contact = TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef);
+
+            UHContext.TenancyAgreements.Add(tenancy);
+            var addedEntity = UHContext.Contacts.Add(contact);
+            UHContext.SaveChanges();
+
+            var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
+            response.ContactKey.Should().Be(addedEntity.Entity.ContactKey.ToString());
+        }
+
+        [Test]
         public void GetResidentByIdReturnsTheEmailDetails()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
@@ -186,6 +201,7 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             response.Email.Should().BeEquivalentTo(expectedEmailAddressList);
         }
 
+        [Test]
         public void GetAllResidentsIfThereAreNoResidentsReturnsAnEmptyList()
         {
             _classUnderTest.GetAllResidents(null, 10, "00011", "bob", "brown", "1 Hillman Street").Should().BeEmpty();
@@ -614,6 +630,21 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             receivedPersons[2].FirstName.Should().Be(persons[1].FirstName);
         }
 
+        [Test]
+        public void GetAllResidentsReturnsTheContactKeyForEachResult()
+        {
+            var person = AddPersonRecordToDatabase();
+            AddAddressRecordToDatabase(person.HouseRef);
+            var tenancy = TestHelper.CreateDatabaseTenancyAgreementForPerson(person.HouseRef);
+            UHContext.TenancyAgreements.Add(tenancy);
+            UHContext.ContactLinks.Add(TestHelper.CreateDatabaseContactLinkForPerson(tenancy.TagRef, person.PersonNo));
+
+            var contact = UHContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
+            UHContext.SaveChanges();
+
+            var response = _classUnderTest.GetAllResidents(null, 10);
+            response.First().ContactKey.Should().BeEquivalentTo(contact.Entity.ContactKey.ToString());
+        }
         private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null, string houseRef = null, int? personNo = null)
         {
             var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname, lastname, houseRef, personNo);
