@@ -30,6 +30,17 @@ namespace UHResidentInformationAPI.V1.Factories
         {
             return people.Select(p => p.ToDomain()).ToList();
         }
+
+        public static List<Email> ToDomain(this IEnumerable<EmailAddresses> people)
+        {
+            return people.Select(p => p.ToDomain()).ToList();
+        }
+
+        public static List<Phone> ToDomain(this IEnumerable<TelephoneNumber> people)
+        {
+            return people.Select(p => p.ToDomain()).ToList();
+        }
+
         public static Address ToDomain(this DbAddress databaseEntity)
         {
             return new Address

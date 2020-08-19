@@ -58,28 +58,29 @@ namespace UHResidentInformationAPI.V1.Gateways
 
             var dbRecords = (
                 from person in _uhContext.Persons
-                 where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef.Replace(" ", ""),
-                     houseReferenceSearchPattern)
-                 where string.IsNullOrEmpty(firstName) ||
-                       EF.Functions.ILike(person.FirstName, firstNameSearchPattern)
-                 where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastNameSearchPattern)
-                 orderby person.HouseRef, person.PersonNo
-                 where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef.Trim() + person.PersonNo.ToString()) > cursorAsInt
-                 join a in _uhContext.Addresses on person.HouseRef equals a.HouseRef
-                 where string.IsNullOrEmpty(address) ||
-                       EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
-                 join ta in _uhContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
-                 join ck in _uhContext.Contacts on ta.TagRef equals ck.TagRef into cks  from contacts in cks.DefaultIfEmpty()
-                 join c in _uhContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
-                 from link in addedContactLink.DefaultIfEmpty()
-                 select new
-                 {
-                     personDetails = person,
-                     addressDetails = a,
-                     tenancyDetails = ta,
-                     contactDetails = link,
-                     contactKey = contacts
-                 }
+                where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef.Replace(" ", ""),
+                    houseReferenceSearchPattern)
+                where string.IsNullOrEmpty(firstName) ||
+                      EF.Functions.ILike(person.FirstName, firstNameSearchPattern)
+                where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastNameSearchPattern)
+                orderby person.HouseRef, person.PersonNo
+                where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef.Trim() + person.PersonNo.ToString()) > cursorAsInt
+                join a in _uhContext.Addresses on person.HouseRef equals a.HouseRef
+                where string.IsNullOrEmpty(address) ||
+                      EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
+                join ta in _uhContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
+                join ck in _uhContext.Contacts on ta.TagRef equals ck.TagRef into cks
+                from contacts in cks.DefaultIfEmpty()
+                join c in _uhContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
+                from link in addedContactLink.DefaultIfEmpty()
+                select new
+                {
+                    personDetails = person,
+                    addressDetails = a,
+                    tenancyDetails = ta,
+                    contactDetails = link,
+                    contactKey = contacts
+                }
                 ).Take(limit).ToList();
 
             if (!dbRecords.Any())

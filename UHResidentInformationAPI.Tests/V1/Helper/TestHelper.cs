@@ -81,10 +81,10 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
             return ft;
         }
 
-        public static ContactLink CreateDatabaseContactLinkForPerson(string tagRef, int personNo)
+        public static ContactLink CreateDatabaseContactLinkForPerson(string tagRef, int? personNo)
         {
             var fixture = new Fixture();
-            var stringPersonNo = personNo.ToString(CultureInfo.InvariantCulture);
+            var stringPersonNo = personNo?.ToString();
 
             var cl = fixture.Build<ContactLink>()
                 .With(cl => cl.TagRef, tagRef)
@@ -98,7 +98,7 @@ namespace UHResidentInformationAPI.Tests.V1.Helper
         public static Contact CreateContactRecordFromTagRef(string tagRef)
         {
             var fixture = new Fixture();
-            return new Contact {HouseReference = fixture.Create<string>().Substring(0, 6), TagRef = tagRef};
+            return new Contact { HouseReference = fixture.Create<string>().Substring(0, 6), TagRef = tagRef };
         }
     }
 }

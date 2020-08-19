@@ -48,74 +48,75 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         [Test]
         public void GetResidentByIdReturnsPersonalDetails()
         {
-            var databasePersonEntity = AddPersonRecordToDatabase();
-            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var person = AddPersonRecordToDatabase();
+            AddTenancyAgreementToDatabase(person.HouseRef);
+            var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
 
-            response.HouseReference.Should().Be(databasePersonEntity.HouseRef);
-            response.FirstName.Should().Be(databasePersonEntity.FirstName);
-            response.LastName.Should().Be(databasePersonEntity.LastName);
-            response.NINumber.Should().Be(databasePersonEntity.NINumber);
-            response.DateOfBirth.Should().Be(databasePersonEntity.DateOfBirth.ToString("O", CultureInfo.InvariantCulture));
+            response.HouseReference.Should().Be(person.HouseRef);
+            response.FirstName.Should().Be(person.FirstName);
+            response.LastName.Should().Be(person.LastName);
+            response.NINumber.Should().Be(person.NINumber);
+            response.DateOfBirth.Should().Be(person.DateOfBirth.ToString("O", CultureInfo.InvariantCulture));
             response.Should().NotBe(null);
         }
 
         [Test]
         public void GetResidentByIdReturnsAddressDetails()
         {
-            var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseAddressEntity = TestHelper.CreateDatabaseAddressForPersonId(databasePersonEntity.HouseRef);
-
-            UHContext.Addresses.Add(databaseAddressEntity);
-            UHContext.SaveChanges();
+            var person = AddPersonRecordToDatabase();
+            var address = AddAddressRecordToDatabase(person.HouseRef);
+            AddTenancyAgreementToDatabase(person.HouseRef);
 
             var expectedDomainAddress = new DomainAddress
             {
-                PropertyRef = databaseAddressEntity.PropertyRef,
-                AddressLine1 = databaseAddressEntity.AddressLine1,
-                PostCode = databaseAddressEntity.PostCode
+                PropertyRef = address.PropertyRef,
+                AddressLine1 = address.AddressLine1,
+                PostCode = address.PostCode
             };
 
-            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
 
-            response.HouseReference.Should().Be(databasePersonEntity.HouseRef);
+            response.HouseReference.Should().Be(person.HouseRef);
             response.ResidentAddress.Should().BeEquivalentTo(expectedDomainAddress);
         }
 
         [Test]
         public void GetResidentByIdReturnsPhoneContactDetailsWithPhoneType()
         {
-            var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var person = AddPersonRecordToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var contactLink = AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
-            var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseContactLink.ContactID);
+            var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLink.ContactID);
 
             var type = PhoneType.X;
-            databasePhoneEntity.Type = type.ToString();
+            phone.Type = type.ToString();
 
-            UHContext.TelephoneNumbers.Add(databasePhoneEntity);
+            UHContext.TelephoneNumbers.Add(phone);
             UHContext.SaveChanges();
 
             var expectedPhoneNumberList = new List<Phone>
             {
                 new Phone
                 {
-                    PhoneNumber = databasePhoneEntity.Number,
+                    PhoneNumber = phone.Number,
                     Type = PhoneType.X,
-                    LastModified = databasePhoneEntity.DateCreated
+                    LastModified = phone.DateCreated
                 }
             };
 
-            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
             response.PhoneNumber.Should().BeEquivalentTo(expectedPhoneNumberList);
         }
 
         [Test]
         public void GetResidentByIdReturnsPhoneContactDetailsWithOutPhoneType()
         {
-            var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var person = AddPersonRecordToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var contactLink = AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
-            var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(databaseContactLink.ContactID);
+            var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLink.ContactID);
 
             databasePhoneEntity.Type = null;
 
@@ -132,31 +133,29 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
                 }
             };
 
-            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
             response.PhoneNumber.Should().BeEquivalentTo(expectedPhoneNumberList);
         }
 
         [Test]
         public void GetResidentByIdReturnsTheUPRNInTheResponse()
         {
-            var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseAddressEntity = TestHelper.CreateDatabaseAddressForPersonId(databasePersonEntity.HouseRef);
+            var person = AddPersonRecordToDatabase();
+            var address = AddAddressRecordToDatabase(person.HouseRef);
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
 
-            UHContext.Addresses.Add(databaseAddressEntity);
+            UHContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
             UHContext.SaveChanges();
 
-            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
-            response.UPRN.Should().Be(databaseAddressEntity.UPRN);
+            var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
+            response.UPRN.Should().Be(address.UPRN);
         }
 
         [Test]
         public void GetResidentByIdReturnsTheTenancyReferenceInTheResponse()
         {
             var databasePersonEntity = AddPersonRecordToDatabase();
-            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(databasePersonEntity.HouseRef);
-
-            UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
-            UHContext.SaveChanges();
+            var tenancyDatabaseEntity = AddTenancyAgreementToDatabase(databasePersonEntity.HouseRef);
 
             var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
             response.TenancyReference.Should().Be(tenancyDatabaseEntity.TagRef);
@@ -166,10 +165,9 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsTheContactKey()
         {
             var person = AddPersonRecordToDatabase();
-            var tenancy = TestHelper.CreateDatabaseTenancyAgreementForPerson(person.HouseRef);
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
             var contact = TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef);
 
-            UHContext.TenancyAgreements.Add(tenancy);
             var addedEntity = UHContext.Contacts.Add(contact);
             UHContext.SaveChanges();
 
@@ -180,24 +178,22 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         [Test]
         public void GetResidentByIdReturnsTheEmailDetails()
         {
-            var databasePersonEntity = AddPersonRecordToDatabase();
-            var databaseContactLink = AddContactLinkForPersonToDatabase(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var person = AddPersonRecordToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var contactLink = AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
-            var databaseEmailEntity = TestHelper.CreateDatabaseEmailForPerson(databaseContactLink.ContactID);
-
-            UHContext.EmailAddresses.Add(databaseEmailEntity);
-            UHContext.SaveChanges();
+            var email = AddEmailAddressToDatabase(contactLink.ContactID);
 
             var expectedEmailAddressList = new List<Email>
             {
                 new Email
                 {
-                    EmailAddress = databaseEmailEntity.EmailAddress,
-                    LastModified = databaseEmailEntity.DateModified
+                    EmailAddress = email.EmailAddress,
+                    LastModified = email.DateModified
                 }
             };
 
-            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
             response.Email.Should().BeEquivalentTo(expectedEmailAddressList);
         }
 
@@ -210,371 +206,137 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         [Test]
         public void GetAllResidentsWithFirstNameQueryParameterReturnsMatchingResident()
         {
-            var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname: "ciasom");
-            var databaseEntity1 = TestHelper.CreateDatabasePersonEntity(firstname: "shape");
-            var databaseEntity2 = TestHelper.CreateDatabasePersonEntity(firstname: "Ciasom");
+            var person1 = AddPersonRecordToDatabase(firstname: "ciasom");
+            var address1 = AddAddressRecordToDatabase(person1.HouseRef);
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+            var link1 = AddContactLinkForPersonToDatabase(tenancy1.TagRef, person1.PersonNo);
+            var telephone1 = AddTelephoneNumberToDatabase(link1.ContactID);
+            var emailAddressList1 = new List<EmailAddresses> { AddEmailAddressToDatabase(link1.ContactID), AddEmailAddressToDatabase(link1.ContactID) };
 
-            var personslist = new List<Person>
-            {
-                databaseEntity,
-                databaseEntity1,
-                databaseEntity2
-            };
-            //Add person entities to test database
-            UHContext.Persons.AddRange(personslist);
-            UHContext.SaveChanges();
+            var person2 = AddPersonRecordToDatabase(firstname: "shape");
+            var address2 = AddAddressRecordToDatabase(person2.HouseRef);
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var link2 = AddContactLinkForPersonToDatabase(tenancy2.TagRef, person2.PersonNo);
+            var telephone2 = AddTelephoneNumberToDatabase(link1.ContactID);
 
-            var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef);
-            var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
-            var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef);
+            var person3 = AddPersonRecordToDatabase(firstname: "Ciasom");
+            var address3 = AddAddressRecordToDatabase(person3.HouseRef);
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var link3 = AddContactLinkForPersonToDatabase(tenancy3.TagRef, person3.PersonNo);
+            var telephone3 = AddTelephoneNumberToDatabase(link3.ContactID);
+            var emailAddressList3 = new List<EmailAddresses> { AddEmailAddressToDatabase(link3.ContactID) };
 
-            var addresslist = new List<Address>
-            {
-                address,
-                address1,
-                address2
-            };
-            //Add address enitites to test database
-            UHContext.Addresses.AddRange(addresslist);
-            UHContext.SaveChanges();
+            var domainEntity = MapToExpectedDomain(person1, address1,
+                new List<Phone> { telephone1.ToDomain(), telephone2.ToDomain() }, emailAddressList1.ToDomain(), tenancy1);
+            var domainEntity2 = MapToExpectedDomain(person3, address3, new List<Phone> { telephone3.ToDomain() }, emailAddressList3.ToDomain(), tenancy3);
 
-            var tenancy1 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address.HouseRef);
-            var tenancy2 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address1.HouseRef);
-            var tenancy3 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address2.HouseRef);
-
-            var tenancyList = new List<TenancyAgreement>
-            {
-                tenancy1,
-                tenancy2,
-                tenancy3
-            };
-
-            UHContext.TenancyAgreements.AddRange(tenancyList);
-            UHContext.SaveChanges();
-
-            var link1 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy1.TagRef, databaseEntity.PersonNo);
-            var link2 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy3.TagRef, databaseEntity2.PersonNo);
-            var link3 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy2.TagRef, databaseEntity1.PersonNo);
-
-            var contactLinkList = new List<ContactLink>
-            {
-                link1,
-                link2,
-                link3
-            };
-
-            UHContext.ContactLinks.AddRange(contactLinkList);
-            UHContext.SaveChanges();
-
-            var telephone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link1.ContactID);
-            UHContext.TelephoneNumbers.Add(telephone);
-            UHContext.SaveChanges();
-
-            var telephone1 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link1.ContactID);
-            UHContext.TelephoneNumbers.Add(telephone1);
-            UHContext.SaveChanges();
-
-            var telephone2 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link2.ContactID);
-            UHContext.TelephoneNumbers.Add(telephone2);
-            UHContext.SaveChanges();
-
-            var emailAddress = TestHelper.CreateDatabaseEmailForPerson(link1.ContactID);
-            UHContext.EmailAddresses.Add(emailAddress);
-            UHContext.SaveChanges();
-
-            var emailAddress1 = TestHelper.CreateDatabaseEmailForPerson(link1.ContactID);
-            UHContext.EmailAddresses.Add(emailAddress1);
-            UHContext.SaveChanges();
-
-            var emailAddress2 = TestHelper.CreateDatabaseEmailForPerson(link2.ContactID);
-            UHContext.EmailAddresses.Add(emailAddress2);
-            UHContext.SaveChanges();
-
-            var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
-            domainEntity.UPRN = address.UPRN;
-            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
-            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
-            domainEntity.TenancyReference = tenancy1.TagRef;
-
-            var domainEntity2 = databaseEntity2.ToDomain();
-            domainEntity2.ResidentAddress = address2.ToDomain();
-            domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
-            domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
-            domainEntity2.TenancyReference = tenancy3.TagRef;
 
             var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom");
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
-
         }
-
 
         [Test]
         public void GetAllResidentsWithNoEmailWithLastNameQueryParameterReturnsMatchingResidents()
         {
-            var databaseEntity = TestHelper.CreateDatabasePersonEntity(lastname: "brown");
-            var databaseEntity1 = TestHelper.CreateDatabasePersonEntity(lastname: "tessellate");
-            var databaseEntity2 = TestHelper.CreateDatabasePersonEntity(lastname: "brown");
+            var person1 = AddPersonRecordToDatabase(lastname: "brown");
+            var address1 = AddAddressRecordToDatabase(person1.HouseRef);
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+            var link1 = AddContactLinkForPersonToDatabase(tenancy1.TagRef, person1.PersonNo);
+            var telephoneList1 = new List<TelephoneNumber> { AddTelephoneNumberToDatabase(link1.ContactID), AddTelephoneNumberToDatabase(link1.ContactID) };
 
-            var personslist = new List<Person>
-            {
-                databaseEntity,
-                databaseEntity1,
-                databaseEntity2
-            };
-            //Add person entities to test database
-            UHContext.Persons.AddRange(personslist);
-            UHContext.SaveChanges();
+            var person2 = AddPersonRecordToDatabase(lastname: "tessellate");
+            var address2 = AddAddressRecordToDatabase(person2.HouseRef);
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var link2 = AddContactLinkForPersonToDatabase(tenancy2.TagRef, person2.PersonNo);
 
-            var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef);
-            var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
-            var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef);
+            var person3 = AddPersonRecordToDatabase(lastname: "brown");
+            var address3 = AddAddressRecordToDatabase(person3.HouseRef);
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var link3 = AddContactLinkForPersonToDatabase(tenancy3.TagRef, person3.PersonNo);
+            var telephoneList3 = new List<TelephoneNumber> { AddTelephoneNumberToDatabase(link3.ContactID) };
 
-            var addresslist = new List<Address>
-            {
-                address,
-                address1,
-                address2
-            };
-            //Add address enitites to test database
-            UHContext.Addresses.AddRange(addresslist);
-            UHContext.SaveChanges();
-
-            var tenancy1 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address.HouseRef);
-            var tenancy2 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address1.HouseRef);
-            var tenancy3 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address2.HouseRef);
-
-            var tenancyList = new List<TenancyAgreement>
-            {
-                tenancy1,
-                tenancy2,
-                tenancy3
-            };
-
-            UHContext.TenancyAgreements.AddRange(tenancyList);
-            UHContext.SaveChanges();
-
-            var link1 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy1.TagRef, databaseEntity.PersonNo);
-            var link2 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy3.TagRef, databaseEntity2.PersonNo);
-            var link3 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy2.TagRef, databaseEntity1.PersonNo);
-
-            var contactLinkList = new List<ContactLink>
-            {
-                link1,
-                link2,
-                link3
-            };
-
-            UHContext.ContactLinks.AddRange(contactLinkList);
-            UHContext.SaveChanges();
-
-            var telephone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link1.ContactID);
-            UHContext.TelephoneNumbers.Add(telephone);
-            UHContext.SaveChanges();
-
-            var telephone1 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link1.ContactID);
-            UHContext.TelephoneNumbers.Add(telephone1);
-            UHContext.SaveChanges();
-
-            var telephone2 = TestHelper.CreateDatabaseTelephoneNumberForPersonId(link2.ContactID);
-            UHContext.TelephoneNumbers.Add(telephone2);
-            UHContext.SaveChanges();
-
-
-            var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
-            domainEntity.UPRN = address.UPRN;
-            domainEntity.PhoneNumber = new List<Phone> { telephone.ToDomain(), telephone1.ToDomain() };
-            domainEntity.TenancyReference = tenancy1.TagRef;
-
-            var domainEntity2 = databaseEntity2.ToDomain();
-            domainEntity2.ResidentAddress = address2.ToDomain();
-            domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.PhoneNumber = new List<Phone> { telephone2.ToDomain() };
-            domainEntity2.TenancyReference = tenancy3.TagRef;
+            var domainEntity = MapToExpectedDomain(person1, address1, telephoneList1.ToDomain(), null, tenancy1);
+            var domainEntity2 = MapToExpectedDomain(person3, address3, telephoneList3.ToDomain(), null, tenancy3);
 
             var listOfPersons = _classUnderTest.GetAllResidents(null, 10, lastName: "brown");
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
-
         }
 
         [Test]
         public void GetAllResidentsWithNoPhoneWithFirstAndLastNameQueryParameterReturnsMatchingResidents()
         {
-            var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname: "ciasom", lastname: "Brown");
-            var databaseEntity1 = TestHelper.CreateDatabasePersonEntity(firstname: "ciasom", lastname: "tessellate");
-            var databaseEntity2 = TestHelper.CreateDatabasePersonEntity(firstname: "Ciasom", lastname: "brown");
-
-            var personslist = new List<Person>
+            //Test records 1
+            var person1 = AddPersonRecordToDatabase(firstname: "ciasom", lastname: "Brown");
+            var address1 = AddAddressRecordToDatabase(person1.HouseRef);
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+            var link1 = AddContactLinkForPersonToDatabase(tenancy1.TagRef, person1.PersonNo);
+            var emailAddresses1 = new List<EmailAddresses>
             {
-                databaseEntity,
-                databaseEntity1,
-                databaseEntity2
-            };
-            //Add person entities to test database
-            UHContext.Persons.AddRange(personslist);
-            UHContext.SaveChanges();
-
-            var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef);
-            var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
-            var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef);
-
-            var addresslist = new List<Address>
-            {
-                address,
-                address1,
-                address2
-            };
-            //Add address enitites to test database
-            UHContext.Addresses.AddRange(addresslist);
-            UHContext.SaveChanges();
-
-            var tenancy1 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address.HouseRef);
-            var tenancy2 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address1.HouseRef);
-            var tenancy3 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address2.HouseRef);
-
-            var tenancyList = new List<TenancyAgreement>
-            {
-                tenancy1,
-                tenancy2,
-                tenancy3
+                AddEmailAddressToDatabase(link1.ContactID),
+                AddEmailAddressToDatabase(link1.ContactID)
             };
 
-            UHContext.TenancyAgreements.AddRange(tenancyList);
-            UHContext.SaveChanges();
+            //Test records 2
+            var person2 = AddPersonRecordToDatabase(firstname: "ciasom", lastname: "tessellate");
+            var address2 = AddAddressRecordToDatabase(person2.HouseRef);
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            AddContactLinkForPersonToDatabase(tenancy2.TagRef, person2.PersonNo);
 
-            var link1 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy1.TagRef, databaseEntity.PersonNo);
-            var link2 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy3.TagRef, databaseEntity2.PersonNo);
-            var link3 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy2.TagRef, databaseEntity1.PersonNo);
+            //Test records 3
+            var person3 = AddPersonRecordToDatabase(firstname: "Ciasom", lastname: "brown");
+            var address3 = AddAddressRecordToDatabase(person3.HouseRef);
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var link3 = AddContactLinkForPersonToDatabase(tenancy3.TagRef, person3.PersonNo);
+            var emailAddresses2 = new List<EmailAddresses> { AddEmailAddressToDatabase(link3.ContactID) };
 
-            var contactLinkList = new List<ContactLink>
-            {
-                link1,
-                link2,
-                link3
-            };
-
-            UHContext.ContactLinks.AddRange(contactLinkList);
-            UHContext.SaveChanges();
-
-            var emailAddress = TestHelper.CreateDatabaseEmailForPerson(link1.ContactID);
-            UHContext.EmailAddresses.Add(emailAddress);
-            UHContext.SaveChanges();
-
-            var emailAddress1 = TestHelper.CreateDatabaseEmailForPerson(link1.ContactID);
-            UHContext.EmailAddresses.Add(emailAddress1);
-            UHContext.SaveChanges();
-
-            var emailAddress2 = TestHelper.CreateDatabaseEmailForPerson(link2.ContactID);
-            UHContext.EmailAddresses.Add(emailAddress2);
-            UHContext.SaveChanges();
-
-            var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
-            domainEntity.UPRN = address.UPRN;
-            domainEntity.Email = new List<Email> { emailAddress.ToDomain(), emailAddress1.ToDomain() };
-            domainEntity.TenancyReference = tenancy1.TagRef;
-
-            var domainEntity2 = databaseEntity2.ToDomain();
-            domainEntity2.ResidentAddress = address2.ToDomain();
-            domainEntity2.UPRN = address2.UPRN;
-            domainEntity2.Email = new List<Email> { emailAddress2.ToDomain() };
-            domainEntity2.TenancyReference = tenancy3.TagRef;
+            var domainEntity1 = MapToExpectedDomain(person1, address1, null, emailAddresses1.ToDomain(), tenancy1);
+            var domainEntity2 = MapToExpectedDomain(person3, address3, null, emailAddresses2.ToDomain(), tenancy3);
 
             var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", lastName: "brown");
             listOfPersons.Count.Should().Be(2);
-            listOfPersons.Should().ContainEquivalentOf(domainEntity);
+            listOfPersons.Should().ContainEquivalentOf(domainEntity1);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
-
         }
 
         [Test]
-        public void GetAllResidentsWithNoContactlinkWithAddressQueryParameterReturnsMatchingResidents()
+        public void GetAllResidentsWithNoContactLinkWithAddressQueryParameterReturnsMatchingResidents()
         {
-            var databaseEntity = TestHelper.CreateDatabasePersonEntity();
-            var databaseEntity1 = TestHelper.CreateDatabasePersonEntity();
-            var databaseEntity2 = TestHelper.CreateDatabasePersonEntity();
+            //Test records 1
+            var person1 = AddPersonRecordToDatabase();
+            var address1 = AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
 
-            var personslist = new List<Person>
-            {
-                databaseEntity,
-                databaseEntity1,
-                databaseEntity2
-            };
-            //Add person entities to test database
-            UHContext.Persons.AddRange(personslist);
-            UHContext.SaveChanges();
+            //Test records 2
+            var person2 = AddPersonRecordToDatabase();
+            var address2 = AddAddressRecordToDatabase(person2.HouseRef);
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
 
-            var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef, address1: "1 Hillman st");
-            var address1 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity1.HouseRef);
-            var address2 = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity2.HouseRef, address1: "2 Hillman st");
+            //Test records 3
+            var person3 = AddPersonRecordToDatabase();
+            var address3 = AddAddressRecordToDatabase(person3.HouseRef, address1: "2 Hillman st");
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
 
-            var addresslist = new List<Address>
-            {
-                address,
-                address1,
-                address2
-            };
-            //Add address enitites to test database
-            UHContext.Addresses.AddRange(addresslist);
-            UHContext.SaveChanges();
-
-            var tenancy1 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address.HouseRef);
-            var tenancy2 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address1.HouseRef);
-            var tenancy3 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address2.HouseRef);
-
-            var tenancyList = new List<TenancyAgreement>
-            {
-                tenancy1,
-                tenancy2,
-                tenancy3
-            };
-
-            UHContext.TenancyAgreements.AddRange(tenancyList);
-            UHContext.SaveChanges();
-
-            var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
-            domainEntity.UPRN = address.UPRN;
-            domainEntity.TenancyReference = tenancy1.TagRef;
+            var expectedResponse = MapToExpectedDomain(person1, address1, null, null, tenancy1);
 
             var listOfPersons = _classUnderTest.GetAllResidents(null, 10, address: "1 Hillman st");
             listOfPersons.Count.Should().Be(1);
-            listOfPersons.Should().ContainEquivalentOf(domainEntity);
+            listOfPersons.Should().ContainEquivalentOf(expectedResponse);
         }
 
         [Test]
-        public void GetAllResidentsWhenAContactlinkRowsHasNoKey1AndKey2DoesNotBreakTheQuery()
+        public void GetAllResidentsWhenAContactLinkRowsHasNoKey1AndKey2DoesNotBreakTheQuery()
         {
-            var databaseEntity = TestHelper.CreateDatabasePersonEntity();
-            UHContext.Persons.Add(databaseEntity);
-            UHContext.SaveChanges();
-
-            var address = TestHelper.CreateDatabaseAddressForPersonId(databaseEntity.HouseRef, address1: "1 Hillman st");
-            UHContext.Addresses.Add(address);
-            UHContext.SaveChanges();
-
-            var tenancy1 = TestHelper.CreateDatabaseTenancyAgreementForPerson(address.HouseRef);
-            UHContext.TenancyAgreements.Add(tenancy1);
-            UHContext.SaveChanges();
-
+            var databaseEntity = AddPersonRecordToDatabase();
+            var address = AddAddressRecordToDatabase(databaseEntity.HouseRef, address1: "1 Hillman st");
+            var tenancy1 = AddTenancyAgreementToDatabase(address.HouseRef);
             //Create a row in the CCContactLink that has no values in Key1 and Key2. This was found in production.
-            var link1 = TestHelper.CreateDatabaseContactLinkForPerson(tenancy1.TagRef, databaseEntity.PersonNo);
-            link1.TagRef = null; //Key1
-            link1.PersonNo = null; //Key2
+            var link1 = AddContactLinkForPersonToDatabase(null, null);
 
-            UHContext.ContactLinks.Add(link1);
-            UHContext.SaveChanges();
-
-            var domainEntity = databaseEntity.ToDomain();
-            domainEntity.ResidentAddress = address.ToDomain();
-            domainEntity.UPRN = address.UPRN;
-            domainEntity.TenancyReference = tenancy1.TagRef;
+            var domainEntity = MapToExpectedDomain(databaseEntity, address, null, null, tenancy1);
 
             var listOfPersons = _classUnderTest.GetAllResidents(null, 10, address: "1 Hillman st");
             listOfPersons.Count.Should().Be(1);
@@ -588,7 +350,8 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             var person2 = AddPersonRecordToDatabase(houseRef: "123", personNo: 2);
 
             AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
-            AddContactLinkForPersonToDatabase(person1.HouseRef, person1.PersonNo);
+            var tenancy = AddTenancyAgreementToDatabase(person1.HouseRef);
+            AddContactLinkForPersonToDatabase(tenancy.TagRef, person1.PersonNo);
 
             var peopleReturned = _classUnderTest.GetAllResidents(null, 1);
 
@@ -611,16 +374,11 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             persons.Take(2).ToList().ForEach(person =>
             {
                 AddAddressRecordToDatabase(person.HouseRef);
-                AddContactLinkForPersonToDatabase(person.HouseRef, person.PersonNo);
+                var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+                AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
             });
 
             var cursor = $"{persons[0].HouseRef}{persons[0].PersonNo}";
-
-            var expectedPersons = persons
-                .OrderBy(p => p.HouseRef)
-                .ThenBy(p => p.PersonNo)
-                .ToList()
-                .TakeLast(2);
 
             var receivedPersons = _classUnderTest.GetAllResidents(cursor, 3);
 
@@ -635,9 +393,8 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
         {
             var person = AddPersonRecordToDatabase();
             AddAddressRecordToDatabase(person.HouseRef);
-            var tenancy = TestHelper.CreateDatabaseTenancyAgreementForPerson(person.HouseRef);
-            UHContext.TenancyAgreements.Add(tenancy);
-            UHContext.ContactLinks.Add(TestHelper.CreateDatabaseContactLinkForPerson(tenancy.TagRef, person.PersonNo));
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
             var contact = UHContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
             UHContext.SaveChanges();
@@ -653,6 +410,14 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             return databaseEntity;
         }
 
+        private TelephoneNumber AddTelephoneNumberToDatabase(int contactLinkId)
+        {
+            var telephone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLinkId);
+            UHContext.TelephoneNumbers.Add(telephone);
+            UHContext.SaveChanges();
+            return telephone;
+        }
+
         private Address AddAddressRecordToDatabase(string houseRef, string postcode = null, string address1 = null)
         {
             var address = TestHelper.CreateDatabaseAddressForPersonId(houseRef, postcode, address1);
@@ -661,17 +426,43 @@ namespace UHResidentInformationAPI.Tests.V1.Gateways
             return address;
         }
 
-        private ContactLink AddContactLinkForPersonToDatabase(string houseReference, int personNumber)
+        private TenancyAgreement AddTenancyAgreementToDatabase(string houseReference)
         {
-
             var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
-            var contactLinkDatabaseEntity = TestHelper.CreateDatabaseContactLinkForPerson(tenancyDatabaseEntity.TagRef, personNumber);
-
             UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
-            UHContext.ContactLinks.Add(contactLinkDatabaseEntity);
+            UHContext.SaveChanges();
+            return tenancyDatabaseEntity;
+        }
+        private ContactLink AddContactLinkForPersonToDatabase(string tagRef, int? personNumber)
+        {
+            var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tagRef, personNumber);
+
+            UHContext.ContactLinks.Add(contactLink);
             UHContext.SaveChanges();
 
-            return contactLinkDatabaseEntity;
+            return contactLink;
+        }
+
+        private EmailAddresses AddEmailAddressToDatabase(int contactLinkId)
+        {
+            var databaseEmailEntity = TestHelper.CreateDatabaseEmailForPerson(contactLinkId);
+            UHContext.EmailAddresses.Add(databaseEmailEntity);
+            UHContext.SaveChanges();
+            return databaseEmailEntity;
+        }
+
+        private static ResidentInformation MapToExpectedDomain(Person databaseEntity, Address address,
+            List<Phone> phoneNumber, List<Email> emailAddresses,
+            TenancyAgreement tenancy, string contactKey = "")
+        {
+            var domainEntity = databaseEntity.ToDomain();
+            domainEntity.ResidentAddress = address.ToDomain();
+            domainEntity.UPRN = address.UPRN;
+            domainEntity.PhoneNumber = phoneNumber;
+            domainEntity.Email = emailAddresses;
+            domainEntity.TenancyReference = tenancy.TagRef;
+            domainEntity.ContactKey = contactKey;
+            return domainEntity;
         }
     }
 }
