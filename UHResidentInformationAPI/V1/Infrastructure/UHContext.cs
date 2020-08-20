@@ -14,6 +14,7 @@ namespace UHResidentInformationAPI.V1.Infrastructure
         public DbSet<EmailAddresses> EmailAddresses { get; set; }
         public DbSet<ContactLink> ContactLinks { get; set; }
         public DbSet<TenancyAgreement> TenancyAgreements { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

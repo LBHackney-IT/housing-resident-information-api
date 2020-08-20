@@ -17,6 +17,7 @@ namespace UHResidentInformationAPI.V1.Domain
         public List<Phone> PhoneNumber { get; set; }
         public List<Email> Email { get; set; }
         public Address ResidentAddress { get; set; }
+        public string ContactKey { get; set; }
     }
 
     public class Address

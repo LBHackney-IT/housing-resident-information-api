@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UHResidentInformationAPI.Tests.V1.Helper;
 using UHResidentInformationAPI.V1.Boundary.Responses;
-using UHResidentInformationAPI.V1.Enums;
 using UHResidentInformationAPI.V1.Infrastructure;
 using Address = UHResidentInformationAPI.V1.Boundary.Responses.Address;
 
@@ -27,11 +25,13 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
             context.SaveChanges();
             var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(addedContact.Entity.ContactID);
             var email = TestHelper.CreateDatabaseEmailForPerson(addedContact.Entity.ContactID);
+            var contact = TestHelper.CreateContactRecordFromTagRef(tenancyAgreement.TagRef);
 
             context.Addresses.Add(address);
             context.TelephoneNumbers.Add(phone);
             context.EmailAddresses.Add(email);
             context.TenancyAgreements.Add(tenancyAgreement);
+            context.Contacts.Add(contact);
             context.SaveChanges();
 
             return new ResidentInformation
@@ -43,6 +43,7 @@ namespace UHResidentInformationAPI.Tests.V1.E2ETests
                 LastName = person.LastName,
                 NiNumber = person.NINumber,
                 Uprn = address.UPRN,
+                HousingWaitingListContactKey = contact.ContactKey.ToString(),
                 PhoneNumbers =
                     new List<Phone>
                     {

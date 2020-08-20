@@ -15,5 +15,6 @@ namespace UHResidentInformationAPI.V1.Boundary.Responses
         public List<Phone> PhoneNumbers { get; set; }
         public List<Email> EmailAddresses { get; set; }
         public Address Address { get; set; }
+        public string HousingWaitingListContactKey { get; set; }
     }
 }

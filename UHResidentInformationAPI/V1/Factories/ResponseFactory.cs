@@ -26,7 +26,8 @@ namespace UHResidentInformationAPI.V1.Factories
                 Uprn = domain.UPRN,
                 Address = domain.ResidentAddress.ToResponse(),
                 PhoneNumbers = domain.PhoneNumber?.ToResponse(),
-                EmailAddresses = domain.Email?.ToResponse()
+                EmailAddresses = domain.Email?.ToResponse(),
+                HousingWaitingListContactKey = domain.ContactKey
             };
         }
         public static List<ResidentInformationResponse> ToResponse(this IEnumerable<ResidentInformation> people)
