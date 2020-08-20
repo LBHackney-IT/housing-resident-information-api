@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UHResidentInformationAPI.V1.Infrastructure
 {
-    [Table("contact", Schema = "dbo")]
+    [Table("contacts", Schema = "dbo")]
     public class Contact
     {
         [Column("con_key")]
