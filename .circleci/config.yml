@@ -104,10 +104,10 @@ jobs:
       - setup_remote_docker
       - run:
           name: build
-          command: docker-compose build Housing-resident-information-api-test
+          command: docker-compose build housing-resident-information-api-test
       - run:
           name: Run tests
-          command: docker-compose run Housing-resident-information-api-test
+          command: docker-compose run housing-resident-information-api-test
   assume-role-development:
     executor: docker-python
     steps:
