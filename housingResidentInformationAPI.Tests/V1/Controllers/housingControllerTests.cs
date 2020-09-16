@@ -3,17 +3,17 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using housingResidentInformationAPI.V1.Boundary.Requests;
-using housingResidentInformationAPI.V1.Boundary.Responses;
-using housingResidentInformationAPI.V1.Controllers;
-using housingResidentInformationAPI.V1.UseCase.Interfaces;
+using HousingResidentInformationAPI.V1.Boundary.Requests;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
+using HousingResidentInformationAPI.V1.Controllers;
+using HousingResidentInformationAPI.V1.UseCase.Interfaces;
 
-namespace housingResidentInformationAPI.Tests.V1.Controllers
+namespace HousingResidentInformationAPI.Tests.V1.Controllers
 {
     [TestFixture]
     public class housingControllerTests
     {
-        private housingController _classUnderTest;
+        private HousingController _classUnderTest;
 
         private Mock<IGetAllResidentsUseCase> _mockGetAllResidentsUseCase;
         private Mock<IGetResidentByIdUseCase> _mockGetResidentByIdUseCase;
@@ -23,7 +23,7 @@ namespace housingResidentInformationAPI.Tests.V1.Controllers
         {
             _mockGetAllResidentsUseCase = new Mock<IGetAllResidentsUseCase>();
             _mockGetResidentByIdUseCase = new Mock<IGetResidentByIdUseCase>();
-            _classUnderTest = new housingController(_mockGetAllResidentsUseCase.Object, _mockGetResidentByIdUseCase.Object);
+            _classUnderTest = new HousingController(_mockGetAllResidentsUseCase.Object, _mockGetResidentByIdUseCase.Object);
         }
 
         [Test]

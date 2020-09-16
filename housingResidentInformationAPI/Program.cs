@@ -2,7 +2,7 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace housingResidentInformationAPI
+namespace HousingResidentInformationAPI
 {
     public static class Program
     {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-namespace housingResidentInformationAPI.Versioning
+namespace HousingResidentInformationAPI.Versioning
 {
     public static class ApiVersionDescriptionExtensions
     {

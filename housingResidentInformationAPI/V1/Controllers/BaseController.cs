@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace housingResidentInformationAPI.V1.Controllers
+namespace HousingResidentInformationAPI.V1.Controllers
 {
     public class BaseController : Controller
     {

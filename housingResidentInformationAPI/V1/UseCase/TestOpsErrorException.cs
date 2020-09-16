@@ -1,6 +1,6 @@
 using System;
 
-namespace housingResidentInformationAPI.V1.UseCase
+namespace HousingResidentInformationAPI.V1.UseCase
 {
     public class TestOpsErrorException : Exception
     {

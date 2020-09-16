@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace housingResidentInformationAPI.V1.Boundary.Requests
+namespace HousingResidentInformationAPI.V1.Boundary.Requests
 {
     public class ResidentQueryParam
     {

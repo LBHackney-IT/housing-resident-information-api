@@ -1,21 +1,21 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using housingResidentInformationAPI.V1.Boundary.Requests;
-using housingResidentInformationAPI.V1.Boundary.Responses;
-using housingResidentInformationAPI.V1.Domain;
-using housingResidentInformationAPI.V1.UseCase.Interfaces;
+using HousingResidentInformationAPI.V1.Boundary.Requests;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
+using HousingResidentInformationAPI.V1.Domain;
+using HousingResidentInformationAPI.V1.UseCase.Interfaces;
 
-namespace housingResidentInformationAPI.V1.Controllers
+namespace HousingResidentInformationAPI.V1.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v1/households")]
     [Produces("application/json")]
-    public class housingController : BaseController
+    public class HousingController : BaseController
     {
         private IGetAllResidentsUseCase _getAllResidentsUseCase;
         private IGetResidentByIdUseCase _getResidentByIdUseCase;
-        public housingController(IGetAllResidentsUseCase getAllResidentsUseCase, IGetResidentByIdUseCase getResidentByIdUseCase)
+        public HousingController(IGetAllResidentsUseCase getAllResidentsUseCase, IGetResidentByIdUseCase getResidentByIdUseCase)
         {
             _getAllResidentsUseCase = getAllResidentsUseCase;
             _getResidentByIdUseCase = getResidentByIdUseCase;

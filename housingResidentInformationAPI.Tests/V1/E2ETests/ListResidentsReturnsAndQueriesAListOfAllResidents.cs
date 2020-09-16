@@ -6,9 +6,9 @@ using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using housingResidentInformationAPI.V1.Boundary.Responses;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
 
-namespace housingResidentInformationAPI.Tests.V1.E2ETests
+namespace HousingResidentInformationAPI.Tests.V1.E2ETests
 {
     [TestFixture]
     public class ListResidentsReturnsAndQueriesAListOfAllResidents : EndToEndTests<Startup>

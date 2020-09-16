@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using housingResidentInformationAPI.V1.Domain;
-using ResidentInformation = housingResidentInformationAPI.V1.Domain.ResidentInformation;
+using HousingResidentInformationAPI.V1.Domain;
+using ResidentInformation = HousingResidentInformationAPI.V1.Domain.ResidentInformation;
 
-namespace housingResidentInformationAPI.V1.Gateways
+namespace HousingResidentInformationAPI.V1.Gateways
 {
     public interface IHousingGateway
     {

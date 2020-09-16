@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace housingResidentInformationAPI.V1.Enums
+namespace HousingResidentInformationAPI.V1.Enums
 {
     public enum PhoneType
     {

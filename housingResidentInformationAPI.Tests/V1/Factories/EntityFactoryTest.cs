@@ -1,13 +1,13 @@
 using System.Globalization;
 using FluentAssertions;
 using NUnit.Framework;
-using housingResidentInformationAPI.Tests.V1.Helper;
-using housingResidentInformationAPI.V1.Domain;
-using housingResidentInformationAPI.V1.Enums;
-using housingResidentInformationAPI.V1.Factories;
-using housingResidentInformationAPI.V1.Infrastructure;
+using HousingResidentInformationAPI.Tests.V1.Helper;
+using HousingResidentInformationAPI.V1.Domain;
+using HousingResidentInformationAPI.V1.Enums;
+using HousingResidentInformationAPI.V1.Factories;
+using HousingResidentInformationAPI.V1.Infrastructure;
 
-namespace housingresidentInformationAPI.Tests.V1.Factories
+namespace HousingResidentInformationAPI.Tests.V1.Factories
 {
     [TestFixture]
     public class EntityFactoryTest

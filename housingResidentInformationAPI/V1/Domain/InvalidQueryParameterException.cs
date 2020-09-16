@@ -1,6 +1,6 @@
 using System;
 
-namespace housingResidentInformationAPI.V1.Domain
+namespace HousingResidentInformationAPI.V1.Domain
 {
     public class InvalidQueryParameterException : Exception
     {

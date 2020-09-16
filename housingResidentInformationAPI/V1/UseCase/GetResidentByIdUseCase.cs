@@ -1,10 +1,10 @@
-using housingResidentInformationAPI.V1.Domain;
-using housingResidentInformationAPI.V1.Factories;
-using housingResidentInformationAPI.V1.Gateways;
-using housingResidentInformationAPI.V1.UseCase.Interfaces;
-using ResidentInformation = housingResidentInformationAPI.V1.Boundary.Responses.ResidentInformation;
+using HousingResidentInformationAPI.V1.Domain;
+using HousingResidentInformationAPI.V1.Factories;
+using HousingResidentInformationAPI.V1.Gateways;
+using HousingResidentInformationAPI.V1.UseCase.Interfaces;
+using ResidentInformation = HousingResidentInformationAPI.V1.Boundary.Responses.ResidentInformation;
 
-namespace housingResidentInformationAPI.V1.UseCase
+namespace HousingResidentInformationAPI.V1.UseCase
 {
     public class GetResidentByIdUseCase : IGetResidentByIdUseCase
     {

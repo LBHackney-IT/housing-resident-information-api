@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace housingResidentInformationAPI.V1.Infrastructure
+namespace HousingResidentInformationAPI.V1.Infrastructure
 {
     [Table("tenagree", Schema = "dbo")]
     public class TenancyAgreement

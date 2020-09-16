@@ -4,12 +4,12 @@ using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using housingResidentInformationAPI;
-using housingResidentInformationAPI.Tests;
-using housingResidentInformationAPI.Tests.V1.E2ETests;
-using housingResidentInformationAPI.V1.Boundary.Responses;
+using HousingResidentInformationAPI;
+using HousingResidentInformationAPI.Tests;
+using HousingResidentInformationAPI.Tests.V1.E2ETests;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
 
-namespace housingResidentInformationAPI.Tests.V1.E2ETests
+namespace HousingResidentInformationAPI.Tests.V1.E2ETests
 {
     [TestFixture]
     public class GetResidentInformationById : EndToEndTests<Startup>

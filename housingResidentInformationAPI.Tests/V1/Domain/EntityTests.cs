@@ -2,9 +2,9 @@ using System;
 using AutoFixture;
 using FluentAssertions;
 using NUnit.Framework;
-using housingResidentInformationAPI.V1.Domain;
+using HousingResidentInformationAPI.V1.Domain;
 
-namespace housingResidentInformationAPI.Tests.V1.Domain
+namespace HousingResidentInformationAPI.Tests.V1.Domain
 {
     [TestFixture]
     public class EntityTests

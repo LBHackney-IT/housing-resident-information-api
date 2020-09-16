@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using housingResidentInformationAPI.V1.UseCase;
+using HousingResidentInformationAPI.V1.UseCase;
 
-namespace housingResidentInformationAPI.V1.Controllers
+namespace HousingResidentInformationAPI.V1.Controllers
 {
     [Route("api/v1/healthcheck")]
     [ApiController]

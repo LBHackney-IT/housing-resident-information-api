@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Globalization;
-using housingResidentInformationAPI.Tests.V1.Helper;
-using housingResidentInformationAPI.V1.Boundary.Responses;
-using housingResidentInformationAPI.V1.Infrastructure;
-using Address = housingResidentInformationAPI.V1.Boundary.Responses.Address;
+using HousingResidentInformationAPI.Tests.V1.Helper;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
+using HousingResidentInformationAPI.V1.Infrastructure;
+using Address = HousingResidentInformationAPI.V1.Boundary.Responses.Address;
 
-namespace housingResidentInformationAPI.Tests.V1.E2ETests
+namespace HousingResidentInformationAPI.Tests.V1.E2ETests
 {
     public static class E2ETestHelpers
     {

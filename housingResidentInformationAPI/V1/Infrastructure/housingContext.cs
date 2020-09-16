@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace housingResidentInformationAPI.V1.Infrastructure
+namespace HousingResidentInformationAPI.V1.Infrastructure
 {
 
     public class HousingContext : DbContext

@@ -1,7 +1,7 @@
-using housingResidentInformationAPI.V1.Boundary.Requests;
-using housingResidentInformationAPI.V1.Boundary.Responses;
+using HousingResidentInformationAPI.V1.Boundary.Requests;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
 
-namespace housingResidentInformationAPI.V1.UseCase.Interfaces
+namespace HousingResidentInformationAPI.V1.UseCase.Interfaces
 {
     public interface IGetAllResidentsUseCase
     {

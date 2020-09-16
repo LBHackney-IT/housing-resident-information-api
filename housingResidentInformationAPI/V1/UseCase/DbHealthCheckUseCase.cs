@@ -1,7 +1,7 @@
 using Microsoft.Extensions.HealthChecks;
-using housingResidentInformationAPI.V1.Boundary.Responses;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
 
-namespace housingResidentInformationAPI.V1.UseCase
+namespace HousingResidentInformationAPI.V1.UseCase
 {
     public class DbHealthCheckUseCase
     {

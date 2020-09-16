@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NUnit.Framework;
-using housingResidentInformationAPI.V1.Infrastructure;
+using HousingResidentInformationAPI.V1.Infrastructure;
 
-namespace housingResidentInformationAPI.Tests
+namespace HousingResidentInformationAPI.Tests
 {
     [TestFixture]
     [NonParallelizable]

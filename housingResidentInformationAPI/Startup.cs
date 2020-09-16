@@ -14,13 +14,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using housingResidentInformationAPI.V1.Gateways;
-using housingResidentInformationAPI.V1.Infrastructure;
-using housingResidentInformationAPI.V1.UseCase;
-using housingResidentInformationAPI.V1.UseCase.Interfaces;
-using housingResidentInformationAPI.Versioning;
+using HousingResidentInformationAPI.V1.Gateways;
+using HousingResidentInformationAPI.V1.Infrastructure;
+using HousingResidentInformationAPI.V1.UseCase;
+using HousingResidentInformationAPI.V1.UseCase.Interfaces;
+using HousingResidentInformationAPI.Versioning;
 
-namespace housingResidentInformationAPI
+namespace HousingResidentInformationAPI
 {
     public class Startup
     {

@@ -4,7 +4,7 @@ services:
   housing-resident-information-api:
     image: housing-resident-information-api
     build:
-      context: housingResidentInformationAPI/
+      context: HousingResidentInformationAPI/
       dockerfile: ./Dockerfile
     ports:
       - 3000:3000
@@ -23,7 +23,7 @@ services:
     image: housing-resident-information-api-test
     build:
       context: .
-      dockerfile: housingResidentInformationAPI.Tests/Dockerfile
+      dockerfile: HousingResidentInformationAPI.Tests/Dockerfile
     environment:
       - DB_HOST=test-database
       - DB_PORT=5432

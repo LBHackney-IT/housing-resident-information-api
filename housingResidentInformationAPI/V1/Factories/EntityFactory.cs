@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using housingResidentInformationAPI.V1.Domain;
-using housingResidentInformationAPI.V1.Enums;
-using housingResidentInformationAPI.V1.Infrastructure;
-using Address = housingResidentInformationAPI.V1.Domain.Address;
-using DbAddress = housingResidentInformationAPI.V1.Infrastructure.Address;
+using HousingResidentInformationAPI.V1.Domain;
+using HousingResidentInformationAPI.V1.Enums;
+using HousingResidentInformationAPI.V1.Infrastructure;
+using Address = HousingResidentInformationAPI.V1.Domain.Address;
+using DbAddress = HousingResidentInformationAPI.V1.Infrastructure.Address;
 
-namespace housingResidentInformationAPI.V1.Factories
+namespace HousingResidentInformationAPI.V1.Factories
 {
     //Convert Database result objects to Application Domain objects
     public static class EntityFactory

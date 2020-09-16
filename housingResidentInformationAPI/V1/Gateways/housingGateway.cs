@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using housingResidentInformationAPI.V1.Factories;
-using housingResidentInformationAPI.V1.Infrastructure;
-using Address = housingResidentInformationAPI.V1.Infrastructure.Address;
-using ResidentInformation = housingResidentInformationAPI.V1.Domain.ResidentInformation;
+using HousingResidentInformationAPI.V1.Factories;
+using HousingResidentInformationAPI.V1.Infrastructure;
+using Address = HousingResidentInformationAPI.V1.Infrastructure.Address;
+using ResidentInformation = HousingResidentInformationAPI.V1.Domain.ResidentInformation;
 
-namespace housingResidentInformationAPI.V1.Gateways
+namespace HousingResidentInformationAPI.V1.Gateways
 {
     public class HousingGateway : IHousingGateway
     {

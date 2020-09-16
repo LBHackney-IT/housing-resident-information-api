@@ -1,10 +1,10 @@
 using System;
 using System.Globalization;
 using AutoFixture;
-using housingResidentInformationAPI.V1.Enums;
-using housingResidentInformationAPI.V1.Infrastructure;
+using HousingResidentInformationAPI.V1.Enums;
+using HousingResidentInformationAPI.V1.Infrastructure;
 
-namespace housingResidentInformationAPI.Tests.V1.Helper
+namespace HousingResidentInformationAPI.Tests.V1.Helper
 {
     public static class TestHelper
     {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace housingResidentInformationAPI.V1.Infrastructure
+namespace HousingResidentInformationAPI.V1.Infrastructure
 {
     [Table("contacts", Schema = "dbo")]
     public class Contact

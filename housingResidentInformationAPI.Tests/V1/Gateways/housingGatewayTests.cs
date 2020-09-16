@@ -4,16 +4,16 @@ using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using NUnit.Framework;
-using housingResidentInformationAPI.Tests.V1.Helper;
-using housingResidentInformationAPI.V1.Domain;
-using housingResidentInformationAPI.V1.Enums;
-using housingResidentInformationAPI.V1.Factories;
-using housingResidentInformationAPI.V1.Gateways;
-using housingResidentInformationAPI.V1.Infrastructure;
-using Address = housingResidentInformationAPI.V1.Infrastructure.Address;
-using DomainAddress = housingResidentInformationAPI.V1.Domain.Address;
+using HousingResidentInformationAPI.Tests.V1.Helper;
+using HousingResidentInformationAPI.V1.Domain;
+using HousingResidentInformationAPI.V1.Enums;
+using HousingResidentInformationAPI.V1.Factories;
+using HousingResidentInformationAPI.V1.Gateways;
+using HousingResidentInformationAPI.V1.Infrastructure;
+using Address = HousingResidentInformationAPI.V1.Infrastructure.Address;
+using DomainAddress = HousingResidentInformationAPI.V1.Domain.Address;
 
-namespace housingResidentInformationAPI.Tests.V1.Gateways
+namespace HousingResidentInformationAPI.Tests.V1.Gateways
 {
     [TestFixture]
     public class HousingGatewayTests : DatabaseTests

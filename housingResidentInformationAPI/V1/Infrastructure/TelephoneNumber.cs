@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using housingResidentInformationAPI.V1.Enums;
+using HousingResidentInformationAPI.V1.Enums;
 
-namespace housingResidentInformationAPI.V1.Infrastructure
+namespace HousingResidentInformationAPI.V1.Infrastructure
 {
     [Table("CCPhone", Schema = "dbo")]
     public class TelephoneNumber

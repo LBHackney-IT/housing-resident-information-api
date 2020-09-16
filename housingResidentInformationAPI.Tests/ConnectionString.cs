@@ -1,6 +1,6 @@
 using System;
 
-namespace housingResidentInformationAPI.Tests
+namespace HousingResidentInformationAPI.Tests
 {
     public static class ConnectionString
     {

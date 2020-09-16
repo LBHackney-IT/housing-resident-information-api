@@ -1,8 +1,8 @@
 using FluentAssertions;
 using NUnit.Framework;
-using housingResidentInformationAPI.V1.UseCase;
+using HousingResidentInformationAPI.V1.UseCase;
 
-namespace housingResidentInformationAPI.Tests.V1.UseCase
+namespace HousingResidentInformationAPI.Tests.V1.UseCase
 {
     [TestFixture]
     public class ThrowOpsErrorUsecaseTests

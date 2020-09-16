@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using housingResidentInformationAPI.V1.Controllers;
-using housingResidentInformationAPI.V1.UseCase;
+using HousingResidentInformationAPI.V1.Controllers;
+using HousingResidentInformationAPI.V1.UseCase;
 
-namespace housingResidentInformationAPI.Tests.V1.Controllers
+namespace HousingResidentInformationAPI.Tests.V1.Controllers
 {
 
     [TestFixture]

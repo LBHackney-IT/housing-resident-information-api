@@ -1,11 +1,11 @@
 using System.Linq;
-using housingResidentInformationAPI.V1.Boundary.Requests;
-using housingResidentInformationAPI.V1.Boundary.Responses;
-using housingResidentInformationAPI.V1.Factories;
-using housingResidentInformationAPI.V1.Gateways;
-using housingResidentInformationAPI.V1.UseCase.Interfaces;
+using HousingResidentInformationAPI.V1.Boundary.Requests;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
+using HousingResidentInformationAPI.V1.Factories;
+using HousingResidentInformationAPI.V1.Gateways;
+using HousingResidentInformationAPI.V1.UseCase.Interfaces;
 
-namespace housingResidentInformationAPI.V1.UseCase
+namespace HousingResidentInformationAPI.V1.UseCase
 {
     public class GetAllResidentsUseCase : IGetAllResidentsUseCase
     {

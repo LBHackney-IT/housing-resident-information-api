@@ -1,4 +1,4 @@
-namespace housingResidentInformationAPI.V1.Boundary.Responses
+namespace HousingResidentInformationAPI.V1.Boundary.Responses
 {
     public class HealthCheckResponse
     {

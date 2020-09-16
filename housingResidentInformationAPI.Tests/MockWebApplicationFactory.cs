@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using housingResidentInformationAPI;
-using housingResidentInformationAPI.V1.Infrastructure;
+using HousingResidentInformationAPI;
+using HousingResidentInformationAPI.V1.Infrastructure;
 
-namespace housingResidentInformationAPI.Tests
+namespace HousingResidentInformationAPI.Tests
 {
     public class MockWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class

@@ -4,13 +4,13 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using housingResidentInformationAPI.V1.Boundary.Requests;
-using housingResidentInformationAPI.V1.Factories;
-using housingResidentInformationAPI.V1.Gateways;
-using housingResidentInformationAPI.V1.UseCase;
-using ResidentInformation = housingResidentInformationAPI.V1.Domain.ResidentInformation;
+using HousingResidentInformationAPI.V1.Boundary.Requests;
+using HousingResidentInformationAPI.V1.Factories;
+using HousingResidentInformationAPI.V1.Gateways;
+using HousingResidentInformationAPI.V1.UseCase;
+using ResidentInformation = HousingResidentInformationAPI.V1.Domain.ResidentInformation;
 
-namespace housingResidentInformationAPI.Tests.V1.UseCase
+namespace HousingResidentInformationAPI.Tests.V1.UseCase
 {
     [TestFixture]
     public class GetAllResidentsUseCaseTest

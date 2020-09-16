@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using housingResidentInformationAPI.V1.Boundary.Responses;
-using Address = housingResidentInformationAPI.V1.Domain.Address;
-using AddressResponse = housingResidentInformationAPI.V1.Boundary.Responses.Address;
-using ResidentInformation = housingResidentInformationAPI.V1.Domain.ResidentInformation;
-using ResidentInformationResponse = housingResidentInformationAPI.V1.Boundary.Responses.ResidentInformation;
+using HousingResidentInformationAPI.V1.Boundary.Responses;
+using Address = HousingResidentInformationAPI.V1.Domain.Address;
+using AddressResponse = HousingResidentInformationAPI.V1.Boundary.Responses.Address;
+using ResidentInformation = HousingResidentInformationAPI.V1.Domain.ResidentInformation;
+using ResidentInformationResponse = HousingResidentInformationAPI.V1.Boundary.Responses.ResidentInformation;
 
-namespace housingResidentInformationAPI.V1.Factories
+namespace HousingResidentInformationAPI.V1.Factories
 {
     public static class ResponseFactory
     {

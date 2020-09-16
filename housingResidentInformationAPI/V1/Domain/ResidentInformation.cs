@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using housingResidentInformationAPI.V1.Enums;
+using HousingResidentInformationAPI.V1.Enums;
 
-namespace housingResidentInformationAPI.V1.Domain
+namespace HousingResidentInformationAPI.V1.Domain
 {
     public class ResidentInformation
     {

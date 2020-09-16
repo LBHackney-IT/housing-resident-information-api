@@ -1,10 +1,10 @@
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
-using housingResidentInformationAPI.Tests.V1.Helper;
-using housingResidentInformationAPI.V1.Infrastructure;
+using HousingResidentInformationAPI.Tests.V1.Helper;
+using HousingResidentInformationAPI.V1.Infrastructure;
 
-namespace housingResidentInformationAPI.Tests.V1.Infrastructure
+namespace HousingResidentInformationAPI.Tests.V1.Infrastructure
 {
     [TestFixture]
     public class HousingContextTest : DatabaseTests

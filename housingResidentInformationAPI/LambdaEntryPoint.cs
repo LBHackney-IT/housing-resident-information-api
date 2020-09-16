@@ -1,7 +1,7 @@
 using Amazon.Lambda.AspNetCoreServer;
 using Microsoft.AspNetCore.Hosting;
 
-namespace housingResidentInformationAPI
+namespace HousingResidentInformationAPI
 {
     public class LambdaEntryPoint : APIGatewayProxyFunction
     {
