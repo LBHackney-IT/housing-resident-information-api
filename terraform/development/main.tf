@@ -13,6 +13,6 @@ terraform {
     bucket  = "terraform-state-development-apis" 
     encrypt = true
     region  = "eu-west-2"
-    key     = "services/uh-resident-information-api/state"
+    key     = "services/housing-resident-information-api/state"
   }
 }
