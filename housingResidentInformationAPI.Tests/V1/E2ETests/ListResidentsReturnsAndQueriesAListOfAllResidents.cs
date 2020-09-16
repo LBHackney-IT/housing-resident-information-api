@@ -22,7 +22,7 @@ namespace housingResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
-        public async Task IfNoQueryParametersReturnsAllResidentRecordsFromhousing ()
+        public async Task IfNoQueryParametersReturnsAllResidentRecordsFromhousing()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
             var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
@@ -46,7 +46,7 @@ namespace housingResidentInformationAPI.Tests.V1.E2ETests
 
 
         [Test]
-        public async Task FirstNameLastNameQueryParametersReturnsMatchingResidentRecordsFromhousing ()
+        public async Task FirstNameLastNameQueryParametersReturnsMatchingResidentRecordsFromhousing()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, firstname: "ciasom", lastname: "tessellate");
             var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, firstname: "ciasom", lastname: "shape");
@@ -67,7 +67,7 @@ namespace housingResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
-        public async Task AddressQueryParametersReturnsMatchingResidentsRecordsFromhousing ()
+        public async Task AddressQueryParametersReturnsMatchingResidentsRecordsFromhousing()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, addressLines: "1 Seasame street, Hackney, LDN");
             var matchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, addressLines: "1 Seasame street");
@@ -91,7 +91,7 @@ namespace housingResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
-        public async Task UsingAllQueryParametersReturnsMatchingResidentsRecordsFromhousing ()
+        public async Task UsingAllQueryParametersReturnsMatchingResidentsRecordsFromhousing()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext,
                 addressLines: "1 Seasame street, Hackney, LDN", firstname: "ciasom", lastname: "shape");
