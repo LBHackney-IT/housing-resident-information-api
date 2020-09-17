@@ -10,7 +10,7 @@ package:
   artifact: ./bin/release/netcoreapp3.1/housing-resident-information-api.zip
 
 functions:
-  housingResidentInformationApi:
+  HousingResidentInformationApi:
     name: ${self:service}-${self:provider.stage}
     handler: HousingResidentInformationAPI::HousingResidentInformationAPI.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
