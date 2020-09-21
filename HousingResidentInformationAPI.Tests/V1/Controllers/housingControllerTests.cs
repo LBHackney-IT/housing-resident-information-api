@@ -11,7 +11,7 @@ using HousingResidentInformationAPI.V1.UseCase.Interfaces;
 namespace HousingResidentInformationAPI.Tests.V1.Controllers
 {
     [TestFixture]
-    public class housingControllerTests
+    public class HousingControllerTests
     {
         private HousingController _classUnderTest;
 
