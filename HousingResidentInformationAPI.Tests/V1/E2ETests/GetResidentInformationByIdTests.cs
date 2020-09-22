@@ -28,7 +28,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             var personNo = 11;
             var houseRef = "XXXtestRef";
 
-            var expectedResponse = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, houseRef, personNo);
+            var expectedResponse = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, houseRef, personNo);
 
             var uri = new Uri($"api/v1/households/{houseRef}/people/{personNo}", UriKind.Relative);
             var response = Client.GetAsync(uri);

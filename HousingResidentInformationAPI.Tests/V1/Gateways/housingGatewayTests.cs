@@ -24,7 +24,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         [SetUp]
         public void Setup()
         {
-            _classUnderTest = new HousingGateway(HousingContext);
+            _classUnderTest = new HousingGateway(UHContext);
             _fixture = new Fixture();
         }
 
@@ -92,8 +92,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var type = PhoneType.X;
             phone.Type = type.ToString();
 
-            HousingContext.TelephoneNumbers.Add(phone);
-            HousingContext.SaveChanges();
+            UHContext.TelephoneNumbers.Add(phone);
+            UHContext.SaveChanges();
 
             var expectedPhoneNumberList = new List<Phone>
             {
@@ -120,8 +120,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
 
             databasePhoneEntity.Type = null;
 
-            HousingContext.TelephoneNumbers.Add(databasePhoneEntity);
-            HousingContext.SaveChanges();
+            UHContext.TelephoneNumbers.Add(databasePhoneEntity);
+            UHContext.SaveChanges();
 
             var expectedPhoneNumberList = new List<Phone>
             {
@@ -144,8 +144,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var address = AddAddressRecordToDatabase(person.HouseRef);
             var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
 
-            HousingContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
-            HousingContext.SaveChanges();
+            UHContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
+            UHContext.SaveChanges();
 
             var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
             response.UPRN.Should().Be(address.UPRN);
@@ -168,8 +168,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
             var contact = TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef);
 
-            var addedEntity = HousingContext.Contacts.Add(contact);
-            HousingContext.SaveChanges();
+            var addedEntity = UHContext.Contacts.Add(contact);
+            UHContext.SaveChanges();
 
             var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
             response.ContactKey.Should().Be(addedEntity.Entity.ContactKey.ToString());
@@ -396,8 +396,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
             AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
-            var contact = HousingContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
-            HousingContext.SaveChanges();
+            var contact = UHContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
+            UHContext.SaveChanges();
 
             var response = _classUnderTest.GetAllResidents(null, 10);
             response.First().ContactKey.Should().BeEquivalentTo(contact.Entity.ContactKey.ToString());
@@ -405,40 +405,40 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null, string houseRef = null, int? personNo = null)
         {
             var databaseEntity = TestHelper.CreateDatabasePersonEntity(firstname, lastname, houseRef, personNo);
-            HousingContext.Persons.Add(databaseEntity);
-            HousingContext.SaveChanges();
+            UHContext.Persons.Add(databaseEntity);
+            UHContext.SaveChanges();
             return databaseEntity;
         }
 
         private TelephoneNumber AddTelephoneNumberToDatabase(int contactLinkId)
         {
             var telephone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLinkId);
-            HousingContext.TelephoneNumbers.Add(telephone);
-            HousingContext.SaveChanges();
+            UHContext.TelephoneNumbers.Add(telephone);
+            UHContext.SaveChanges();
             return telephone;
         }
 
         private Address AddAddressRecordToDatabase(string houseRef, string postcode = null, string address1 = null)
         {
             var address = TestHelper.CreateDatabaseAddressForPersonId(houseRef, postcode, address1);
-            HousingContext.Addresses.Add(address);
-            HousingContext.SaveChanges();
+            UHContext.Addresses.Add(address);
+            UHContext.SaveChanges();
             return address;
         }
 
         private TenancyAgreement AddTenancyAgreementToDatabase(string houseReference)
         {
             var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
-            HousingContext.TenancyAgreements.Add(tenancyDatabaseEntity);
-            HousingContext.SaveChanges();
+            UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
+            UHContext.SaveChanges();
             return tenancyDatabaseEntity;
         }
         private ContactLink AddContactLinkForPersonToDatabase(string tagRef, int? personNumber)
         {
             var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tagRef, personNumber);
 
-            HousingContext.ContactLinks.Add(contactLink);
-            HousingContext.SaveChanges();
+            UHContext.ContactLinks.Add(contactLink);
+            UHContext.SaveChanges();
 
             return contactLink;
         }
@@ -446,8 +446,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         private EmailAddresses AddEmailAddressToDatabase(int contactLinkId)
         {
             var databaseEmailEntity = TestHelper.CreateDatabaseEmailForPerson(contactLinkId);
-            HousingContext.EmailAddresses.Add(databaseEmailEntity);
-            HousingContext.SaveChanges();
+            UHContext.EmailAddresses.Add(databaseEmailEntity);
+            UHContext.SaveChanges();
             return databaseEmailEntity;
         }
 

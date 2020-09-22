@@ -24,9 +24,9 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
         [Test]
         public async Task IfNoQueryParametersReturnsAllResidentRecordsFromhousing()
         {
-            var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
-            var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
-            var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
+            var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
+            var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
+            var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
 
             var uri = new Uri("api/v1/households", UriKind.Relative);
@@ -48,9 +48,9 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
         [Test]
         public async Task FirstNameLastNameQueryParametersReturnsMatchingResidentRecordsFromhousing()
         {
-            var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, firstname: "ciasom", lastname: "tessellate");
-            var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, firstname: "ciasom", lastname: "shape");
-            var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
+            var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "tessellate");
+            var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "shape");
+            var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
             var uri = new Uri("api/v1/households?first_name=ciasom&last_name=tessellate", UriKind.Relative);
             var response = Client.GetAsync(uri);
@@ -69,11 +69,11 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
         [Test]
         public async Task AddressQueryParametersReturnsMatchingResidentsRecordsFromhousing()
         {
-            var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, addressLines: "1 Seasame street, Hackney, LDN");
-            var matchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, addressLines: "1 Seasame street");
-            var nonMatchingResident1 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
-            var nonMatchingResident2 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, addressLines: "2 Seasame street, Hackney, LDN");
-            var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
+            var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, addressLines: "1 Seasame street, Hackney, LDN");
+            var matchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, addressLines: "1 Seasame street");
+            var nonMatchingResident1 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
+            var nonMatchingResident2 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, addressLines: "2 Seasame street, Hackney, LDN");
+            var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
             var uri = new Uri("api/v1/households?address=1 Seasame street", UriKind.Relative);
             var response = Client.GetAsync(uri);
@@ -93,12 +93,12 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
         [Test]
         public async Task UsingAllQueryParametersReturnsMatchingResidentsRecordsFromhousing()
         {
-            var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext,
+            var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext,
                 addressLines: "1 Seasame street, Hackney, LDN", firstname: "ciasom", lastname: "shape");
-            var nonmatchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, addressLines: "1 Seasame street", lastname: "shap");
-            var nonMatchingResident1 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, firstname: "ciasom");
-            var nonMatchingResident2 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, addressLines: "1 Seasame street, Hackney, LDN");
-            var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext);
+            var nonmatchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, addressLines: "1 Seasame street", lastname: "shap");
+            var nonMatchingResident1 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom");
+            var nonMatchingResident2 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, addressLines: "1 Seasame street, Hackney, LDN");
+            var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
             var uri = new Uri("api/v1/households?address=1 Seasame street&first_name=ciasom&last_name=shape", UriKind.Relative);
             var response = Client.GetAsync(uri);
@@ -119,9 +119,9 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
         {
             var residents = new List<ResidentInformation>
             {
-                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, houseRef: "123", personNo: 1),
-                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, houseRef: "234", personNo: 1),
-                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(HousingContext, houseRef: "345", personNo: 1)
+                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, houseRef: "123", personNo: 1),
+                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, houseRef: "234", personNo: 1),
+                E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, houseRef: "345", personNo: 1)
             };
 
             var uri = new Uri("api/v1/households?cursor=1231&limit=10", UriKind.Relative);

@@ -13,10 +13,10 @@ namespace HousingResidentInformationAPI.Tests.V1.Infrastructure
         {
             var databaseEntity = TestHelper.CreateDatabasePersonEntity();
 
-            HousingContext.Add(databaseEntity);
-            HousingContext.SaveChanges();
+            UHContext.Add(databaseEntity);
+            UHContext.SaveChanges();
 
-            var result = HousingContext.Persons.ToList().FirstOrDefault();
+            var result = UHContext.Persons.ToList().FirstOrDefault();
 
             result.Should().BeEquivalentTo(databaseEntity);
         }

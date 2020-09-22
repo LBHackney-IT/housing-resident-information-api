@@ -9,7 +9,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
 {
     public static class E2ETestHelpers
     {
-        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(HousingContext context, string houseRef = null, int? personNo = null, string firstname = null, string lastname = null, string postcode = null, string addressLines = null)
+        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string houseRef = null, int? personNo = null, string firstname = null, string lastname = null, string postcode = null, string addressLines = null)
         {
             var person = TestHelper.CreateDatabasePersonEntity(firstname, lastname);
             person.HouseRef = houseRef ?? person.HouseRef;

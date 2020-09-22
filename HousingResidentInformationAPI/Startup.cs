@@ -113,7 +113,7 @@ namespace HousingResidentInformationAPI
         {
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-            services.AddDbContext<HousingContext>(
+            services.AddDbContext<UHContext>(
                 opt => opt.UseNpgsql(connectionString));
         }
 

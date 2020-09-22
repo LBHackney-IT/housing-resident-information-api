@@ -12,7 +12,7 @@ namespace HousingResidentInformationAPI.Tests
     public class EndToEndTests<TStartup> where TStartup : class
     {
         private HttpClient _client;
-        private HousingContext _housingContext;
+        private UHContext _UHContext;
 
         private MockWebApplicationFactory<TStartup> _factory;
         private NpgsqlConnection _connection;
@@ -20,7 +20,7 @@ namespace HousingResidentInformationAPI.Tests
         private DbContextOptionsBuilder _builder;
 
         protected HttpClient Client => _client;
-        protected HousingContext HousingContext => _housingContext;
+        protected UHContext UHContext => _UHContext;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -41,9 +41,9 @@ namespace HousingResidentInformationAPI.Tests
         {
             _factory = new MockWebApplicationFactory<TStartup>(_connection);
             _client = _factory.CreateClient();
-            _housingContext = new HousingContext(_builder.Options);
-            _housingContext.Database.EnsureCreated();
-            _transaction = HousingContext.Database.BeginTransaction();
+            _UHContext = new UHContext(_builder.Options);
+            _UHContext.Database.EnsureCreated();
+            _transaction = UHContext.Database.BeginTransaction();
         }
 
         [TearDown]

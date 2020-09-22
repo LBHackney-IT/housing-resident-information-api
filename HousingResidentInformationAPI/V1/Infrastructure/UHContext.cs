@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 namespace HousingResidentInformationAPI.V1.Infrastructure
 {
 
-    public class HousingContext : DbContext
+    public class UHContext : DbContext
     {
-        public HousingContext(DbContextOptions options) : base(options)
+        public UHContext(DbContextOptions options) : base(options)
         {
         }
         public DbSet<Person> Persons { get; set; }

@@ -12,31 +12,31 @@ namespace HousingResidentInformationAPI.V1.Gateways
 {
     public class HousingGateway : IHousingGateway
     {
-        private readonly HousingContext _housingContext;
+        private readonly UHContext _UHContext;
 
-        public HousingGateway(HousingContext housingContext)
+        public HousingGateway(UHContext UHContext)
         {
-            _housingContext = housingContext;
+            _UHContext = UHContext;
         }
         public ResidentInformation GetResidentById(string houseReference, int personReference)
         {
-            var person = _housingContext
+            var person = _UHContext
                 .Persons
                 .FirstOrDefault(p => p.HouseRef.Trim() == houseReference && p.PersonNo.Equals(personReference));
 
             if (person == null) return null;
 
             var address =
-                _housingContext
+                _UHContext
                     .Addresses
                     .OrderByDescending(a => a.Dtstamp)
                     .FirstOrDefault(a => a.HouseRef.Trim() == person.HouseRef.Trim());
 
-            var tenancy = _housingContext
+            var tenancy = _UHContext
                 .TenancyAgreements
                 .FirstOrDefault(ta => ta.HouseRef.Trim() == person.HouseRef.Trim());
 
-            var contactKey = _housingContext
+            var contactKey = _UHContext
                 .Contacts
                 .FirstOrDefault(c => c.TagRef.Trim() == tenancy.TagRef.Trim())?.ContactKey;
 
@@ -57,7 +57,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
             var lastNameSearchPattern = GetSearchPattern(lastName);
 
             var dbRecords = (
-                from person in _housingContext.Persons
+                from person in _UHContext.Persons
                 where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef.Replace(" ", ""),
                     houseReferenceSearchPattern)
                 where string.IsNullOrEmpty(firstName) ||
@@ -65,13 +65,13 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastNameSearchPattern)
                 orderby person.HouseRef, person.PersonNo
                 where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef.Trim() + person.PersonNo.ToString()) > cursorAsInt
-                join a in _housingContext.Addresses on person.HouseRef equals a.HouseRef
+                join a in _UHContext.Addresses on person.HouseRef equals a.HouseRef
                 where string.IsNullOrEmpty(address) ||
                       EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
-                join ta in _housingContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
-                join ck in _housingContext.Contacts on ta.TagRef equals ck.TagRef into cks
+                join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
+                join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
                 from contacts in cks.DefaultIfEmpty()
-                join c in _housingContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
+                join c in _UHContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
                 from link in addedContactLink.DefaultIfEmpty()
                 select new
                 {
@@ -105,11 +105,11 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
             if (contactLink == null) return resident;
 
-            var telephoneNumberForPerson = _housingContext
+            var telephoneNumberForPerson = _UHContext
                 .TelephoneNumbers.Where(t => t.ContactID == contactLink.ContactID).ToList();
 
             var emailAddressForPerson =
-                _housingContext.EmailAddresses.Where(c => c.ContactID == contactLink.ContactID).ToList();
+                _UHContext.EmailAddresses.Where(c => c.ContactID == contactLink.ContactID).ToList();
 
             AttachContactDetailsToPerson(resident, telephoneNumberForPerson, emailAddressForPerson);
 
@@ -125,8 +125,8 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
         private ContactLink GetContactLinkForPerson(string houseReference, int personReference)
         {
-            var tagReference = _housingContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef.Trim() == houseReference)?.TagRef;
-            var contactLinkUsingTagReference = _housingContext.ContactLinks
+            var tagReference = _UHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef.Trim() == houseReference)?.TagRef;
+            var contactLinkUsingTagReference = _UHContext.ContactLinks
                 .FirstOrDefault(co => (co.TagRef == tagReference) && (co.PersonNo == personReference.ToString(CultureInfo.InvariantCulture)));
 
             return contactLinkUsingTagReference;

@@ -28,11 +28,11 @@ namespace HousingResidentInformationAPI.Tests
                 var dbBuilder = new DbContextOptionsBuilder();
                 dbBuilder.UseNpgsql(_connection);
 
-                var context = new HousingContext(dbBuilder.Options);
+                var context = new UHContext(dbBuilder.Options);
                 services.AddSingleton(context);
 
                 var serviceProvider = services.BuildServiceProvider();
-                var dbContext = serviceProvider.GetRequiredService<HousingContext>();
+                var dbContext = serviceProvider.GetRequiredService<UHContext>();
 
                 dbContext.Database.EnsureCreated();
             });

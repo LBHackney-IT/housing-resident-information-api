@@ -10,7 +10,7 @@ namespace HousingResidentInformationAPI.Tests
     public class DatabaseTests
     {
         private IDbContextTransaction _transaction;
-        protected HousingContext HousingContext { get; private set; }
+        protected UHContext UHContext { get; private set; }
 
         private DbContextOptionsBuilder _builder;
 
@@ -24,9 +24,9 @@ namespace HousingResidentInformationAPI.Tests
         [SetUp]
         public void SetUp()
         {
-            HousingContext = new HousingContext(_builder.Options);
-            HousingContext.Database.EnsureCreated();
-            _transaction = HousingContext.Database.BeginTransaction();
+            UHContext = new UHContext(_builder.Options);
+            UHContext.Database.EnsureCreated();
+            _transaction = UHContext.Database.BeginTransaction();
         }
 
         [TearDown]
