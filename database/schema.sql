@@ -589,6 +589,3 @@ create table dbo.contacts
     comp_avail varchar(200) default '',
     comp_display  varchar(200) default ''
 )
-
-
-
