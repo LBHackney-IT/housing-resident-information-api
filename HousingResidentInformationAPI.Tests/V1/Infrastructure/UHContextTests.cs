@@ -7,7 +7,7 @@ using HousingResidentInformationAPI.V1.Infrastructure;
 namespace HousingResidentInformationAPI.Tests.V1.Infrastructure
 {
     [TestFixture]
-    public class HousingContextTest : DatabaseTests
+    public class UHContextTest : DatabaseTests
     {
         public void CanGetADatabaseEntity()
         {
