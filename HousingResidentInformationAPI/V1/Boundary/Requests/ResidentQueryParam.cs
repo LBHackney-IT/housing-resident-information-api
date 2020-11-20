@@ -20,5 +20,8 @@ namespace HousingResidentInformationAPI.V1.Boundary.Requests
 
         [FromQuery(Name = "address")]
         public string Address { get; set; }
+
+        [FromQuery(Name = "active_tenancies_only")]
+        public bool ActiveTenanciesOnly { get; set; }
     }
 }

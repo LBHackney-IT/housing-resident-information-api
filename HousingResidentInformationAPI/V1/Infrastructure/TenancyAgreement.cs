@@ -17,58 +17,58 @@ namespace HousingResidentInformationAPI.V1.Infrastructure
         public string TagRef { get; set; }
 
         [Column("spec_terms")]
-        public Boolean SpecTerms { get; set; }
+        public bool SpecTerms { get; set; }
 
         [Column("other_accounts")]
-        public Boolean OtherAccounts { get; set; }
+        public bool OtherAccounts { get; set; }
 
         [Column("active")]
-        public Boolean Active { get; set; }
+        public bool Active { get; set; }
 
         [Column("present")]
-        public Boolean Present { get; set; }
+        public bool Present { get; set; }
 
         [Column("terminated")]
-        public Boolean Terminated { get; set; }
+        public bool IsTerminated { get; set; }
 
         [Column("free_active")]
-        public Boolean FreeActive { get; set; }
+        public bool FreeActive { get; set; }
 
         [Column("nop")]
-        public Boolean Nop { get; set; }
+        public bool Nop { get; set; }
 
         [Column("additional_debit")]
-        public Boolean AdditionalDebit { get; set; }
+        public bool AdditionalDebit { get; set; }
 
         [Column("fd_charge")]
-        public Boolean FdCharge { get; set; }
+        public bool FdCharge { get; set; }
 
         [Column("receiptcard")]
-        public Boolean ReceiptCard { get; set; }
+        public bool ReceiptCard { get; set; }
 
         [Column("nosp")]
-        public Boolean Nosp { get; set; }
+        public bool Nosp { get; set; }
 
         [Column("ntq")]
-        public Boolean Ntq { get; set; }
+        public bool Ntq { get; set; }
 
         [Column("eviction")]
-        public Boolean Eviction { get; set; }
+        public bool Eviction { get; set; }
 
         [Column("committee")]
-        public Boolean Committee { get; set; }
+        public bool Committee { get; set; }
 
         [Column("suppossorder")]
-        public Boolean Suppossorder { get; set; }
+        public bool Suppossorder { get; set; }
 
         [Column("possorder")]
-        public Boolean Possorder { get; set; }
+        public bool Possorder { get; set; }
 
         [Column("courtapp")]
-        public Boolean Courtapp { get; set; }
+        public bool Courtapp { get; set; }
 
         [Column("open_item")]
-        public Boolean OpenItem { get; set; }
+        public bool OpenItem { get; set; }
 
         [Column("potentialenddate")]
         public DateTime Potentialenddate { get; set; }

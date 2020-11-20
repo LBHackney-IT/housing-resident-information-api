@@ -6,7 +6,8 @@ namespace HousingResidentInformationAPI.V1.Gateways
 {
     public interface IHousingGateway
     {
-        List<ResidentInformation> GetAllResidents(string cursor, int limit, string houseReference, string firstName, string lastName, string address);
+        List<ResidentInformation> GetAllResidents(string cursor, int limit, string houseReference, string firstName,
+            string lastName, string address, bool activeTenancyOnly);
         ResidentInformation GetResidentById(string houseReference, int personReference);
     }
 }

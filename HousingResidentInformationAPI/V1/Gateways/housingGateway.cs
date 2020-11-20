@@ -47,7 +47,8 @@ namespace HousingResidentInformationAPI.V1.Gateways
             return singleRecord;
         }
 
-        public List<ResidentInformation> GetAllResidents(string cursor, int limit, string houseReference = null, string firstName = null, string lastName = null, string address = null)
+        public List<ResidentInformation> GetAllResidents(string cursor, int limit, string houseReference = null,
+            string firstName = null, string lastName = null, string address = null, bool activeTenancyOnly = false)
         {
             var cursorAsInt = string.IsNullOrEmpty(cursor) ? 0 : int.Parse(cursor);
 
@@ -69,6 +70,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(address) ||
                       EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
+                where !activeTenancyOnly || ta.IsTerminated == true
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
                 from contacts in cks.DefaultIfEmpty()
                 join c in _UHContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
