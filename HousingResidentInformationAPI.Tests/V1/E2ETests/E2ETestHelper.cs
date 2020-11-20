@@ -9,7 +9,9 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
 {
     public static class E2ETestHelpers
     {
-        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string houseRef = null, int? personNo = null, string firstname = null, string lastname = null, string postcode = null, string addressLines = null)
+        public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string houseRef = null,
+            int? personNo = null, string firstname = null, string lastname = null, string postcode = null,
+            string addressLines = null, bool isTerminated = false)
         {
             var person = TestHelper.CreateDatabasePersonEntity(firstname, lastname);
             person.HouseRef = houseRef ?? person.HouseRef;
@@ -20,6 +22,8 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
 
             var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines, postcode: postcode);
             var tenancyAgreement = TestHelper.CreateDatabaseTenancyAgreementForPerson(addedPerson.Entity.HouseRef);
+            tenancyAgreement.IsTerminated = isTerminated;
+
             var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreement.TagRef, addedPerson.Entity.PersonNo);
             var addedContact = context.ContactLinks.Add(contactLink);
             context.SaveChanges();

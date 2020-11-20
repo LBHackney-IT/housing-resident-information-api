@@ -70,7 +70,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(address) ||
                       EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
-                where !activeTenancyOnly || ta.IsTerminated == true
+                where (activeTenancyOnly == false) || ta.IsTerminated == false
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
                 from contacts in cks.DefaultIfEmpty()
                 join c in _UHContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink

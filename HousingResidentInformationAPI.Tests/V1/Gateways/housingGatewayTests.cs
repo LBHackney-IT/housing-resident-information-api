@@ -204,6 +204,60 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         }
 
         [Test]
+        public void GetAllResidentsWithActiveTenancySetToTrueReturnsOnlyMatchingResidents()
+        {
+            //Test records 1
+            var person1 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
+            var address1 = AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, true);
+
+            //Test records 2
+            var person2 = AddPersonRecordToDatabase();
+            var address2 = AddAddressRecordToDatabase(person2.HouseRef);
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+
+            //Test records 3
+            var person3 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
+            var address3 = AddAddressRecordToDatabase(person3.HouseRef, address1: "2 Hillman st");
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+
+
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", activeTenancyOnly: true);
+            listOfPersons.Count.Should().Be(1);
+
+            var expectedResponse = MapToExpectedDomain(person3, address3, null, null, tenancy3);
+            listOfPersons.Should().ContainEquivalentOf(expectedResponse);
+        }
+
+        [Test]
+        public void GetAllResidentsActiveTenancyOnlyParameterSetToFalseReturnsAllMatchingResidents()
+        {
+            //Test records 1
+            var person1 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
+            var address1 = AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, true);
+
+            //Test records 2
+            var person2 = AddPersonRecordToDatabase();
+            var address2 = AddAddressRecordToDatabase(person2.HouseRef);
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+
+            //Test records 3
+            var person3 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
+            var address3 = AddAddressRecordToDatabase(person3.HouseRef, address1: "2 Hillman st");
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+
+
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", activeTenancyOnly: false);
+            listOfPersons.Count.Should().Be(2);
+
+            var expectedResponse1 = MapToExpectedDomain(person1, address1, null, null, tenancy1);
+            var expectedResponse3 = MapToExpectedDomain(person3, address3, null, null, tenancy3);
+            listOfPersons.Should().ContainEquivalentOf(expectedResponse1);
+            listOfPersons.Should().ContainEquivalentOf(expectedResponse3);
+        }
+
+        [Test]
         public void GetAllResidentsWithFirstNameQueryParameterReturnsMatchingResident()
         {
             var person1 = AddPersonRecordToDatabase(firstname: "ciasom");
@@ -426,9 +480,11 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             return address;
         }
 
-        private TenancyAgreement AddTenancyAgreementToDatabase(string houseReference)
+        private TenancyAgreement AddTenancyAgreementToDatabase(string houseReference, bool isTerminated = false)
         {
             var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
+            tenancyDatabaseEntity.IsTerminated = isTerminated;
+
             UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
             UHContext.SaveChanges();
             return tenancyDatabaseEntity;

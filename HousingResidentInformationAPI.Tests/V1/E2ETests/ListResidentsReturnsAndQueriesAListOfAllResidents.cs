@@ -29,7 +29,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
 
 
-            var uri = new Uri("api/v1/households", UriKind.Relative);
+            var uri = new Uri("api/v1/households?active_tenancies_only=false", UriKind.Relative);
             var response = Client.GetAsync(uri);
 
             var statusCode = response.Result.StatusCode;
@@ -41,6 +41,28 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
 
             convertedResponse.Residents.Should().ContainEquivalentOf(expectedResidentResponseOne);
             convertedResponse.Residents.Should().ContainEquivalentOf(expectedResidentResponseTwo);
+            convertedResponse.Residents.Should().ContainEquivalentOf(expectedResidentResponseThree);
+        }
+
+        [Test]
+        public async Task IfNoQueryParametersReturnsAllResidentRecordsFromhousingWithActiveTenancy()
+        {
+            var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
+            var expectedResidentResponseTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, isTerminated: true);
+            var expectedResidentResponseThree = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
+
+
+            var uri = new Uri("api/v1/households?active_tenancies_only=true", UriKind.Relative);
+            var response = Client.GetAsync(uri);
+
+            var statusCode = response.Result.StatusCode;
+            statusCode.Should().Be(200);
+
+            var content = response.Result.Content;
+            var stringContent = await content.ReadAsStringAsync().ConfigureAwait(true);
+            var convertedResponse = JsonConvert.DeserializeObject<ResidentInformationList>(stringContent);
+            convertedResponse.Residents.Count.Should().Be(2);
+            convertedResponse.Residents.Should().ContainEquivalentOf(expectedResidentResponseOne);
             convertedResponse.Residents.Should().ContainEquivalentOf(expectedResidentResponseThree);
         }
 
