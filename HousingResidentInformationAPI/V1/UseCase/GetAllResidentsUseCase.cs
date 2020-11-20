@@ -20,7 +20,8 @@ namespace HousingResidentInformationAPI.V1.UseCase
             limit = limit < 10 ? 10 : limit;
             limit = limit > 100 ? 100 : limit;
 
-            var residents = _housingGateway.GetAllResidents(cursor, limit, rqp.HouseReference, rqp.FirstName, rqp.LastName, rqp.Address).ToResponse();
+            var residents = _housingGateway.GetAllResidents(cursor, limit, rqp.HouseReference, rqp.FirstName,
+                rqp.LastName, rqp.Address, rqp.ActiveTenanciesOnly).ToResponse();
             var lastResident = residents.LastOrDefault();
             var nextCursor = residents.Count == limit ? $"{lastResident.HouseReference}{lastResident.PersonNumber}" : "";
 
