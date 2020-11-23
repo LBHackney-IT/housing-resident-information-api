@@ -39,7 +39,8 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
                 HouseReference = "000011",
                 FirstName = "ciasom",
                 LastName = "tessellate",
-                Address = "1 Montage street"
+                Address = "1 Montage street",
+                ActiveTenanciesOnly = false
             };
 
             var response = _classUnderTest.Execute(rqp, null, 10);

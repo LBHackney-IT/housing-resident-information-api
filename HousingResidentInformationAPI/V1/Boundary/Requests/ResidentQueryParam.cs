@@ -8,6 +8,10 @@ namespace HousingResidentInformationAPI.V1.Boundary.Requests
 {
     public class ResidentQueryParam
     {
+        public ResidentQueryParam()
+        {
+            this.ActiveTenanciesOnly = false;
+        }
 
         [FromQuery(Name = "house_reference")]
         public string HouseReference { get; set; }
