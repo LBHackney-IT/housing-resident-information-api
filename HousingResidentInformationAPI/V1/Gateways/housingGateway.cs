@@ -48,7 +48,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
         }
 
         public List<ResidentInformation> GetAllResidents(string cursor, int limit, string houseReference = null,
-            string firstName = null, string lastName = null, string address = null, bool activeTenancyOnly = false)
+            string firstName = null, string lastName = null, string address = null, string postcode = null, bool activeTenancyOnly = false)
         {
             var cursorAsInt = string.IsNullOrEmpty(cursor) ? 0 : int.Parse(cursor);
 
@@ -69,6 +69,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 join a in _UHContext.Addresses on person.HouseRef equals a.HouseRef
                 where string.IsNullOrEmpty(address) ||
                       EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
+                where string.IsNullOrEmpty(postcode) || a.PostCode.Contains(postcode)
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
