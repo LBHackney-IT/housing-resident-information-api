@@ -113,6 +113,30 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
         }
 
         [Test]
+        public async Task PostcodeQueryParameterReturnsMatchingResidentsRecordsFromhousing()
+        {
+            var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "e8 1dy");
+            var matchingResidentTwo = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "E8 1DY");
+            var nonMatchingResident1 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
+            var nonMatchingResident2 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, addressLines: "e1 8dy");
+            var nonMatchingResident3 = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
+
+            var uri = new Uri("api/v1/households?postcode=e8 1dy", UriKind.Relative);
+            var response = Client.GetAsync(uri);
+
+            var statusCode = response.Result.StatusCode;
+            statusCode.Should().Be(200);
+
+            var content = response.Result.Content;
+            var stringContent = await content.ReadAsStringAsync().ConfigureAwait(true);
+            var convertedResponse = JsonConvert.DeserializeObject<ResidentInformationList>(stringContent);
+
+            convertedResponse.Residents.Count.Should().Be(2);
+            convertedResponse.Residents.Should().ContainEquivalentOf(matchingResidentOne);
+            convertedResponse.Residents.Should().ContainEquivalentOf(matchingResidentTwo);
+        }
+
+        [Test]
         public async Task UsingAllQueryParametersReturnsMatchingResidentsRecordsFromhousing()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext,

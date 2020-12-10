@@ -69,7 +69,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 join a in _UHContext.Addresses on person.HouseRef equals a.HouseRef
                 where string.IsNullOrEmpty(address) ||
                       EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
-                where string.IsNullOrEmpty(postcode) || a.PostCode.Contains(postcode)
+                where string.IsNullOrEmpty(postcode) || a.PostCode.ToLower().Contains(postcode.ToLower())
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks

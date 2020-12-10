@@ -32,7 +32,7 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
             var stubbedResidents = _fixture.CreateMany<ResidentInformation>();
 
             _mockhousingGateway.Setup(x =>
-                    x.GetAllResidents(null, 10, "000011", "ciasom", "tessellate", "1 Montage street", null, false))
+                    x.GetAllResidents(null, 10, "000011", "ciasom", "tessellate", "1 Montage street", "E8 1DY", false))
                 .Returns(stubbedResidents.ToList());
             var rqp = new ResidentQueryParam
             {
@@ -40,6 +40,7 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
                 FirstName = "ciasom",
                 LastName = "tessellate",
                 Address = "1 Montage street",
+                Postcode = "E8 1DY",
                 ActiveTenanciesOnly = false
             };
 

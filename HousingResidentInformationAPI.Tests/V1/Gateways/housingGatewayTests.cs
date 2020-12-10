@@ -357,6 +357,31 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         }
 
         [Test]
+        public void GetAllResidentsWithNoContactLinkWithPostcodeQueryParameterReturnsMatchingResidents()
+        {
+            //Test records 1
+            var person1 = AddPersonRecordToDatabase();
+            var address1 = AddAddressRecordToDatabase(person1.HouseRef, postcode: "E8 1DY");
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+
+            //Test records 2
+            var person2 = AddPersonRecordToDatabase();
+            var address2 = AddAddressRecordToDatabase(person2.HouseRef);
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+
+            //Test records 3
+            var person3 = AddPersonRecordToDatabase();
+            var address3 = AddAddressRecordToDatabase(person3.HouseRef, postcode: "E1 8DY");
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+
+            var expectedResponse = MapToExpectedDomain(person1, address1, null, null, tenancy1);
+
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, postcode: "e8 1dy");
+            listOfPersons.Count.Should().Be(1);
+            listOfPersons.Should().ContainEquivalentOf(expectedResponse);
+        }
+
+        [Test]
         public void GetAllResidentsWithNoContactLinkWithAddressQueryParameterReturnsMatchingResidents()
         {
             //Test records 1
