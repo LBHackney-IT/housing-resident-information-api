@@ -126,6 +126,7 @@ namespace HousingResidentInformationAPI
         {
             services.AddScoped<IGetAllResidentsUseCase, GetAllResidentsUseCase>();
             services.AddScoped<IGetResidentByIdUseCase, GetResidentByIdUseCase>();
+            services.AddScoped<IValidatePostcode, ValidatePostcode>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
