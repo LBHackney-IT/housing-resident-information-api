@@ -22,6 +22,11 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
         }
 
         [TestCase("1")]
+        [TestCase("111111")]
+        [TestCase("111 111")]
+        [TestCase("EEEEEE")]
+        [TestCase("EEE EEE")]
+        [TestCase("E")]
         [TestCase("BA56 6Y")]
         [TestCase("B 7JI")]
         [TestCase("BA56 YTH")]
