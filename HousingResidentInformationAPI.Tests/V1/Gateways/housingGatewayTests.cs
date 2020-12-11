@@ -209,7 +209,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             //Test records 1
             var person1 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
             var address1 = AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, true);
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, isTerminated: true);
 
             //Test records 2
             var person2 = AddPersonRecordToDatabase();
@@ -235,7 +235,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             //Test records 1
             var person1 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
             var address1 = AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, true);
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, isTerminated: true);
 
             //Test records 2
             var person2 = AddPersonRecordToDatabase();
@@ -447,15 +447,16 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
                 AddPersonRecordToDatabase(houseRef: "123", personNo: 3)
             };
 
+            //Create address and tenancy records for house ref 123 & 234 - First 2 items in array  
             persons.Take(2).ToList().ForEach(person =>
             {
                 AddAddressRecordToDatabase(person.HouseRef);
-                var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+                var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tagRef: person.HouseRef);
                 AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
             });
 
             var cursor = $"{persons[0].HouseRef}{persons[0].PersonNo}";
-
+            //Retrieved records from joined address, tenancy and persons table
             var receivedPersons = _classUnderTest.GetAllResidents(cursor, 3);
 
             receivedPersons.Count.Should().Be(3);
@@ -502,10 +503,12 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             return address;
         }
 
-        private TenancyAgreement AddTenancyAgreementToDatabase(string houseReference, bool isTerminated = false)
+        private TenancyAgreement AddTenancyAgreementToDatabase(string houseReference, string tagRef = null,
+            bool isTerminated = false)
         {
             var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
             tenancyDatabaseEntity.IsTerminated = isTerminated;
+            tenancyDatabaseEntity.TagRef = tagRef ?? tenancyDatabaseEntity.TagRef;
 
             UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
             UHContext.SaveChanges();
