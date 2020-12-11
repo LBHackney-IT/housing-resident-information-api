@@ -72,6 +72,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(postcode) || a.PostCode.ToLower().Contains(postcode.ToLower())
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
+                orderby ta.TagRef, person.PersonNo ascending
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
                 from contacts in cks.DefaultIfEmpty()
                 join c in _UHContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
@@ -103,7 +104,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
             var resident = person.ToDomain();
             resident.UPRN = address?.UPRN;
             resident.ResidentAddress = address?.ToDomain();
-            resident.TenancyReference = tenancyAgreement?.TagRef;
+            resident.TenancyReference = tenancyAgreement?.TagRef.Trim();
             resident.ContactKey = contactKey.ToString();
 
             if (contactLink == null) return resident;
