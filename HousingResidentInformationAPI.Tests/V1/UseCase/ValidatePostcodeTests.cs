@@ -14,6 +14,7 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
         [TestCase("E8 1JJ")]
         [TestCase("E13 1JJ")]
         [TestCase("e87 1Jj")]
+        [TestCase("e87 1jj")]
         [TestCase(null)]
         public void ValidPostcodesReturnTrue(string postcode)
         {
@@ -27,6 +28,7 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
         [TestCase("EEEEEE")]
         [TestCase("EEE EEE")]
         [TestCase("E")]
+        [TestCase("e")]
         [TestCase("BA56 6Y")]
         [TestCase("B 7JI")]
         [TestCase("BA56 YTH")]
@@ -38,6 +40,10 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
         [TestCase("BHHHH656 6YU")]
         [TestCase("BH6 6YUuuu")]
         [TestCase("Q33q 8TH")]
+        [TestCase("Q33q 8tH")]
+        [TestCase("e871jj")]
+        [TestCase("*&���$!!!!")]
+        [TestCase(" ")]
         public void InvalidPostcodesReturnsFalse(string postcode)
         {
             var validator = new ValidatePostcode();

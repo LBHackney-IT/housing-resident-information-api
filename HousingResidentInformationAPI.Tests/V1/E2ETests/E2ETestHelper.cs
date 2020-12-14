@@ -23,6 +23,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines, postcode: postcode);
             var tenancyAgreement = TestHelper.CreateDatabaseTenancyAgreementForPerson(addedPerson.Entity.HouseRef);
             tenancyAgreement.IsTerminated = isTerminated;
+            tenancyAgreement.TagRef = houseRef ?? tenancyAgreement.TagRef;
 
             var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreement.TagRef, addedPerson.Entity.PersonNo);
             var addedContact = context.ContactLinks.Add(contactLink);
@@ -31,10 +32,10 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             var email = TestHelper.CreateDatabaseEmailForPerson(addedContact.Entity.ContactID);
             var contact = TestHelper.CreateContactRecordFromTagRef(tenancyAgreement.TagRef);
 
+            context.TenancyAgreements.Add(tenancyAgreement);
             context.Addresses.Add(address);
             context.TelephoneNumbers.Add(phone);
             context.EmailAddresses.Add(email);
-            context.TenancyAgreements.Add(tenancyAgreement);
             context.Contacts.Add(contact);
             context.SaveChanges();
 

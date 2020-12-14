@@ -73,9 +73,9 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
                 orderby ta.TagRef, person.PersonNo ascending
-                join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
+                join ck in _UHContext.Contacts on ta.TagRef.Trim() equals ck.TagRef.Trim() into cks
                 from contacts in cks.DefaultIfEmpty()
-                join c in _UHContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
+                join c in _UHContext.ContactLinks on new { key1 = ta.TagRef.Trim(), key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef.Trim(), key2 = c.PersonNo } into addedContactLink
                 from link in addedContactLink.DefaultIfEmpty()
                 select new
                 {
@@ -129,9 +129,10 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
         private ContactLink GetContactLinkForPerson(string houseReference, int personReference)
         {
-            var tagReference = _UHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef.Trim() == houseReference)?.TagRef;
+            //Trim values to avoid failed string comparisons
+            var tagReference = _UHContext.TenancyAgreements.FirstOrDefault(ta => ta.HouseRef == houseReference)?.TagRef.Trim();
             var contactLinkUsingTagReference = _UHContext.ContactLinks
-                .FirstOrDefault(co => (co.TagRef == tagReference) && (co.PersonNo == personReference.ToString(CultureInfo.InvariantCulture)));
+                .FirstOrDefault(co => (co.TagRef.Trim() == tagReference) && (co.PersonNo.Trim() == personReference.ToString(CultureInfo.InvariantCulture)));
 
             return contactLinkUsingTagReference;
         }
