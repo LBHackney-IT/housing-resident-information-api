@@ -85,5 +85,9 @@ namespace HousingResidentInformationAPI.V1.Infrastructure
 
         [Column("intro_ext_date")]
         public DateTime IntroExtDate { get; set; }
+
+        [StringLength(3)] [Column("tenure")]
+        public string UhTenureTypeId { get; set; }
+        public UhTenureType UhTenureType { get; set; }
     }
 }

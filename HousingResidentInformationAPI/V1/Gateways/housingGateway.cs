@@ -32,8 +32,8 @@ namespace HousingResidentInformationAPI.V1.Gateways
                     .OrderByDescending(a => a.Dtstamp)
                     .FirstOrDefault(a => a.HouseRef.Trim() == person.HouseRef.Trim());
 
-            var tenancy = _UHContext
-                .TenancyAgreements
+            var tenancy = _UHContext.TenancyAgreements
+                .Include(ta => ta.UhTenureType)
                 .FirstOrDefault(ta => ta.HouseRef.Trim() == person.HouseRef.Trim());
 
             var contactKey = _UHContext
@@ -107,6 +107,9 @@ namespace HousingResidentInformationAPI.V1.Gateways
             resident.ResidentAddress = address?.ToDomain();
             resident.TenancyReference = tenancyAgreement?.TagRef.Trim();
             resident.ContactKey = contactKey.ToString();
+            /*resident.TenureType = tenancyAgreement == null
+              ? null
+              : $"{tenancyAgreement..UhTenureTypeId.Trim()}: {tenureType.Description.Trim()}";*/
 
             if (contactLink == null) return resident;
 

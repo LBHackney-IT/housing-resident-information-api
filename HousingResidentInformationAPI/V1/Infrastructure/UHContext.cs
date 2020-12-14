@@ -15,6 +15,7 @@ namespace HousingResidentInformationAPI.V1.Infrastructure
         public DbSet<ContactLink> ContactLinks { get; set; }
         public DbSet<TenancyAgreement> TenancyAgreements { get; set; }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<UhTenureType> UhTenure { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
