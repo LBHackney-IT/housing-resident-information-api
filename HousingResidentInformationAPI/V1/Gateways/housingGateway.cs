@@ -64,12 +64,13 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(firstName) ||
                       EF.Functions.ILike(person.FirstName, firstNameSearchPattern)
                 where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastNameSearchPattern)
-                orderby person.HouseRef, person.PersonNo
+                //orderby person.HouseRef, person.PersonNo
                 where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef.Trim() + person.PersonNo.ToString()) > cursorAsInt
                 join a in _UHContext.Addresses on person.HouseRef equals a.HouseRef
                 where string.IsNullOrEmpty(address) ||
                       EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
-                where string.IsNullOrEmpty(postcode) || a.PostCode.ToLower().Contains(postcode.ToLower())
+                where (string.IsNullOrEmpty(postcode)) ||
+                    a.PostCode.ToLower().Equals(postcode.ToLower())
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
                 orderby ta.TagRef, person.PersonNo ascending
