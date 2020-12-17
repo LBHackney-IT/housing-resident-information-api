@@ -42,7 +42,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
             var contactLink = GetContactLinkForPerson(person.HouseRef.Trim(), person.PersonNo);
 
-            var singleRecord = MapDetailsToResidentInformation(person, address, tenancy, contactLink, contactKey);
+            var singleRecord = MapDetailsToResidentInformation(person, address, tenancy, contactLink, tenancy.UhTenureType, contactKey);
 
             return singleRecord;
         }
@@ -64,7 +64,6 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(firstName) ||
                       EF.Functions.ILike(person.FirstName, firstNameSearchPattern)
                 where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastNameSearchPattern)
-                //orderby person.HouseRef, person.PersonNo
                 where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef.Trim() + person.PersonNo.ToString()) > cursorAsInt
                 join a in _UHContext.Addresses on person.HouseRef equals a.HouseRef
                 where string.IsNullOrEmpty(address) ||
@@ -72,6 +71,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where (string.IsNullOrEmpty(postcode)) ||
                     a.PostCode.ToLower().Equals(postcode.ToLower())
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
+                join tenureType in _UHContext.UhTenure on ta.UhTenureTypeId equals tenureType.UhTenureTypeId
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
                 orderby ta.TagRef, person.PersonNo ascending
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
@@ -84,7 +84,8 @@ namespace HousingResidentInformationAPI.V1.Gateways
                     addressDetails = a,
                     tenancyDetails = ta,
                     contactDetails = link,
-                    contactKey = contacts
+                    contactKey = contacts,
+                    tenureDetails = tenureType
                 }
                 ).Take(limit).ToList();
 
@@ -93,23 +94,22 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
             var listRecords = dbRecords.Select(x =>
                     MapDetailsToResidentInformation(x.personDetails, x.addressDetails, x.tenancyDetails,
-                        x.contactDetails, x.contactKey?.ContactKey))
+                        x.contactDetails, x.tenureDetails, x.contactKey?.ContactKey))
                 .ToList();
 
             return listRecords;
         }
 
         private ResidentInformation MapDetailsToResidentInformation(Person person, Address address,
-            TenancyAgreement tenancyAgreement, ContactLink contactLink, int? contactKey)
+            TenancyAgreement tenancyAgreement, ContactLink contactLink, UhTenureType tenureType, int? contactKey)
         {
             var resident = person.ToDomain();
             resident.UPRN = address?.UPRN;
             resident.ResidentAddress = address?.ToDomain();
             resident.TenancyReference = tenancyAgreement?.TagRef.Trim();
             resident.ContactKey = contactKey.ToString();
-            /*resident.TenureType = tenancyAgreement == null
-              ? null
-              : $"{tenancyAgreement..UhTenureTypeId.Trim()}: {tenureType.Description.Trim()}";*/
+            resident.TenureType = (tenancyAgreement == null) ? null
+              : $"{tenancyAgreement.UhTenureTypeId.Trim()}: {tenureType.Description.Trim()}";
 
             if (contactLink == null) return resident;
 

@@ -383,6 +383,10 @@ CREATE TABLE dbo.property(
 	u_adapted_kitchen char(3) NULL
 );
 
+CREATE TABLE dbo.tenure (
+    ten_type char(3) NOT NULL PRIMARY KEY,
+    ten_desc char(15)
+);
 
 CREATE TABLE dbo.tenagree(
 	tag_ref char(11) NOT NULL PRIMARY KEY,
