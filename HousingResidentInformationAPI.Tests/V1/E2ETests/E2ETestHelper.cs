@@ -11,8 +11,9 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
     {
         public static ResidentInformation AddPersonWithRelatedEntitiesToDb(UHContext context, string houseRef = null,
             int? personNo = null, string firstname = null, string lastname = null, string postcode = null,
-            string addressLines = null, bool isTerminated = false)
+            string addressLines = null, string tenureTypeId = null, bool isTerminated = false)
         {
+            //create person record
             var person = TestHelper.CreateDatabasePersonEntity(firstname, lastname);
             person.HouseRef = houseRef ?? person.HouseRef;
             person.PersonNo = personNo ?? person.PersonNo;
@@ -20,11 +21,19 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             var addedPerson = context.Persons.Add(person);
             context.SaveChanges();
 
+            //create tenure record
+            var tenure = TestHelper.CreateTenureType();
+            tenure.UhTenureTypeId = tenureTypeId ?? tenure.UhTenureTypeId;
+            context.UhTenure.Add(tenure);
+            context.SaveChanges();
+
+            //create address, and tenancy entities with tenuretypeId
             var address = TestHelper.CreateDatabaseAddressForPersonId(addedPerson.Entity.HouseRef, address1: addressLines, postcode: postcode);
-            var tenancyAgreement = TestHelper.CreateDatabaseTenancyAgreementForPerson(addedPerson.Entity.HouseRef);
+            var tenancyAgreement = TestHelper.CreateDatabaseTenancyEntity(addedPerson.Entity.HouseRef, tenure.UhTenureTypeId);
             tenancyAgreement.IsTerminated = isTerminated;
             tenancyAgreement.TagRef = houseRef ?? tenancyAgreement.TagRef;
 
+            //create contact Link record
             var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tenancyAgreement.TagRef, addedPerson.Entity.PersonNo);
             var addedContact = context.ContactLinks.Add(contactLink);
             context.SaveChanges();
