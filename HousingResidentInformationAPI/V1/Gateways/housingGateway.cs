@@ -42,7 +42,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
             var contactLink = GetContactLinkForPerson(person.HouseRef.Trim(), person.PersonNo);
 
-            var singleRecord = MapDetailsToResidentInformation(person, address, tenancy, contactLink, tenancy.UhTenureType, contactKey);
+            var singleRecord = MapDetailsToResidentInformation(person, address, tenancy, contactLink, contactKey);
 
             return singleRecord;
         }
@@ -94,14 +94,14 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
             var listRecords = dbRecords.Select(x =>
                     MapDetailsToResidentInformation(x.personDetails, x.addressDetails, x.tenancyDetails,
-                        x.contactDetails, x.tenureDetails, x.contactKey?.ContactKey))
+                        x.contactDetails, x.contactKey?.ContactKey))
                 .ToList();
 
             return listRecords;
         }
 
         private ResidentInformation MapDetailsToResidentInformation(Person person, Address address,
-            TenancyAgreement tenancyAgreement, ContactLink contactLink, UhTenureType tenureType, int? contactKey)
+            TenancyAgreement tenancyAgreement, ContactLink contactLink, int? contactKey)
         {
             var resident = person.ToDomain();
             resident.UPRN = address?.UPRN;
@@ -109,7 +109,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
             resident.TenancyReference = tenancyAgreement?.TagRef.Trim();
             resident.ContactKey = contactKey.ToString();
             resident.TenureType = (tenancyAgreement == null) ? null
-              : $"{tenancyAgreement.UhTenureTypeId.Trim()}: {tenureType.Description.Trim()}";
+              : $"{tenancyAgreement.UhTenureTypeId.Trim()}: {tenancyAgreement.UhTenureType.Description.Trim()}";
 
             if (contactLink == null) return resident;
 

@@ -70,14 +70,16 @@ namespace HousingResidentInformationAPI.Tests.V1.Helper
             return fakeEmail;
         }
 
-        public static TenancyAgreement CreateDatabaseTenancyAgreementForPerson(string houseRef)
+        public static TenancyAgreement CreateDatabaseTenancyEntity(string houseRef = null, string tenureTypeLookupId = null)
         {
             var fixture = new Fixture();
 
             var ft = fixture.Build<TenancyAgreement>()
                 .With(ta => ta.HouseRef, houseRef)
+                .Without(ta => ta.UhTenureType)
                 .Create();
 
+            ft.UhTenureTypeId = tenureTypeLookupId ?? ft.UhTenureTypeId;
             return ft;
         }
 
@@ -99,6 +101,13 @@ namespace HousingResidentInformationAPI.Tests.V1.Helper
         {
             var fixture = new Fixture();
             return new Contact { HouseReference = fixture.Create<string>().Substring(0, 6), TagRef = tagRef };
+        }
+
+        public static UhTenureType CreateTenureType()
+        {
+            var fixture = new Fixture();
+            var tenureLookup = fixture.Create<UhTenureType>();
+            return tenureLookup;
         }
     }
 }

@@ -49,7 +49,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsPersonalDetails()
         {
             var person = AddPersonRecordToDatabase();
-            AddTenancyAgreementToDatabase(person.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
             var response = _classUnderTest.GetResidentById(person.HouseRef, person.PersonNo);
 
             response.HouseReference.Should().Be(person.HouseRef);
@@ -65,7 +66,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         {
             var person = AddPersonRecordToDatabase();
             var address = AddAddressRecordToDatabase(person.HouseRef);
-            AddTenancyAgreementToDatabase(person.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
 
             var expectedDomainAddress = new DomainAddress
             {
@@ -84,7 +86,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsPhoneContactDetailsWithPhoneType()
         {
             var person = AddPersonRecordToDatabase();
-            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
             var contactLink = AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
             var phone = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLink.ContactID);
@@ -113,7 +116,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsPhoneContactDetailsWithOutPhoneType()
         {
             var person = AddPersonRecordToDatabase();
-            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
             var contactLink = AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
             var databasePhoneEntity = TestHelper.CreateDatabaseTelephoneNumberForPersonId(contactLink.ContactID);
@@ -142,7 +146,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         {
             var person = AddPersonRecordToDatabase();
             var address = AddAddressRecordToDatabase(person.HouseRef);
-            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
 
             UHContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
             UHContext.SaveChanges();
@@ -154,10 +159,12 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         [Test]
         public void GetResidentByIdReturnsTheTenancyReferenceInTheResponse()
         {
-            var databasePersonEntity = AddPersonRecordToDatabase();
-            var tenancyDatabaseEntity = AddTenancyAgreementToDatabase(databasePersonEntity.HouseRef);
+            var personEntity = AddPersonRecordToDatabase();
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancyDatabaseEntity = AddTenancyAgreementToDatabase(personEntity.HouseRef,
+                tenureTypeId: tenure.UhTenureTypeId);
 
-            var response = _classUnderTest.GetResidentById(databasePersonEntity.HouseRef, databasePersonEntity.PersonNo);
+            var response = _classUnderTest.GetResidentById(personEntity.HouseRef, personEntity.PersonNo);
             response.TenancyReference.Should().Be(tenancyDatabaseEntity.TagRef);
         }
 
@@ -165,7 +172,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsTheContactKey()
         {
             var person = AddPersonRecordToDatabase();
-            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId); 
             var contact = TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef);
 
             var addedEntity = UHContext.Contacts.Add(contact);
@@ -179,7 +187,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         public void GetResidentByIdReturnsTheEmailDetails()
         {
             var person = AddPersonRecordToDatabase();
-            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
             var contactLink = AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
             var email = AddEmailAddressToDatabase(contactLink.ContactID);
@@ -209,17 +218,23 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             //Test records 1
             var person1 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
             var address1 = AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, isTerminated: true);
+            var tenure1 = AddTenureTypeLookupToDatabase();
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef,
+                tenureTypeId: tenure1.UhTenureTypeId, isTerminated: true);
 
             //Test records 2
             var person2 = AddPersonRecordToDatabase();
             var address2 = AddAddressRecordToDatabase(person2.HouseRef);
-            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var tenure2 = AddTenureTypeLookupToDatabase();
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef,
+                tenureTypeId: tenure2.UhTenureTypeId);
 
             //Test records 3
             var person3 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
             var address3 = AddAddressRecordToDatabase(person3.HouseRef, address1: "2 Hillman st");
-            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var tenure3 = AddTenureTypeLookupToDatabase();
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef,
+                tenureTypeId: tenure3.UhTenureTypeId);
 
 
             var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", activeTenancyOnly: true);
@@ -235,17 +250,21 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             //Test records 1
             var person1 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
             var address1 = AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, isTerminated: true);
+            var tenure1 = AddTenureTypeLookupToDatabase();
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef,
+                tenureTypeId: tenure1.UhTenureTypeId, isTerminated: true);
 
             //Test records 2
             var person2 = AddPersonRecordToDatabase();
             var address2 = AddAddressRecordToDatabase(person2.HouseRef);
-            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var tenure2 = AddTenureTypeLookupToDatabase();
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef, tenureTypeId: tenure2.UhTenureTypeId);
 
             //Test records 3
             var person3 = AddPersonRecordToDatabase(firstname: "ciasom"); ;
             var address3 = AddAddressRecordToDatabase(person3.HouseRef, address1: "2 Hillman st");
-            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var tenure3 = AddTenureTypeLookupToDatabase();
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef, tenureTypeId: tenure3.UhTenureTypeId);
 
 
             var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", activeTenancyOnly: false);
@@ -262,20 +281,23 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         {
             var person1 = AddPersonRecordToDatabase(firstname: "ciasom");
             var address1 = AddAddressRecordToDatabase(person1.HouseRef);
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+            var tenure1 = AddTenureTypeLookupToDatabase();
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, tenureTypeId: tenure1.UhTenureTypeId);
             var link1 = AddContactLinkForPersonToDatabase(tenancy1.TagRef, person1.PersonNo);
             var telephone1 = AddTelephoneNumberToDatabase(link1.ContactID);
             var emailAddressList1 = new List<EmailAddresses> { AddEmailAddressToDatabase(link1.ContactID), AddEmailAddressToDatabase(link1.ContactID) };
 
             var person2 = AddPersonRecordToDatabase(firstname: "shape");
             var address2 = AddAddressRecordToDatabase(person2.HouseRef);
-            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var tenure2 = AddTenureTypeLookupToDatabase();
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef, tenureTypeId: tenure2.UhTenureTypeId);
             var link2 = AddContactLinkForPersonToDatabase(tenancy2.TagRef, person2.PersonNo);
             var telephone2 = AddTelephoneNumberToDatabase(link1.ContactID);
 
             var person3 = AddPersonRecordToDatabase(firstname: "Ciasom");
             var address3 = AddAddressRecordToDatabase(person3.HouseRef);
-            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var tenure3 = AddTenureTypeLookupToDatabase();
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef, tenureTypeId: tenure3.UhTenureTypeId);
             var link3 = AddContactLinkForPersonToDatabase(tenancy3.TagRef, person3.PersonNo);
             var telephone3 = AddTelephoneNumberToDatabase(link3.ContactID);
             var emailAddressList3 = new List<EmailAddresses> { AddEmailAddressToDatabase(link3.ContactID) };
@@ -296,18 +318,21 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         {
             var person1 = AddPersonRecordToDatabase(lastname: "brown");
             var address1 = AddAddressRecordToDatabase(person1.HouseRef);
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+            var tenure1 = AddTenureTypeLookupToDatabase();
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, tenureTypeId: tenure1.UhTenureTypeId);
             var link1 = AddContactLinkForPersonToDatabase(tenancy1.TagRef, person1.PersonNo);
             var telephoneList1 = new List<TelephoneNumber> { AddTelephoneNumberToDatabase(link1.ContactID), AddTelephoneNumberToDatabase(link1.ContactID) };
 
             var person2 = AddPersonRecordToDatabase(lastname: "tessellate");
             var address2 = AddAddressRecordToDatabase(person2.HouseRef);
-            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var tenure2 = AddTenureTypeLookupToDatabase();
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef, tenureTypeId: tenure2.UhTenureTypeId);
             var link2 = AddContactLinkForPersonToDatabase(tenancy2.TagRef, person2.PersonNo);
 
             var person3 = AddPersonRecordToDatabase(lastname: "brown");
             var address3 = AddAddressRecordToDatabase(person3.HouseRef);
-            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var tenure3 = AddTenureTypeLookupToDatabase();
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef, tenureTypeId: tenure3.UhTenureTypeId);
             var link3 = AddContactLinkForPersonToDatabase(tenancy3.TagRef, person3.PersonNo);
             var telephoneList3 = new List<TelephoneNumber> { AddTelephoneNumberToDatabase(link3.ContactID) };
 
@@ -326,7 +351,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             //Test records 1
             var person1 = AddPersonRecordToDatabase(firstname: "ciasom", lastname: "Brown");
             var address1 = AddAddressRecordToDatabase(person1.HouseRef);
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+            var tenure1 = AddTenureTypeLookupToDatabase();
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, tenureTypeId: tenure1.UhTenureTypeId);
             var link1 = AddContactLinkForPersonToDatabase(tenancy1.TagRef, person1.PersonNo);
             var emailAddresses1 = new List<EmailAddresses>
             {
@@ -337,13 +363,15 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             //Test records 2
             var person2 = AddPersonRecordToDatabase(firstname: "ciasom", lastname: "tessellate");
             var address2 = AddAddressRecordToDatabase(person2.HouseRef);
-            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var tenure2 = AddTenureTypeLookupToDatabase();
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef, tenureTypeId: tenure2.UhTenureTypeId);
             AddContactLinkForPersonToDatabase(tenancy2.TagRef, person2.PersonNo);
 
             //Test records 3
             var person3 = AddPersonRecordToDatabase(firstname: "Ciasom", lastname: "brown");
             var address3 = AddAddressRecordToDatabase(person3.HouseRef);
-            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var tenure3 = AddTenureTypeLookupToDatabase();
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef, tenureTypeId: tenure3.UhTenureTypeId);
             var link3 = AddContactLinkForPersonToDatabase(tenancy3.TagRef, person3.PersonNo);
             var emailAddresses2 = new List<EmailAddresses> { AddEmailAddressToDatabase(link3.ContactID) };
 
@@ -361,15 +389,18 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         {
             var person1 = AddPersonRecordToDatabase();
             var address1 = AddAddressRecordToDatabase(person1.HouseRef, postcode: "E8 1DY");
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+            var tenure1 = AddTenureTypeLookupToDatabase();
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, tenureTypeId: tenure1.UhTenureTypeId);
 
             var person2 = AddPersonRecordToDatabase();
             var address2 = AddAddressRecordToDatabase(person2.HouseRef);
-            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var tenure2 = AddTenureTypeLookupToDatabase();
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef, tenure2.UhTenureTypeId);
 
             var person3 = AddPersonRecordToDatabase();
             var address3 = AddAddressRecordToDatabase(person3.HouseRef, postcode: "E1 8DY");
-            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var tenure3 = AddTenureTypeLookupToDatabase();
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef, tenureTypeId: tenure3.UhTenureTypeId);
 
             var expectedResponse = MapToExpectedDomain(person1, address1, null, null, tenancy1);
 
@@ -384,17 +415,20 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             //Test records 1
             var person1 = AddPersonRecordToDatabase();
             var address1 = AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
-            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef);
+            var tenure1 = AddTenureTypeLookupToDatabase();
+            var tenancy1 = AddTenancyAgreementToDatabase(address1.HouseRef, tenureTypeId: tenure1.UhTenureTypeId);
 
             //Test records 2
             var person2 = AddPersonRecordToDatabase();
             var address2 = AddAddressRecordToDatabase(person2.HouseRef);
-            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef);
+            var tenure2 = AddTenureTypeLookupToDatabase();
+            var tenancy2 = AddTenancyAgreementToDatabase(address2.HouseRef, tenureTypeId: tenure2.UhTenureTypeId);
 
             //Test records 3
             var person3 = AddPersonRecordToDatabase();
             var address3 = AddAddressRecordToDatabase(person3.HouseRef, address1: "2 Hillman st");
-            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef);
+            var tenure3 = AddTenureTypeLookupToDatabase();
+            var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef, tenure3.UhTenureTypeId);
 
             var expectedResponse = MapToExpectedDomain(person1, address1, null, null, tenancy1);
 
@@ -408,7 +442,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         {
             var databaseEntity = AddPersonRecordToDatabase();
             var address = AddAddressRecordToDatabase(databaseEntity.HouseRef, address1: "1 Hillman st");
-            var tenancy1 = AddTenancyAgreementToDatabase(address.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancy1 = AddTenancyAgreementToDatabase(address.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
             //Create a row in the CCContactLink that has no values in Key1 and Key2. This was found in production.
             var link1 = AddContactLinkForPersonToDatabase(null, null);
 
@@ -426,7 +461,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var person2 = AddPersonRecordToDatabase(houseRef: "123", personNo: 2);
 
             AddAddressRecordToDatabase(person1.HouseRef, address1: "1 Hillman st");
-            var tenancy = AddTenancyAgreementToDatabase(person1.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person1.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
             AddContactLinkForPersonToDatabase(tenancy.TagRef, person1.PersonNo);
 
             var peopleReturned = _classUnderTest.GetAllResidents(null, 1);
@@ -451,7 +487,9 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             persons.Take(2).ToList().ForEach(person =>
             {
                 AddAddressRecordToDatabase(person.HouseRef);
-                var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tagRef: person.HouseRef);
+                var tenure = AddTenureTypeLookupToDatabase();
+                var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId,
+                    tagRef: person.HouseRef);
                 AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
             });
 
@@ -470,7 +508,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         {
             var person = AddPersonRecordToDatabase();
             AddAddressRecordToDatabase(person.HouseRef);
-            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef);
+            var tenure = AddTenureTypeLookupToDatabase();
+            var tenancy = AddTenancyAgreementToDatabase(person.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
             AddContactLinkForPersonToDatabase(tenancy.TagRef, person.PersonNo);
 
             var contact = UHContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
@@ -504,16 +543,27 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         }
 
         private TenancyAgreement AddTenancyAgreementToDatabase(string houseReference, string tagRef = null,
-            bool isTerminated = false)
+            string tenureTypeId = null, bool isTerminated = false)
         {
-            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyAgreementForPerson(houseReference);
+            var tenancyDatabaseEntity = TestHelper.CreateDatabaseTenancyEntity(houseReference);
             tenancyDatabaseEntity.IsTerminated = isTerminated;
             tenancyDatabaseEntity.TagRef = tagRef ?? tenancyDatabaseEntity.TagRef;
+            tenancyDatabaseEntity.UhTenureTypeId = tenureTypeId ?? tenancyDatabaseEntity.UhTenureTypeId;
 
             UHContext.TenancyAgreements.Add(tenancyDatabaseEntity);
             UHContext.SaveChanges();
             return tenancyDatabaseEntity;
         }
+
+        private UhTenureType AddTenureTypeLookupToDatabase(string tenureTypeId = null)
+        {
+            var tenureTypeLookup = TestHelper.CreateTenureType();
+            tenureTypeLookup.UhTenureTypeId = tenureTypeId ?? tenureTypeLookup.UhTenureTypeId;
+            UHContext.UhTenure.Add(tenureTypeLookup);
+            UHContext.SaveChanges();
+            return tenureTypeLookup;
+        }
+
         private ContactLink AddContactLinkForPersonToDatabase(string tagRef, int? personNumber)
         {
             var contactLink = TestHelper.CreateDatabaseContactLinkForPerson(tagRef, personNumber);
@@ -543,6 +593,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             domainEntity.Email = emailAddresses;
             domainEntity.TenancyReference = tenancy.TagRef;
             domainEntity.ContactKey = contactKey;
+            domainEntity.TenureType = (tenancy == null) ? null
+              : $"{tenancy.UhTenureTypeId.Trim()}: {tenancy.UhTenureType.Description.Trim()}";
             return domainEntity;
         }
     }
