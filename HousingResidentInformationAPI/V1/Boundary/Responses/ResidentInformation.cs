@@ -16,5 +16,6 @@ namespace HousingResidentInformationAPI.V1.Boundary.Responses
         public List<Email> EmailAddresses { get; set; }
         public Address Address { get; set; }
         public string HousingWaitingListContactKey { get; set; }
+        public string TenureType { get; set; }
     }
 }

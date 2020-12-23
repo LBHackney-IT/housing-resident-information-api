@@ -53,6 +53,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
                 HouseReference = person.HouseRef,
                 PersonNumber = person.PersonNo,
                 TenancyReference = tenancyAgreement.TagRef,
+                TenureType = $"{tenure.UhTenureTypeId}: {tenure?.Description}",
                 FirstName = person.FirstName,
                 LastName = person.LastName,
                 NiNumber = person.NINumber,
