@@ -18,6 +18,7 @@ namespace HousingResidentInformationAPI.V1.Domain
         public List<Email> Email { get; set; }
         public Address ResidentAddress { get; set; }
         public string ContactKey { get; set; }
+        public string TenureType { get; set; }
     }
 
     public class Address
