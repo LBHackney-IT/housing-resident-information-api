@@ -19,6 +19,7 @@ namespace HousingResidentInformationAPI.V1.Factories
                 HouseReference = domain.HouseReference,
                 PersonNumber = domain.PersonNumber,
                 TenancyReference = domain.TenancyReference,
+                TenureType = domain.TenureType,
                 FirstName = domain.FirstName,
                 LastName = domain.LastName,
                 DateOfBirth = domain.DateOfBirth,
