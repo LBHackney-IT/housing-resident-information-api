@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using AutoFixture;
+using AutoFixture.Kernel;
 using HousingResidentInformationAPI.V1.Enums;
 using HousingResidentInformationAPI.V1.Infrastructure;
 
@@ -10,8 +11,13 @@ namespace HousingResidentInformationAPI.Tests.V1.Helper
     {
         public static Person CreateDatabasePersonEntity(string firstname = null, string lastname = null, string houseRef = null, int? personNo = null)
         {
-            var fixture = new Fixture();
+            //Generate integers for house_ref column 
+            var rrng = new RandomRangedNumberGenerator();
+            var sc = new SpecimenContext(rrng);
+            rrng.Create(new RangedNumberRequest(typeof(int), 100000, 999999), sc);
 
+            var fixture = new Fixture();
+            fixture.Customizations.Add(rrng);
             var fp = fixture.Build<Person>()
                 .Create();
 
@@ -19,7 +25,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Helper
                 (fp.DateOfBirth.Year, fp.DateOfBirth.Month, fp.DateOfBirth.Day);
             fp.FirstName = firstname ?? fp.FirstName;
             fp.LastName = lastname ?? fp.LastName;
-            fp.HouseRef = houseRef ?? fp.HouseRef;
+            fp.HouseRef = houseRef ?? fixture.Create<int>().ToString();
             fp.PersonNo = personNo ?? fp.PersonNo;
 
             return fp;
