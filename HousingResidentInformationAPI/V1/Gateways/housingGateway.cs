@@ -59,6 +59,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
             var dbRecords = (
                 from person in _UHContext.Persons
+                where string.IsNullOrEmpty(person.HouseRef) == false
                 where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef.Replace(" ", ""),
                     houseReferenceSearchPattern)
                 where string.IsNullOrEmpty(firstName) ||
