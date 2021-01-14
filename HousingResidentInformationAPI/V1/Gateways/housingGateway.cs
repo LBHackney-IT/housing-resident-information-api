@@ -72,8 +72,8 @@ namespace HousingResidentInformationAPI.V1.Gateways
                     a.PostCode.ToLower().Equals(postcode.ToLower())
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
                 join tenureType in _UHContext.UhTenure on ta.UhTenureTypeId equals tenureType.UhTenureTypeId
+                where !String.IsNullOrEmpty(ta.HouseRef)
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
-                where !string.IsNullOrEmpty(ta.HouseRef)
                 orderby ta.TagRef, person.PersonNo ascending
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
                 from contacts in cks.DefaultIfEmpty()
