@@ -59,7 +59,6 @@ namespace HousingResidentInformationAPI.V1.Gateways
 
             var dbRecords = (
                 from person in _UHContext.Persons
-                where !string.IsNullOrEmpty(person.HouseRef)
                 where string.IsNullOrEmpty(houseReference) || EF.Functions.ILike(person.HouseRef.Replace(" ", ""),
                     houseReferenceSearchPattern)
                 where string.IsNullOrEmpty(firstName) ||
@@ -74,6 +73,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
                 join tenureType in _UHContext.UhTenure on ta.UhTenureTypeId equals tenureType.UhTenureTypeId
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
+                where !string.IsNullOrEmpty(ta.HouseRef)
                 orderby ta.TagRef, person.PersonNo ascending
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
                 from contacts in cks.DefaultIfEmpty()
