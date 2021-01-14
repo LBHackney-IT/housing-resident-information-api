@@ -64,7 +64,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(firstName) ||
                       EF.Functions.ILike(person.FirstName, firstNameSearchPattern)
                 where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastNameSearchPattern)
-                where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef.Trim() + person.PersonNo.ToString()) > cursorAsInt
+                where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef + person.PersonNo.ToString()) > cursorAsInt
                 join a in _UHContext.Addresses on person.HouseRef equals a.HouseRef
                 where string.IsNullOrEmpty(address) ||
                       EF.Functions.ILike(a.AddressLine1.Replace(" ", ""), addressSearchPattern)
