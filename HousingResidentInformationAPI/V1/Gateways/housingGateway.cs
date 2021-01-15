@@ -64,6 +64,8 @@ namespace HousingResidentInformationAPI.V1.Gateways
                 where string.IsNullOrEmpty(firstName) ||
                       EF.Functions.ILike(person.FirstName, firstNameSearchPattern)
                 where string.IsNullOrEmpty(lastName) || EF.Functions.ILike(person.LastName, lastNameSearchPattern)
+                where !string.IsNullOrEmpty(person.HouseRef)
+                //Cursor
                 where cursorAsInt == 0 || Convert.ToInt32(person.HouseRef + person.PersonNo.ToString()) > cursorAsInt
                 join a in _UHContext.Addresses on person.HouseRef equals a.HouseRef
                 where string.IsNullOrEmpty(address) ||
@@ -72,9 +74,9 @@ namespace HousingResidentInformationAPI.V1.Gateways
                     a.PostCode.ToLower().Equals(postcode.ToLower())
                 join ta in _UHContext.TenancyAgreements on person.HouseRef equals ta.HouseRef
                 join tenureType in _UHContext.UhTenure on ta.UhTenureTypeId equals tenureType.UhTenureTypeId
-                where !String.IsNullOrEmpty(ta.HouseRef)
                 where (activeTenancyOnly == false) || ta.IsTerminated == false
-                orderby ta.TagRef, person.PersonNo ascending
+                //Order by
+                orderby Convert.ToInt32(person.HouseRef), ta.TagRef, person.PersonNo ascending
                 join ck in _UHContext.Contacts on ta.TagRef equals ck.TagRef into cks
                 from contacts in cks.DefaultIfEmpty()
                 join c in _UHContext.ContactLinks on new { key1 = ta.TagRef, key2 = person.PersonNo.ToString() } equals new { key1 = c.TagRef, key2 = c.PersonNo } into addedContactLink
