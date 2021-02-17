@@ -9,6 +9,7 @@
         <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
 
   <ItemGroup>
