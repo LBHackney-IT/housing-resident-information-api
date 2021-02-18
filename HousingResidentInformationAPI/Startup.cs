@@ -19,6 +19,7 @@ using HousingResidentInformationAPI.V1.Infrastructure;
 using HousingResidentInformationAPI.V1.UseCase;
 using HousingResidentInformationAPI.V1.UseCase.Interfaces;
 using HousingResidentInformationAPI.Versioning;
+using Amazon.XRay.Recorder.Handlers.AwsSdk;
 
 namespace HousingResidentInformationAPI
 {
@@ -36,6 +37,7 @@ namespace HousingResidentInformationAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public static void ConfigureServices(IServiceCollection services)
         {
+            AWSSDKHandler.RegisterXRayForAllServices();
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
