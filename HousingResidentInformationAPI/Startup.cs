@@ -116,7 +116,7 @@ namespace HousingResidentInformationAPI
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
             services.AddDbContext<UHContext>(
-                opt => opt.UseNpgsql(connectionString));
+                opt => opt.UseNpgsql(connectionString).AddXRayInterceptor(true));
         }
 
         private static void RegisterGateways(IServiceCollection services)
