@@ -28,6 +28,7 @@ namespace HousingResidentInformationAPI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            AWSSDKHandler.RegisterXRayForAllServices();
         }
 
         public IConfiguration Configuration { get; }
@@ -37,7 +38,6 @@ namespace HousingResidentInformationAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public static void ConfigureServices(IServiceCollection services)
         {
-            AWSSDKHandler.RegisterXRayForAllServices();
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
@@ -143,6 +143,7 @@ namespace HousingResidentInformationAPI
                 app.UseHsts();
             }
 
+            app.UseXRay("housing-resident-information-api");
             //Get All ApiVersions,
             var api = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
             _apiVersions = api.ApiVersionDescriptions.ToList();
