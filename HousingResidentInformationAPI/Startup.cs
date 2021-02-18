@@ -164,6 +164,7 @@ namespace HousingResidentInformationAPI
                 // SwaggerGen won't find controllers that are routed via this technique.
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseXRay("housing-resident-information-api");
         }
     }
 }
