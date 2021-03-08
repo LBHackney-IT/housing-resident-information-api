@@ -154,7 +154,7 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
                 ActiveTenanciesOnly = false
             };
 
-            Func<Task<ResidentInformationList>> testDelegate = async() => await _classUnderTest.Execute(rqp, null, 10).ConfigureAwait(false);
+            Func<Task<ResidentInformationList>> testDelegate = async () => await _classUnderTest.Execute(rqp, null, 10).ConfigureAwait(false);
             testDelegate.Should().Throw<InvalidQueryParameterException>()
                 .WithMessage("The Postcode given does not have a valid format");
         }
