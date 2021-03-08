@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using HousingResidentInformationAPI.V1.Boundary.Requests;
 using HousingResidentInformationAPI.V1.Boundary.Responses;
 using HousingResidentInformationAPI.V1.Domain;
@@ -18,15 +19,16 @@ namespace HousingResidentInformationAPI.V1.UseCase
             _validatePostcode = validatePostcode;
         }
 
-        public ResidentInformationList Execute(ResidentQueryParam rqp, string cursor, int limit)
+        public async Task<ResidentInformationList> Execute(ResidentQueryParam rqp, string cursor, int limit)
         {
             limit = limit < 10 ? 10 : limit;
             limit = limit > 100 ? 100 : limit;
 
             CheckPostcodeValid(rqp.Postcode);
 
-            var residents = _housingGateway.GetAllResidents(cursor, limit, rqp.HouseReference, rqp.FirstName,
-                rqp.LastName, rqp.Address, rqp.Postcode, rqp.ActiveTenanciesOnly).ToResponse();
+            var residentsGwResult = await _housingGateway.GetAllResidents(cursor, limit, rqp.HouseReference, rqp.FirstName,
+                rqp.LastName, rqp.Address, rqp.Postcode, rqp.ActiveTenanciesOnly).ConfigureAwait(false);
+            var residents = residentsGwResult.ToResponse();
             var lastResident = residents.LastOrDefault();
             var nextCursor = residents.Count == limit ? $"{lastResident.HouseReference}{lastResident.PersonNumber}" : "";
 

@@ -11,6 +11,7 @@ using HousingResidentInformationAPI.V1.UseCase;
 using ResidentInformation = HousingResidentInformationAPI.V1.Domain.ResidentInformation;
 using HousingResidentInformationAPI.V1.UseCase.Interfaces;
 using System;
+using System.Threading.Tasks;
 using HousingResidentInformationAPI.V1.Domain;
 using HousingResidentInformationAPI.V1.Boundary.Responses;
 
@@ -34,13 +35,13 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
         }
 
         [Test]
-        public void ReturnsResidentInformationList()
+        public async Task ReturnsResidentInformationList()
         {
             var stubbedResidents = _fixture.CreateMany<ResidentInformation>();
 
             _mockhousingGateway.Setup(x =>
                     x.GetAllResidents(null, 10, "000011", "ciasom", "tessellate", "1 Montage street", "E8 1DY", false))
-                .Returns(stubbedResidents.ToList());
+                .Returns(Task.Run(() => stubbedResidents.ToList()));
             var rqp = new ResidentQueryParam
             {
                 HouseReference = "000011",
@@ -51,30 +52,30 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
                 ActiveTenanciesOnly = false
             };
 
-            var response = _classUnderTest.Execute(rqp, null, 10);
+            var response = await _classUnderTest.Execute(rqp, null, 10).ConfigureAwait(false);
 
             response.Should().NotBeNull();
             response.Residents.Should().BeEquivalentTo(stubbedResidents.ToResponse());
         }
 
         [Test]
-        public void IfLimitLessThanTheMinimumWillUseTheMinimumLimit()
+        public async Task IfLimitLessThanTheMinimumWillUseTheMinimumLimit()
         {
             _mockhousingGateway.Setup(x => x.GetAllResidents(null, 10, null, null, null, null, null, false))
-                .Returns(new List<ResidentInformation>()).Verifiable();
+                .Returns(Task.Run(() => new List<ResidentInformation>())).Verifiable();
 
-            _classUnderTest.Execute(new ResidentQueryParam(), null, 9);
+            await _classUnderTest.Execute(new ResidentQueryParam(), null, 9).ConfigureAwait(false);
 
             _mockhousingGateway.Verify();
         }
 
         [Test]
-        public void IfLimitMoreThanTheMaximumWillUseTheMaximumLimit()
+        public async Task IfLimitMoreThanTheMaximumWillUseTheMaximumLimit()
         {
             _mockhousingGateway.Setup(x => x.GetAllResidents(null, 100, null, null, null, null, null, false))
-                .Returns(new List<ResidentInformation>()).Verifiable();
+                .Returns(Task.Run(() => new List<ResidentInformation>())).Verifiable();
 
-            _classUnderTest.Execute(new ResidentQueryParam(), null, 101);
+            await _classUnderTest.Execute(new ResidentQueryParam(), null, 101).ConfigureAwait(false);
 
             _mockhousingGateway.Verify();
         }
@@ -91,10 +92,10 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
 
             _mockhousingGateway.Setup(x =>
                     x.GetAllResidents(null, 10, null, null, null, null, null, false))
-                .Returns(stubbedResidents.ToList());
+                .Returns(Task.Run(() => stubbedResidents.ToList()));
 
             var receivedNextCursor = _classUnderTest
-                .Execute(new ResidentQueryParam(), null, 10).NextCursor;
+                .Execute(new ResidentQueryParam(), null, 10).Result.NextCursor;
 
             receivedNextCursor.Should().Be(expectedNextCursor);
         }
@@ -106,21 +107,21 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
 
             _mockhousingGateway.Setup(x =>
                     x.GetAllResidents(null, 10, null, null, null, null, null, false))
-                .Returns(stubbedResidents.ToList());
+                .Returns(Task.Run(() => stubbedResidents.ToList()));
 
-            _classUnderTest.Execute(new ResidentQueryParam(), null, 10).NextCursor.Should().Be("");
+            _classUnderTest.Execute(new ResidentQueryParam(), null, 10).Result.NextCursor.Should().Be("");
         }
 
 
         [Test]
-        public void ExecuteCallsTheGatewayWithPostcodeQueryParameter()
+        public async Task ExecuteCallsTheGatewayWithPostcodeQueryParameter()
         {
             var postcode = _fixture.Create<string>();
             var stubbedResidents = _fixture.CreateMany<ResidentInformation>();
 
             _mockhousingGateway.Setup(x =>
                     x.GetAllResidents(null, 10, null, null, null, null, postcode, false))
-                .Returns(stubbedResidents.ToList());
+                .Returns(Task.Run(() => stubbedResidents.ToList()));
 
             var rqp = new ResidentQueryParam
             {
@@ -128,7 +129,7 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
                 ActiveTenanciesOnly = false
             };
 
-            _classUnderTest.Execute(rqp, null, 10);
+            await _classUnderTest.Execute(rqp, null, 10).ConfigureAwait(false);
             _mockhousingGateway.Verify();
         }
 
@@ -140,7 +141,7 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
 
             _mockhousingGateway.Setup(x =>
                     x.GetAllResidents(null, 10, null, null, null, null, postcode, false))
-                .Returns(stubbedResidents.ToList());
+                .Returns(Task.Run(() => stubbedResidents.ToList()));
             _mockPostcodeValidator.Setup(x => x.Execute(postcode)).Returns(false);
 
             var rqp = new ResidentQueryParam
@@ -153,7 +154,7 @@ namespace HousingResidentInformationAPI.Tests.V1.UseCase
                 ActiveTenanciesOnly = false
             };
 
-            Func<ResidentInformationList> testDelegate = () => _classUnderTest.Execute(rqp, null, 10);
+            Func<Task<ResidentInformationList>> testDelegate = async() => await _classUnderTest.Execute(rqp, null, 10).ConfigureAwait(false);
             testDelegate.Should().Throw<InvalidQueryParameterException>()
                 .WithMessage("The Postcode given does not have a valid format");
         }
