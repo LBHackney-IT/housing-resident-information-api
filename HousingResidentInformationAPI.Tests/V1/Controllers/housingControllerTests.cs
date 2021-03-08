@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -27,7 +28,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Controllers
         }
 
         [Test]
-        public void ListRecordsTest()
+        public async Task ListRecordsTest()
         {
             var residentInfo = new List<ResidentInformation>()
             {
@@ -51,8 +52,8 @@ namespace HousingResidentInformationAPI.Tests.V1.Controllers
                 LastName = "Tessellate",
             };
 
-            _mockGetAllResidentsUseCase.Setup(x => x.Execute(rqp, null, 10)).Returns(residentInformationList);
-            var response = _classUnderTest.ListRecords(rqp, null, 10) as OkObjectResult;
+            _mockGetAllResidentsUseCase.Setup(x => x.Execute(rqp, null, 10)).Returns(Task.Run(() => residentInformationList));
+            var response = await _classUnderTest.ListRecords(rqp, null, 10).ConfigureAwait(false) as OkObjectResult;
 
             response.Should().NotBeNull();
             response.StatusCode.Should().Be(200);
