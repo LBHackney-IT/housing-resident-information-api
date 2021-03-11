@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HousingResidentInformationAPI.V1.Boundary.Requests;
@@ -29,11 +30,11 @@ namespace HousingResidentInformationAPI.V1.Controllers
         [ProducesResponseType(typeof(ResidentInformationList), StatusCodes.Status200OK)]
 
         [HttpGet]
-        public IActionResult ListRecords([FromQuery] ResidentQueryParam rqp, string cursor = null, int? limit = 20)
+        public async Task<IActionResult> ListRecords([FromQuery] ResidentQueryParam rqp, string cursor = null, int? limit = 20)
         {
             try
             {
-                return Ok(_getAllResidentsUseCase.Execute(rqp, cursor, (int) limit));
+                return Ok(await _getAllResidentsUseCase.Execute(rqp, cursor, (int) limit).ConfigureAwait(false));
             }
             catch (InvalidQueryParameterException e)
             {

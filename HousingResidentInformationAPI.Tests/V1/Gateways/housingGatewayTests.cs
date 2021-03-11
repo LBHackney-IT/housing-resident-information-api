@@ -209,7 +209,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
         [Test]
         public void GetAllResidentsIfThereAreNoResidentsReturnsAnEmptyList()
         {
-            _classUnderTest.GetAllResidents(null, 10, "00011", "bob", "brown", "1 Hillman Street").Should().BeEmpty();
+            _classUnderTest.GetAllResidents(null, 10, "00011", "bob", "brown", "1 Hillman Street").Result.Should().BeEmpty();
         }
 
         [Test]
@@ -237,7 +237,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
                 tenureTypeId: tenure3.UhTenureTypeId);
 
 
-            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", activeTenancyOnly: true);
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", activeTenancyOnly: true).Result;
             listOfPersons.Count.Should().Be(1);
 
             var expectedResponse = MapToExpectedDomain(person3, address3, null, null, tenancy3);
@@ -267,7 +267,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var tenancy3 = AddTenancyAgreementToDatabase(address3.HouseRef, tenureTypeId: tenure3.UhTenureTypeId);
 
 
-            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", activeTenancyOnly: false);
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", activeTenancyOnly: false).Result;
             listOfPersons.Count.Should().Be(2);
 
             var expectedResponse1 = MapToExpectedDomain(person1, address1, null, null, tenancy1);
@@ -307,7 +307,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var domainEntity2 = MapToExpectedDomain(person3, address3, new List<Phone> { telephone3.ToDomain() }, emailAddressList3.ToDomain(), tenancy3);
 
 
-            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom").Result;
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -339,7 +339,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var domainEntity = MapToExpectedDomain(person1, address1, telephoneList1.ToDomain(), null, tenancy1);
             var domainEntity2 = MapToExpectedDomain(person3, address3, telephoneList3.ToDomain(), null, tenancy3);
 
-            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, lastName: "brown");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, lastName: "brown").Result;
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -378,7 +378,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var domainEntity1 = MapToExpectedDomain(person1, address1, null, emailAddresses1.ToDomain(), tenancy1);
             var domainEntity2 = MapToExpectedDomain(person3, address3, null, emailAddresses2.ToDomain(), tenancy3);
 
-            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", lastName: "brown");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, firstName: "ciasom", lastName: "brown").Result;
             listOfPersons.Count.Should().Be(2);
             listOfPersons.Should().ContainEquivalentOf(domainEntity1);
             listOfPersons.Should().ContainEquivalentOf(domainEntity2);
@@ -404,7 +404,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
 
             var expectedResponse = MapToExpectedDomain(person1, address1, null, null, tenancy1);
 
-            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, postcode: "e8 1dy");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, postcode: "e8 1dy").Result;
             listOfPersons.Count.Should().Be(1);
             listOfPersons.Should().ContainEquivalentOf(expectedResponse);
         }
@@ -432,7 +432,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
 
             var expectedResponse = MapToExpectedDomain(person1, address1, null, null, tenancy1);
 
-            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, address: "1 Hillman st");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, address: "1 Hillman st").Result;
             listOfPersons.Count.Should().Be(1);
             listOfPersons.Should().ContainEquivalentOf(expectedResponse);
         }
@@ -449,7 +449,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
 
             var domainEntity = MapToExpectedDomain(databaseEntity, address, null, null, tenancy1);
 
-            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, address: "1 Hillman st");
+            var listOfPersons = _classUnderTest.GetAllResidents(null, 10, address: "1 Hillman st").Result;
             listOfPersons.Count.Should().Be(1);
             listOfPersons.Should().ContainEquivalentOf(domainEntity);
         }
@@ -465,7 +465,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var tenancy = AddTenancyAgreementToDatabase(person1.HouseRef, tenureTypeId: tenure.UhTenureTypeId);
             AddContactLinkForPersonToDatabase(tenancy.TagRef, person1.PersonNo);
 
-            var peopleReturned = _classUnderTest.GetAllResidents(null, 1);
+            var peopleReturned = _classUnderTest.GetAllResidents(null, 1).Result;
 
             peopleReturned.Count.Should().Be(1);
             peopleReturned[0].FirstName.Should().Be(person1.FirstName);
@@ -483,7 +483,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
                 AddPersonRecordToDatabase(houseRef: "123", personNo: 3)
             };
 
-            //Create address and tenancy records for house ref 123 & 234 - First 2 items in array  
+            //Create address and tenancy records for house ref 123 & 234 - First 2 items in array
             persons.Take(2).ToList().ForEach(person =>
             {
                 AddAddressRecordToDatabase(person.HouseRef);
@@ -495,7 +495,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
 
             var cursor = $"{persons[0].HouseRef}{persons[0].PersonNo}";
             //Retrieved records from joined address, tenancy and persons table
-            var receivedPersons = _classUnderTest.GetAllResidents(cursor, 3);
+            var receivedPersons = _classUnderTest.GetAllResidents(cursor, 3).Result;
 
             receivedPersons.Count.Should().Be(3);
             receivedPersons[0].FirstName.Should().Be(persons[2].FirstName);
@@ -515,7 +515,7 @@ namespace HousingResidentInformationAPI.Tests.V1.Gateways
             var contact = UHContext.Contacts.Add(TestHelper.CreateContactRecordFromTagRef(tenancy.TagRef));
             UHContext.SaveChanges();
 
-            var response = _classUnderTest.GetAllResidents(null, 10);
+            var response = _classUnderTest.GetAllResidents(null, 10).Result;
             response.First().ContactKey.Should().BeEquivalentTo(contact.Entity.ContactKey.ToString());
         }
         private Person AddPersonRecordToDatabase(string firstname = null, string lastname = null, string houseRef = null, int? personNo = null)

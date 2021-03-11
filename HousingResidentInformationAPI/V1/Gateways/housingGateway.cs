@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using HousingResidentInformationAPI.V1.Factories;
 using HousingResidentInformationAPI.V1.Infrastructure;
@@ -47,7 +48,7 @@ namespace HousingResidentInformationAPI.V1.Gateways
             return singleRecord;
         }
 
-        public List<ResidentInformation> GetAllResidents(string cursor, int limit, string houseReference = null,
+        public async Task<List<ResidentInformation>> GetAllResidents(string cursor, int limit, string houseReference = null,
             string firstName = null, string lastName = null, string address = null, string postcode = null, bool activeTenancyOnly = false)
         {
             var cursorAsInt = string.IsNullOrEmpty(cursor) ? 0 : int.Parse(cursor);
@@ -95,11 +96,10 @@ namespace HousingResidentInformationAPI.V1.Gateways
             if (!dbRecords.Result.Any())
                 return new List<ResidentInformation>();
 
-            var listRecords = dbRecords.Result.Select(x =>
+            var listRecords = await Task.Run(() => dbRecords.Result.Select(x =>
                     MapDetailsToResidentInformation(x.personDetails, x.addressDetails, x.tenancyDetails,
                         x.contactDetails, x.contactKey?.ContactKey))
-                .ToList();
-
+                .ToList()).ConfigureAwait(false);
             return listRecords;
         }
 
