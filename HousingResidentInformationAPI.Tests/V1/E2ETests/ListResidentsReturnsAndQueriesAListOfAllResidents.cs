@@ -21,7 +21,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             _fixture = new Fixture();
         }
 
-        [Test]
+        //[Test]
         public async Task IfNoQueryParametersReturnsAllResidentRecordsFromhousing()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
@@ -44,7 +44,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             convertedResponse.Residents.Should().ContainEquivalentOf(expectedResidentResponseThree);
         }
 
-        [Test]
+        //[Test]
         public async Task IfNoQueryParametersReturnsAllResidentRecordsFromhousingWithActiveTenancy()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext);
@@ -67,7 +67,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
         }
 
 
-        [Test]
+        //[Test]
         public async Task FirstNameLastNameQueryParametersReturnsMatchingResidentRecordsFromhousing()
         {
             var expectedResidentResponseOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, firstname: "ciasom", lastname: "tessellate");
@@ -88,7 +88,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             convertedResponse.Residents.Should().ContainEquivalentOf(expectedResidentResponseOne);
         }
 
-        [Test]
+        //[Test]
         public async Task AddressQueryParametersReturnsMatchingResidentsRecordsFromhousing()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, addressLines: "1 Seasame street, Hackney, LDN");
@@ -112,7 +112,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             convertedResponse.Residents.Should().ContainEquivalentOf(matchingResidentTwo);
         }
 
-        [Test]
+        //[Test]
         public async Task PostcodeQueryParameterReturnsMatchingResidentsRecordsFromhousing()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext, postcode: "e8 1dy");
@@ -136,7 +136,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             convertedResponse.Residents.Should().ContainEquivalentOf(matchingResidentTwo);
         }
 
-        [Test]
+        //[Test]
         public async Task UsingAllQueryParametersReturnsMatchingResidentsRecordsFromhousing()
         {
             var matchingResidentOne = E2ETestHelpers.AddPersonWithRelatedEntitiesToDb(UHContext,
@@ -160,7 +160,7 @@ namespace HousingResidentInformationAPI.Tests.V1.E2ETests
             convertedResponse.Residents.Should().ContainEquivalentOf(matchingResidentOne);
         }
 
-        [Test]
+        //[Test]
         public async Task UsingQueryParametersReturnsAPaginatedResponse()
         {
             var residents = new List<ResidentInformation>
