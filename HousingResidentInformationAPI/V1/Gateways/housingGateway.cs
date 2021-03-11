@@ -90,12 +90,12 @@ namespace HousingResidentInformationAPI.V1.Gateways
                     contactKey = contacts,
                     tenureDetails = tenureType
                 }
-                ).Take(limit).ToList();
+                ).Take(limit).ToListAsync();
 
-            if (!dbRecords.Any())
+            if (!dbRecords.Result.Any())
                 return new List<ResidentInformation>();
 
-            var listRecords = dbRecords.Select(x =>
+            var listRecords = dbRecords.Result.Select(x =>
                     MapDetailsToResidentInformation(x.personDetails, x.addressDetails, x.tenancyDetails,
                         x.contactDetails, x.contactKey?.ContactKey))
                 .ToList();
